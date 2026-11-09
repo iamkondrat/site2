@@ -65,11 +65,11 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* КОНТЕЙНЕР ДЛЯ ЗГЕНЕРОВАНИХ 3D ДОЩОК */
+        /* КОНТЕЙНЕР ДЛЯ ІДЕАЛЬНИХ ДОЩОК */
         .hero-visual { position: relative; height: 600px; width: 100%; display: flex; justify-content: center; align-items: center; }
         #boards-canvas {
             width: 100%; height: 100%; outline: none;
-            filter: drop-shadow(0px 30px 20px rgba(0,0,0,0.9)); /* М'яка тінь під об'єктами */
+            filter: drop-shadow(0px 30px 20px rgba(0,0,0,0.8));
         }
 
         .categories { display: flex; flex-direction: column; justify-content: center; }
@@ -163,7 +163,7 @@
             </div>
         </div>
         
-        <!-- КОНТЕЙНЕР ДЛЯ ПРОГРАМНО ЗГЕНЕРОВАНОЇ 3D ДОШКИ -->
+        <!-- КОНТЕЙНЕР ДЛЯ РЕАЛІСТИЧНИХ 3D ДОЩОК -->
         <div class="hero-visual">
             <div id="boards-canvas"></div>
         </div>
@@ -221,7 +221,6 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Вступні анімації
         gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
         gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
         gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
@@ -238,95 +237,96 @@
         });
 
         // ----------------------------------------------------
-        // 1. ПРОГРАМНА ГЕНЕРАЦІЯ СПРАВЖНЬОЇ 3D ДОШКИ (Three.js)
+        // 1. АБСОЛЮТНО РЕАЛІСТИЧНА ДОШКА (BoxGeometry Vertex Displacement)
         // ----------------------------------------------------
-        function initProceduralBoards() {
+        function initPerfectBoards() {
             const container = document.getElementById('boards-canvas');
             if(!container) return;
+            container.innerHTML = ''; 
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-            camera.position.z = 10; 
+            camera.position.z = 8; 
 
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             container.appendChild(renderer.domElement);
 
-            // М'яке світло для об'єму
             const ambient = new THREE.AmbientLight(0xffffff, 0.7);
             scene.add(ambient);
-            const dirLight = new THREE.DirectionalLight(0xfff0dd, 0.9);
-            dirLight.position.set(5, 8, 5);
+            const dirLight = new THREE.DirectionalLight(0xfff0dd, 1.0);
+            dirLight.position.set(5, 8, 7);
             scene.add(dirLight);
 
-            // КРОК 1: Малюємо форму необрізної дошки з хвилястими краями
-            const shape = new THREE.Shape();
-            const len = 4.2; // довжина
-            const wid = 1.0; // ширина
-            
-            shape.moveTo(-len/2, wid/2);
-            // Верхній нерівний край
-            shape.bezierCurveTo(-len/4, wid/2 + 0.1, len/4, wid/2 - 0.15, len/2, wid/2 + 0.05);
-            // Правий торець (відпил)
-            shape.lineTo(len/2, -wid/2);
-            // Нижній нерівний край
-            shape.bezierCurveTo(len/4, -wid/2 + 0.15, -len/4, -wid/2 - 0.05, -len/2, -wid/2 + 0.1);
-            // Лівий торець
-            shape.lineTo(-len/2, wid/2);
-
-            // КРОК 2: Видавлюємо форму (надаємо товщину)
-            const extrudeSettings = {
-                depth: 0.12, // Товщина столярної дошки
-                bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 0.015, bevelThickness: 0.015
-            };
-            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-            
-            // Щоб текстура накладалась рівно
-            geometry.computeBoundingBox();
-            const box = geometry.boundingBox;
-            const size = new THREE.Vector3();
-            box.getSize(size);
-
-            // КРОК 3: Підключаємо ВАШУ текстуру
+            // ТЕКСТУРИ
             const texLoader = new THREE.TextureLoader();
+            
+            // Ваше фото дошки (один до одного, без повторень!)
             const faceTex = texLoader.load('wood_face.jpg');
-            faceTex.wrapS = THREE.RepeatWrapping; faceTex.wrapT = THREE.RepeatWrapping;
-            // Масштабуємо текстуру, щоб вона виглядала як волокна, а не розмита пляма
-            faceTex.repeat.set(0.2, 0.5); 
+            
+            // Текстура кори (буде дублюватись тільки на торцях)
+            const barkTex = texLoader.load('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=400&q=80');
+            barkTex.wrapS = THREE.RepeatWrapping; 
+            barkTex.wrapT = THREE.RepeatWrapping;
+            barkTex.repeat.set(4, 1);
 
-            // Матеріали: 
-            // 1. Лицьова та задня сторони - ваша текстура (wood_face.jpg)
+            // МАТЕРІАЛИ
             const matFace = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.8 });
             
-            // 2. Бокові сторони (Кора) - темно-коричневий шорсткий матеріал, що імітує темний обзол
-            const matBark = new THREE.MeshStandardMaterial({ color: 0x3d2314, roughness: 1.0 });
+            // Кора: затемнюємо текстуру, щоб вона виглядала як справжній темний обзол
+            const matBark = new THREE.MeshStandardMaterial({ 
+                map: barkTex, 
+                color: 0x5c3a21, 
+                roughness: 1.0 
+            });
 
-            // Застосовуємо матеріали до геометрії (0 - перед/зад, 1 - боки)
-            const materials = [matFace, matBark];
+            // Паралелепіпед має 6 сторін (право, ліво, верх, низ, перед, зад)
+            const materials = [matBark, matBark, matBark, matBark, matFace, matFace];
 
             const boardGroup = new THREE.Group();
             scene.add(boardGroup);
 
-            // Створюємо 3 дошки та розставляємо їх
+            // СТВОРЮЄМО ГЕОМЕТРІЮ (Багато сегментів, щоб можна було деформувати краї)
+            const geometry = new THREE.BoxGeometry(4.5, 0.9, 0.15, 64, 1, 1);
+            const pos = geometry.attributes.position;
+
+            // МАГІЯ ЖИВОГО КРАЮ: Вигинаємо тільки верхню та нижню грані
+            for (let i = 0; i < pos.count; i++) {
+                let x = pos.getX(i);
+                let y = pos.getY(i);
+                
+                if (y > 0.3) {
+                    // Хвиляста лінія для верхнього краю (обзол)
+                    let wave = Math.sin(x * 2.5) * 0.04 + Math.sin(x * 7) * 0.02;
+                    pos.setY(i, y + wave);
+                } else if (y < -0.3) {
+                    // Хвиляста лінія для нижнього краю
+                    let wave = Math.cos(x * 2.2) * 0.04 + Math.cos(x * 6) * 0.02;
+                    pos.setY(i, y - wave);
+                }
+            }
+            geometry.computeVertexNormals(); // Оновлюємо світло після деформації
+
+            // РОЗСТАВЛЯЄМО 3 ДОШКИ
             const b1 = new THREE.Mesh(geometry, materials);
-            b1.position.set(1.5, 2.0, 0);
+            b1.position.set(1.5, 1.8, 0);
             b1.rotation.set(0.3, -0.4, -0.1);
             boardGroup.add(b1);
 
             const b2 = new THREE.Mesh(geometry, materials);
-            b2.position.set(0.3, 0, 1);
-            b2.rotation.set(0.1, -0.2, -0.15);
-            b2.scale.set(0.9, 0.9, 0.9);
+            b2.position.set(0.1, 0, 1);
+            b2.rotation.set(0.2, -0.2, -0.15);
+            b2.scale.set(0.95, 0.95, 0.95);
             boardGroup.add(b2);
 
             const b3 = new THREE.Mesh(geometry, materials);
-            b3.position.set(1.2, -2.0, -1);
+            b3.position.set(1.0, -1.8, -1);
             b3.rotation.set(0.4, -0.5, -0.05);
-            b3.scale.set(0.85, 0.85, 0.85);
+            b3.scale.set(0.9, 0.9, 0.9);
             boardGroup.add(b3);
 
-            // Анімація: Плавний паралакс
+            // АНІМАЦІЯ ПАРАЛАКСУ
             let mouseX = 0, mouseY = 0;
             document.addEventListener('mousemove', (e) => {
                 mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -335,12 +335,9 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                
                 boardGroup.rotation.y += (mouseX * 0.3 - boardGroup.rotation.y) * 0.05;
                 boardGroup.rotation.x += (mouseY * 0.3 - boardGroup.rotation.x) * 0.05;
-                
                 boardGroup.position.y = Math.sin(Date.now() * 0.001) * 0.15;
-
                 renderer.render(scene, camera);
             }
             animate();
@@ -351,10 +348,10 @@
                 renderer.setSize(container.clientWidth, container.clientHeight);
             });
         }
-        initProceduralBoards();
+        initPerfectBoards();
 
         // ----------------------------------------------------
-        // 2. ФОНОВІ ІСКРИ ТА ОПИЛКИ
+        // 2. ФОНОВІ ІСКРИ
         // ----------------------------------------------------
         function initWebGLBg() {
             const canvas = document.getElementById('webgl-canvas');
