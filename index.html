@@ -253,4 +253,229 @@
                 </div>
             </div>
             <div class="cat-card" onclick="location.href='catalog.html?cat=covering'">
-                <div class="
+                <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80')"></div>
+                <div class="cat-info">
+                    <h3>Вагонка та тераса</h3>
+                    <p>Вагонка сосна, терасна дошка з модрини та дошка для підлоги. Стійкість до будь-яких умов.</p>
+                    <span class="cat-link">Перейти ➔</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="drying-process" id="sec-03">
+        <div class="process-visual">
+            <div class="visual-overlay">
+                <h4>8%</h4>
+                <p style="text-transform: uppercase; font-size: 0.8rem; font-weight:700; color: #aaa;">Максимальна вологість</p>
+            </div>
+        </div>
+        <div class="process-info">
+            <h3>Професійна <br><span>Сушка деревини</span></h3>
+            <p>Надаємо повний комплекс послуг з камерної сушки будь-яких обсягів пиломатеріалів. Здійснюємо укладання, завантаження, дбайливе розвантаження на вантажні авто. Сушимо бук, дуб, ясен, сосну, вільху до еталонних показників.</p>
+            <div class="stats">
+                <div class="stat-box"><h5 id="stat-cameras">6</h5><p>Сушильних камер</p></div>
+                <div class="stat-box"><h5>10+</h5><p>Років досвіду</p></div>
+                <div class="stat-box"><h5>100%</h5><p>Гарантія якості</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contacts" id="sec-04">
+        <div class="contact-details">
+            <h3>Зв'язатися <br>з нами</h3>
+            <p>Наш склад та виробництво розташовані у зручному місці на лівому березі Києва. Працюємо без вихідних за попередньою домовленістю.</p>
+            <ul class="contact-list-items">
+                <li>📍 <span>Адреса:</span> Київ, Дніпровська набережна 17е</li>
+                <li>📞 <span>Телефони:</span> 096 000 00 76 | 068 538 69 23</li>
+                <li>✉️ <span>Пошта:</span> kondratenko@apollo.ua</li>
+            </ul>
+            <div class="socials">
+                <a href="#" target="_blank">Instagram</a>
+                <a href="#" target="_blank">Facebook</a>
+                <a href="#" target="_blank">TikTok</a>
+            </div>
+        </div>
+        <div class="form-box">
+            <h4>Задати питання</h4>
+            <p>Вкажіть контакти — директор перетелефонує вам за 15 хвилин</p>
+            <form onsubmit="event.preventDefault(); alert('Дякуємо! Наш директор зв\'яжеться з вами.');">
+                <input type="text" placeholder="Ваше ім'я або компанія" required>
+                <input type="tel" placeholder="Ваш телефон" required>
+                <button type="submit">Надіслати</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Вступні анімації тексту
+        gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
+        gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
+        gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
+        gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
+
+        const sections = ["#sec-01", "#sec-02", "#sec-03", "#sec-04"];
+        sections.forEach((selector, i) => {
+            ScrollTrigger.create({
+                trigger: selector,
+                start: "top center", end: "bottom center",
+                onEnter: () => document.getElementById('active-num').innerText = "0" + (i + 1),
+                onEnterBack: () => document.getElementById('active-num').innerText = "0" + (i + 1)
+            });
+        });
+
+        // ----------------------------------------------------
+        // 1. СПРАВЖНІ, СУЦІЛЬНІ 3D ДОШКИ (Three.js ExtrudeGeometry)
+        // ----------------------------------------------------
+        function initReal3DBoards() {
+            const container = document.getElementById('boards-canvas');
+            if(!container) return;
+
+            const scene = new THREE.Scene();
+            // Прозора камера, щоб було видно фон сайту
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.z = 10;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // М'яке, дороге студійне світло
+            const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambient);
+            const dirLight = new THREE.DirectionalLight(0xffeedd, 0.7);
+            dirLight.position.set(5, 10, 5);
+            scene.add(dirLight);
+
+            // МАЛЮЄМО ФОРМУ НЕОБРІЗНОЇ ДОШКИ
+            const shape = new THREE.Shape();
+            const w = 4.8; // Довжина дошки
+            const h = 1.2; // Ширина дошки
+            
+            // Стартуємо з лівого верхнього кута
+            shape.moveTo(-w/2, h/2 - 0.1);
+            // 1. Верхній "живий", хвилястий край (Кора)
+            shape.bezierCurveTo(-w/4, h/2 + 0.15,  w/4, h/2 - 0.1,  w/2, h/2 + 0.05);
+            // 2. Правий торець (Рівний відпил)
+            shape.lineTo(w/2, -h/2);
+            // 3. Нижній "живий", хвилястий край (Кора)
+            shape.bezierCurveTo(w/4, -h/2 + 0.1, -w/4, -h/2 - 0.15, -w/2, -h/2 + 0.1);
+            // 4. Лівий торець (Рівний відпил)
+            shape.lineTo(-w/2, h/2 - 0.1);
+
+            // Видавлюємо форму, щоб створити монолітний 3D об'єкт
+            const extrudeSettings = {
+                depth: 0.15, // Товщина дошки
+                bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 0.02, bevelThickness: 0.02
+            };
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+            // ЗАВАНТАЖЕННЯ ВАШИХ ТЕКСТУР
+            const texLoader = new THREE.TextureLoader();
+            
+            // Ваше фото дошки (лицьова сторона)
+            const faceTex = texLoader.load('wood_face.jpg');
+            faceTex.wrapS = THREE.RepeatWrapping; faceTex.wrapT = THREE.RepeatWrapping;
+            faceTex.repeat.set(0.15, 0.4); // Розтягуємо по геометрії
+
+            // Фото кори для бокових граней
+            const barkTex = texLoader.load('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=400&q=80');
+            barkTex.wrapS = THREE.RepeatWrapping; barkTex.wrapT = THREE.RepeatWrapping;
+            barkTex.repeat.set(2, 0.2);
+
+            // Матеріали (0 - верх/низ, 1 - боки з корою)
+            const matFace = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.8 });
+            const matBark = new THREE.MeshStandardMaterial({ map: barkTex, roughness: 1.0, color: 0x553311 });
+            const materials = [matFace, matBark];
+
+            const boardGroup = new THREE.Group();
+
+            // Створюємо 3 дошки, розставляємо і нахиляємо у просторі
+            const b1 = new THREE.Mesh(geometry, materials);
+            b1.position.set(1.5, 2.2, 0);
+            b1.rotation.set(0.2, -0.4, -0.1);
+
+            const b2 = new THREE.Mesh(geometry, materials);
+            b2.position.set(0.2, 0, 1);
+            b2.rotation.set(0.1, -0.3, -0.15);
+            b2.scale.set(0.9, 0.9, 0.9);
+
+            const b3 = new THREE.Mesh(geometry, materials);
+            b3.position.set(1.2, -2.2, -1);
+            b3.rotation.set(0.3, -0.5, -0.05);
+            b3.scale.set(0.85, 0.85, 0.85);
+
+            boardGroup.add(b1, b2, b3);
+            scene.add(boardGroup);
+
+            // Плавний відгук на мишку
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+
+            function animateBoards() {
+                requestAnimationFrame(animateBoards);
+                boardGroup.rotation.y += (mouseX * 0.4 - boardGroup.rotation.y) * 0.05;
+                boardGroup.rotation.x += (mouseY * 0.4 - boardGroup.rotation.x) * 0.05;
+                renderer.render(scene, camera);
+            }
+            animateBoards();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+        initReal3DBoards();
+
+        // ----------------------------------------------------
+        // 2. ФОНОВІ 3D-ІСКРИ
+        // ----------------------------------------------------
+        function initWebGLBg() {
+            const canvas = document.getElementById('webgl-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            const geom = new THREE.BufferGeometry();
+            const pos = new Float32Array(500 * 3);
+            for (let i = 0; i < 1500; i += 3) {
+                pos[i] = (Math.random() - 0.5) * 12;
+                pos[i+1] = (Math.random() - 0.5) * 10;
+                pos[i+2] = (Math.random() - 0.5) * 8;
+            }
+            geom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+            const mat = new THREE.PointsMaterial({ size: 0.03, color: 0xd99058, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+            const points = new THREE.Points(geom, mat);
+            scene.add(points);
+            camera.position.z = 4;
+
+            const clock = new THREE.Clock();
+            function animateBg() {
+                requestAnimationFrame(animateBg);
+                points.rotation.y = clock.getElapsedTime() * 0.03;
+                points.rotation.x = clock.getElapsedTime() * 0.01;
+                renderer.render(scene, camera);
+            }
+            animateBg();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        initWebGLBg();
+    </script>
+</body>
+</html>
