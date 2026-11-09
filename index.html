@@ -300,10 +300,12 @@
 
             function updateBoardPositions() {
                 if (window.innerWidth <= 1024) {
+                    // На телефонах залишаємо по центру і знизу
                     boardGroup.position.set(0, -2, -3); 
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                 } else {
-                    boardGroup.position.set(0, 0, 0); 
+                    // На комп'ютерах зсуваємо всю групу вправо (було 0, стало 0.8 по осі X)
+                    boardGroup.position.set(0.8, 0, 0); 
                     boardGroup.scale.set(1, 1, 1);
                 }
             }
