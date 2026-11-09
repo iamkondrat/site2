@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo LTD | Найбільший склад пиломатеріалів у Києві</title>
+    <meta name="description" content="Суха дошка, пиломатеріали свіжопиляні, вагонка, терасна дошка. Послуги сушки деревини. Київ, Дніпровська набережна 17е.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- GSAP для крутых анимаций появления текста -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #121416;
+            --accent: #d99058;
+            --text: #ffffff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: var(--text); overflow-x: hidden; }
+
+        /* HEADER */
+        header {
+            position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;
+            padding: 25px 60px; background: rgba(18, 20, 22, 0.85); backdrop-filter: blur(15px); z-index: 100; border-bottom: 1px solid var(--border);
+        }
+        .logo h2 { letter-spacing: 3px; font-weight: 800; }
+        .logo span { color: var(--accent); }
+        .nav-links a { color: var(--text); text-decoration: none; margin: 0 20px; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
+        
+        .header-contacts { display: flex; gap: 30px; align-items: center; }
+        .phones a { color: var(--text); text-decoration: none; font-weight: 700; margin-left: 15px; font-size: 1.1rem; }
+        .phones a:hover { color: var(--accent); }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 10%;
+            position: relative; overflow: hidden;
+        }
+        /* В будущем вы замените URL на фото штабелей досок с вашего склада */
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background: linear-gradient(rgba(18,20,22,0.7), rgba(18,20,22,0.9)), url('https://images.unsplash.com/photo-1571167530149-c1105ce4c2c5?auto=format&fit=crop&w=1920&q=80') center/cover;
+        }
+        /* Место под Canvas для WebGL искр */
+        #webgl-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        .hero h1 { font-size: 5rem; font-weight: 800; line-height: 1.1; margin-bottom: 30px; text-transform: uppercase; letter-spacing: -2px; }
+        .hero h1 span { color: var(--accent); }
+        .hero p { font-size: 1.3rem; max-width: 600px; color: #bbb; margin-bottom: 50px; line-height: 1.6; }
+        
+        .hero-btns { display: flex; gap: 20px; }
+        .btn-primary { background: var(--accent); color: #000; padding: 18px 40px; font-size: 1.1rem; font-weight: 700; text-decoration: none; border-radius: 5px; transition: 0.3s; }
+        .btn-primary:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(217, 144, 88, 0.3); }
+        .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1.1rem; font-weight: 600; text-decoration: none; border-radius: 5px; backdrop-filter: blur(10px); transition: 0.3s; }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* FOOTER / CONTACTS BAR BOTTOM */
+        .bottom-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 10%;
+            display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border);
+            background: linear-gradient(to top, rgba(18,20,22,1), transparent);
+        }
+        .address { font-size: 1rem; font-weight: 600; color: #ddd; display: flex; align-items: center; gap: 10px; }
+        .socials a { color: var(--text); text-decoration: none; margin-left: 20px; font-weight: 600; transition: 0.3s; }
+        .socials a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <header class="gsap-anim">
+        <div class="logo">
+            <h2>APOLLO<span>LTD</span></h2>
+        </div>
+        <nav class="nav-links">
+            <a href="catalog.html">Каталог</a>
+            <a href="about.html">Про нас</a>
+            <a href="catalog.html?category=services">Послуги сушки</a>
+        </nav>
+        <div class="header-contacts">
+            <div class="phones">
+                <a href="tel:+380960000076">096 000 00 76</a>
+                <a href="tel:+380685386923">068 538 69 23</a>
+            </div>
+            <!-- Ссылка на переход в каталог -->
+            <a href="catalog.html" class="btn-primary" style="padding: 12px 25px; font-size: 0.9rem;">В магазин</a>
+        </div>
+    </header>
+
+    <main class="hero">
+        <div class="hero-bg"></div>
+        <canvas id="webgl-canvas"></canvas>
+
+        <h1 class="gsap-anim">Еталонні <br><span>Пиломатеріали</span></h1>
+        <p class="gsap-anim">Найбільший склад у Києві. Суха дошка столярна, вагонка, терасна дошка та професійні послуги сушіння деревини будь-якого обсягу.</p>
+        
+        <div class="hero-btns gsap-anim">
+            <a href="catalog.html" class="btn-primary">Відкрити каталог</a>
+            <a href="price.pdf" target="_blank" class="btn-secondary">Завантажити прайс</a>
+        </div>
+
+        <div class="bottom-bar gsap-anim">
+            <div class="address">
+                📍 м. Київ, Дніпровська набережна 17е | ✉️ kondratenko@apollo.ua
+            </div>
+            <div class="socials">
+                <a href="#" target="_blank">Facebook</a>
+                <a href="#" target="_blank">Instagram</a>
+                <a href="#" target="_blank">TikTok</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Анимации при загрузке (Wow-эффект Awwwards)
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.from("header", { y: -50, opacity: 0, duration: 1, ease: "power3.out" });
+            gsap.from("h1", { y: 50, opacity: 0, duration: 1, delay: 0.3, ease: "power3.out" });
+            gsap.from("p", { y: 30, opacity: 0, duration: 1, delay: 0.5, ease: "power3.out" });
+            gsap.from(".hero-btns", { y: 20, opacity: 0, duration: 1, delay: 0.7, ease: "power3.out" });
+            gsap.from(".bottom-bar", { y: 30, opacity: 0, duration: 1, delay: 0.9, ease: "power3.out" });
+        });
+
+        // Сюда же можно вставить код WebGL пыли/искр (Three.js), который я давал ранее
+    </script>
+</body>
+</html>
