@@ -47,7 +47,6 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* КОНТЕЙНЕР ДЛЯ 3D ДОЩОК НА ВЕСЬ ЕКРАН */
         .hero-visual { position: absolute; top: 0; left: 0; width: 100vw; height: 100%; z-index: 5; pointer-events: none; }
         #boards-canvas { width: 100%; height: 100%; outline: none; filter: drop-shadow(0px 25px 25px rgba(0,0,0,0.9)); }
 
@@ -148,6 +147,7 @@
         </div>
     </section>
 
+    <!-- ІНШІ СЕКЦІЇ -->
     <section class="categories" id="sec-02">
         <div class="section-header"><span>Каталог</span><h2>Породи та вироби</h2></div>
         <div class="cat-grid">
@@ -215,7 +215,7 @@
         });
 
         // ----------------------------------------------------
-        // 1. АБСОЛЮТНО РЕАЛІСТИЧНА ДОШКА (ГОСТРІ КУТИ, КОРА)
+        // 1. АБСОЛЮТНО РЕАЛІСТИЧНА ДОШКА (ВИПРАВЛЕНА ТЕКСТУРА)
         // ----------------------------------------------------
         function initPerfectBoards() {
             const container = document.getElementById('boards-canvas');
@@ -239,67 +239,61 @@
 
             // ТЕКСТУРИ ТА МАТЕРІАЛИ
             const texLoader = new THREE.TextureLoader();
+            
+            // 1. Лицьова текстура (ВИМКНЕНО REPEAT, щоб вона лягала цілісно)
             const faceTex = texLoader.load('wood_face.jpg');
-            // Масштабуємо лицьову текстуру, щоб вона гарно лягла
-            faceTex.wrapS = THREE.RepeatWrapping; 
-            faceTex.wrapT = THREE.RepeatWrapping;
-            faceTex.repeat.set(0.15, 0.5);
-
             const matFace = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.8 });
             
-            const barkTex = texLoader.load('bark.jpg');
-            barkTex.wrapS = THREE.RepeatWrapping; 
-            barkTex.wrapT = THREE.RepeatWrapping;
-            barkTex.repeat.set(15, 1); 
+            // 2. Текстура кори для довгих граней (повторюється вздовж)
+            const barkTexLong = texLoader.load('bark.jpg');
+            barkTexLong.wrapS = THREE.RepeatWrapping; 
+            barkTexLong.wrapT = THREE.RepeatWrapping;
+            barkTexLong.repeat.set(6, 1); 
+            const matBarkLong = new THREE.MeshStandardMaterial({ map: barkTexLong, color: 0x5c3a21, roughness: 1.0 });
 
-            // Кора
-            const matBark = new THREE.MeshStandardMaterial({ 
-                map: barkTex, 
-                color: 0x8a5a44, 
-                roughness: 1.0 
-            });
+            // 3. Текстура кори для коротких торців (без повторень)
+            const barkTexShort = texLoader.load('bark.jpg');
+            const matBarkShort = new THREE.MeshStandardMaterial({ map: barkTexShort, color: 0x5c3a21, roughness: 1.0 });
+
+            // BoxGeometry матеріали: [0:Право, 1:Ліво, 2:Верх(довга кора), 3:Низ(довга кора), 4:Лице, 5:Зад]
+            const materials = [matBarkShort, matBarkShort, matBarkLong, matBarkLong, matFace, matFace];
 
             const boardGroup = new THREE.Group();
             scene.add(boardGroup);
 
-            // ГЕОМЕТРІЯ (Формуємо хвилястий живий край)
-            const shape = new THREE.Shape();
-            const len = 4.2; 
-            const wid = 1.0; 
-            
-            shape.moveTo(-len/2, wid/2);
-            shape.bezierCurveTo(-len/4, wid/2 + 0.1, len/4, wid/2 - 0.15, len/2, wid/2 + 0.05);
-            shape.lineTo(len/2, -wid/2);
-            shape.bezierCurveTo(len/4, -wid/2 + 0.15, -len/4, -wid/2 - 0.05, -len/2, -wid/2 + 0.1);
-            shape.lineTo(-len/2, wid/2);
+            // ГЕОМЕТРІЯ (Тонка дошка: товщина 0.15)
+            const geometry = new THREE.BoxGeometry(4.5, 0.9, 0.15, 64, 1, 1);
+            const pos = geometry.attributes.position;
 
-            // ВАЖЛИВО: bevelEnabled: false прибирає заокруглення, залишаючи ідеально плоский зріз та гострі кути
-            const extrudeSettings = {
-                depth: 0.15, // Товщина дошки
-                bevelEnabled: false 
-            };
-            
-            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-            
-            // В ExtrudeGeometry: index 0 - лицьова/тильна сторони, index 1 - боки (кора)
-            const materials = [matFace, matBark];
+            // Формуємо плавний хвилястий живий край
+            for (let i = 0; i < pos.count; i++) {
+                let x = pos.getX(i);
+                let y = pos.getY(i);
+                
+                if (y > 0.4) {
+                    let wave = Math.sin(x * 2) * 0.03 + Math.sin(x * 5) * 0.015;
+                    pos.setY(i, y + wave);
+                } else if (y < -0.4) {
+                    let wave = Math.cos(x * 1.5) * 0.03 + Math.cos(x * 4) * 0.015;
+                    pos.setY(i, y - wave);
+                }
+            }
+            geometry.computeVertexNormals();
 
-            // РОЗСТАНОВКА ДОЩОК ВІЯЛОМ
+            // КОМПОЗИЦІЯ "ВІЯЛО" (зміщена ліворуч, щоб не ховалася за край)
             const b1 = new THREE.Mesh(geometry, materials);
-            b1.position.set(2.1, 1.7, 1.0);
-            b1.rotation.set(0.5, -0.2, 0.15);
+            b1.position.set(1.5, 1.8, -0.5);
+            b1.rotation.set(0.4, -0.3, 0.1);
             boardGroup.add(b1);
 
             const b2 = new THREE.Mesh(geometry, materials);
-            b2.position.set(1.9, 0.1, -0.2);
+            b2.position.set(1.2, 0.1, 0.5);
             b2.rotation.set(0.2, -0.4, -0.05);
-            b2.scale.set(1.0, 1.0, 1.0);
             boardGroup.add(b2);
 
             const b3 = new THREE.Mesh(geometry, materials);
-            b3.position.set(2.6, -1.6, -1.5);
+            b3.position.set(1.8, -1.6, -1.0);
             b3.rotation.set(0.6, -0.6, -0.25);
-            b3.scale.set(0.9, 0.9, 0.9);
             boardGroup.add(b3);
 
             function updateBoardPositions() {
