@@ -79,7 +79,7 @@
            ------------------------------------------- */
         .hero-visual {
             position: relative; height: 550px; display: flex; justify-content: center; align-items: center;
-            perspective: 1200px; /* Створює перспективу для 3D */
+            perspective: 1200px;
         }
         .illustration-3d {
             width: 100%; height: 100%;
@@ -88,78 +88,70 @@
             transform-style: preserve-3d;
         }
 
-        /* Обгортка кожної дошки для позиціонування */
+        /* Обгортка: сюди додаємо статичну тінь, щоб вона не крутилася як божевільна */
         .board-wrapper {
             position: absolute;
-            transform-style: preserve-3d;
             z-index: 2;
+            filter: drop-shadow(0px 30px 25px rgba(0,0,0,0.8));
         }
-        /* Сам 3D об'єкт (дошка) */
+        
         .board-3d {
             width: 360px;
             height: 110px;
             position: relative;
             transform-style: preserve-3d;
-            /* Початкові кути нахилу задаються через GSAP нижче */
         }
 
-        /* Всі грані дошки */
         .face {
             position: absolute;
             background-size: cover;
             background-position: center;
-            /* Затемнюємо краї для кращого 3D реалізму */
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            /* ГОЛОВНИЙ ФІКС ЛАГІВ: приховуємо зворотний бік площин */
+            backface-visibility: hidden; 
         }
 
-        /* 1. Лицьова і тильна сторони (ваша текстура wood_face.jpg) */
+        /* 1. Лицьова і тильна сторони (Ваше фото) */
+        /* Робимо дошку тоншою: товщина 16px (відступ по 8px) */
         .face-front, .face-back {
             width: 100%; height: 100%;
-            border-radius: 3px;
+            border-radius: 2px;
         }
         .face-front {
             background-image: url('wood_face.jpg');
-            transform: translateZ(15px); /* Висуваємо на половину товщини */
+            transform: translateZ(8px); 
         }
         .face-back {
             background-image: url('wood_face.jpg');
-            transform: rotateY(180deg) translateZ(15px);
-            filter: brightness(0.4); /* Тильна сторона темніша */
+            transform: rotateY(180deg) translateZ(8px);
+            filter: brightness(0.5); 
         }
 
-        /* 2. Торці (верхній та нижній зрізи деревини) */
+        /* 2. Торці та боки (КОРА) */
+        .face-top, .face-bottom, .face-left, .face-right {
+            /* Текстура кори */
+            background-image: url('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=400&q=80');
+            /* Створюємо ілюзію нерівності та об'єму на корі */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
+        }
+        
+        /* Верх і низ */
         .face-top, .face-bottom {
-            width: 100%; height: 30px; /* Товщина дошки 30px */
-            background-image: url('wood_face.jpg');
-            filter: brightness(0.6);
+            width: 100%; height: 16px; 
         }
-        .face-top { top: -15px; transform: rotateX(90deg); }
-        .face-bottom { bottom: -15px; transform: rotateX(-90deg); }
+        .face-top { top: -8px; transform: rotateX(90deg); filter: brightness(0.7); }
+        .face-bottom { bottom: -8px; transform: rotateX(-90deg); filter: brightness(0.4); }
 
-        /* 3. Бокові сторони (КОРА / Живий край) */
+        /* Лівий і правий бік */
         .face-left, .face-right {
-            width: 30px; height: 100%;
-            /* Текстура кори (можете замінити на свою bark.jpg) */
-            background-image: url('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=150&q=80');
-            filter: brightness(0.8);
+            width: 16px; height: 100%;
         }
-        .face-left { left: -15px; transform: rotateY(-90deg); }
-        .face-right { right: -15px; transform: rotateY(90deg); }
-
-        /* Глибока 3D тінь, яка літає ПІД дошкою */
-        .board-shadow {
-            position: absolute;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            filter: blur(25px);
-            transform: translateZ(-60px) translateY(30px) scale(0.9);
-        }
+        .face-left { left: -8px; transform: rotateY(-90deg); filter: brightness(0.5); }
+        .face-right { right: -8px; transform: rotateY(90deg); filter: brightness(0.8); }
 
         /* Позиції дощок у просторі */
         .wood-01 { top: 18%; right: 5%; z-index: 3; }
         .wood-02 { top: 40%; left: 0%; transform: scale(0.9); z-index: 2; }
         .wood-03 { bottom: 12%; right: 12%; transform: scale(0.85); z-index: 1; }
-        /* ------------------------------------------- */
 
 
         /* СЕКЦІЯ 02: КАТЕГОРІЇ (ГАЛЕРЕЯ) */
@@ -323,7 +315,7 @@
                         <div class="face face-bottom"></div>
                         <div class="face face-left"></div>
                         <div class="face face-right"></div>
-                        <div class="board-shadow"></div>
+
                     </div>
                 </div>
 
