@@ -15,9 +15,9 @@
 
     <style>
         :root {
-            --bg-dark: #0f1112; /* Глибокий вугільний */
+            --bg-dark: #0f1112; 
             --bg-card: #16181a;
-            --accent: #d99058; /* Теплий відтінок дерева */
+            --accent: #d99058; 
             --text: #ffffff;
             --border: rgba(255, 255, 255, 0.06);
             --gradient: linear-gradient(135deg, #d99058 0%, #a65f2e 100%);
@@ -75,7 +75,7 @@
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
         /* -------------------------------------------
-           3D-ІЛЮСТРАЦІЯ: ЖИВИЙ КРАЙ ТА ОБ'ЄМНА КОРА (Voxel 3D)
+           3D-ІЛЮСТРАЦІЯ: ІДЕАЛЬНА ПЛАВНА ХВИЛЯ ТА КОРА
            ------------------------------------------- */
         .hero-visual {
             position: relative; height: 550px; display: flex; justify-content: center; align-items: center;
@@ -88,7 +88,6 @@
             transform-style: preserve-3d;
         }
 
-        /* Обгортка з реальною, стабільною тінню, що не лагає */
         .board-wrapper {
             position: absolute;
             z-index: 2;
@@ -102,18 +101,22 @@
             transform-style: preserve-3d;
         }
 
-        /* Універсальний шар дошки */
+        /* Базовий шар дошки */
         .layer {
             position: absolute;
             width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            /* Форма НЕОБРІЗНОЇ дошки (хвилястий, органічний край) */
+            /* 
+               Нова, супер-плавна хвиля (живий край).
+               Асиметрична: лівий і правий край мають різний малюнок хвиль.
+            */
             clip-path: polygon(
-                1% 8%, 15% 3%, 35% 7%, 60% 2%, 85% 6%, 98% 4%,
-                99% 94%, 80% 97%, 55% 92%, 30% 98%, 10% 93%, 2% 96%
+                1.5% 0%, 98.5% 0%, 
+                99% 5%, 98.2% 15%, 100% 25%, 98.5% 35%, 97% 45%, 98% 55%, 99.5% 65%, 97.5% 75%, 96% 85%, 98% 95%, 
+                98% 100%, 2% 100%, 
+                3% 95%, 4% 85%, 2% 75%, 1% 65%, 3% 55%, 2% 45%, 4% 35%, 1.5% 25%, 0% 15%, 1.5% 5%
             );
-            /* Фікс лагів браузера під час обертання */
             backface-visibility: hidden; 
         }
 
@@ -125,18 +128,18 @@
             filter: brightness(0.4); 
         }
 
-        /* Шари кори (внутрішня товщина) */
+        /* Шар кори */
         .bark {
-            background-image: url('wood_face.jpg'); 
-            /* Робимо кору темною та рельєфною, як у справжнього дерева */
-            filter: brightness(0.15) contrast(1.5); 
+            /* Окрема текстура справжньої кори */
+            background-image: url('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=400&q=80'); 
+            filter: brightness(0.6) contrast(1.2); 
         }
 
         /* Позиції дощок у просторі */
         .wood-01 { top: 18%; right: 5%; z-index: 3; }
         .wood-02 { top: 40%; left: 0%; transform: scale(0.9); z-index: 2; }
         .wood-03 { bottom: 12%; right: 12%; transform: scale(0.85); z-index: 1; }
-
+        /* ------------------------------------------- */
 
         /* СЕКЦІЯ 02: КАТЕГОРІЇ (ГАЛЕРЕЯ) */
         .categories { display: flex; flex-direction: column; justify-content: center; }
@@ -275,7 +278,7 @@
         </div>
     </header>
 
-    <!-- 01. ГОЛОВНИЙ ЕКРАН З 3D-ДОШКАМИ -->
+    <!-- 01. ГОЛОВНИЙ ЕКРАН -->
     <section class="hero" id="sec-01">
         <div class="hero-info">
             <h1>Еталонні <br><span>Пиломатеріали</span></h1>
@@ -286,14 +289,10 @@
             </div>
         </div>
         
-        <!-- Справжні 3D Дошки з вашою текстурою wood_face.jpg та корою на боках -->
         <div class="hero-visual">
             <div class="illustration-3d">
-                <!-- Дошка 1 -->
                 <div class="board-wrapper wood-01"><div class="board-3d"></div></div>
-                <!-- Дошка 2 -->
                 <div class="board-wrapper wood-02"><div class="board-3d"></div></div>
-                <!-- Дошка 3 -->
                 <div class="board-wrapper wood-03"><div class="board-3d"></div></div>
             </div>
         </div>
@@ -306,7 +305,6 @@
             <h2>Породи та вироби</h2>
         </div>
         <div class="cat-grid">
-            <!-- Картка 1: Суха дошка -->
             <div class="cat-card" onclick="location.href='catalog.html?cat=dry_board'">
                 <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1549429186-0775d79fa451?auto=format&fit=crop&w=600&q=80')"></div>
                 <div class="cat-info">
@@ -315,7 +313,6 @@
                     <span class="cat-link">Перейти ➔</span>
                 </div>
             </div>
-            <!-- Картка 2: Погонаж -->
             <div class="cat-card" onclick="location.href='catalog.html?cat=molded'">
                 <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1589146938971-ce9ebbdff1c5?auto=format&fit=crop&w=600&q=80')"></div>
                 <div class="cat-info">
@@ -324,7 +321,6 @@
                     <span class="cat-link">Перейти ➔</span>
                 </div>
             </div>
-            <!-- Картка 3: Оздоблення -->
             <div class="cat-card" onclick="location.href='catalog.html?cat=covering'">
                 <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80')"></div>
                 <div class="cat-info">
@@ -393,31 +389,34 @@
     </section>
 
     <script>
+        // --- 1. АНІМАЦІЯ СКРОЛУ (GSAP & SCROLLTRIGGER) ---
+        gsap.registerPlugin(ScrollTrigger);
+
         // --- ГЕНЕРАЦІЯ 3D-ОБ'ЄМУ ТА КОРИ (Voxel Stacking) ---
+        // Цей скрипт автоматично вибудовує товщину дошки шар за шаром,
+        // маппить текстуру кори на боки і робить краї фізично об'ємними.
         function buildLiveEdgeBoards() {
             const boards = document.querySelectorAll('.board-3d');
             boards.forEach(board => {
                 let html = '';
                 
                 // Лицьова сторона
-                html += `<div class="layer face-front" style="transform: translateZ(8px)"></div>`;
+                html += `<div class="layer face-front" style="transform: translateZ(12px)"></div>`;
                 
-                // Шари кори (робимо дошку тоншою: загальна товщина 16px)
-                for(let i = 7; i >= -7; i -= 1) {
-                    // Мікро-зміщення (jitter) робить кору фізично шорсткою та об'ємною
-                    let jx = (Math.random() - 0.5) * 2;
-                    let jy = (Math.random() - 0.5) * 2;
-                    html += `<div class="layer bark" style="transform: translateZ(${i}px) translate(${jx}px, ${jy}px)"></div>`;
+                // Шари кори (товщина 24 пікселі)
+                for(let i = 11; i >= -11; i -= 1) {
+                    // Зсовуємо текстуру кори для кожного міліметра товщини,
+                    // щоб вона виглядала як реалістичний 3D-малюнок збоку
+                    let bgShift = (i * 3) + "px";
+                    html += `<div class="layer bark" style="transform: translateZ(${i}px); background-position: ${bgShift} center;"></div>`;
                 }
                 
                 // Тильна сторона
-                html += `<div class="layer face-back" style="transform: translateZ(-8px)"></div>`;
+                html += `<div class="layer face-back" style="transform: translateZ(-12px)"></div>`;
                 board.innerHTML = html;
             });
         }
         buildLiveEdgeBoards();
-        // --- 1. АНІМАЦІЯ СКРОЛУ (GSAP & SCROLLTRIGGER) ---
-        gsap.registerPlugin(ScrollTrigger);
 
         gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
         gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
@@ -425,19 +424,18 @@
         gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
         
         // --- 2. ФІЗИЧНИЙ 3D-ПАРАЛАКС ДЛЯ ДОЩОК ---
-        // Задаємо початкові красиві кути нахилу для кожної дошки
-        gsap.set(".wood-01 .board-3d", { rotateX: 20, rotateY: -20, rotateZ: -10 });
-        gsap.set(".wood-02 .board-3d", { rotateX: 10, rotateY: -5, rotateZ: -20 });
-        gsap.set(".wood-03 .board-3d", { rotateX: 25, rotateY: -30, rotateZ: -5 });
+        // Ми збільшили кути нахилу, щоб товщину (кору) було чітко видно!
+        gsap.set(".wood-01 .board-3d", { rotateX: 25, rotateY: -35, rotateZ: -10 });
+        gsap.set(".wood-02 .board-3d", { rotateX: 15, rotateY: -25, rotateZ: -20 });
+        gsap.set(".wood-03 .board-3d", { rotateX: 30, rotateY: -45, rotateZ: -5 });
 
-        // Коли ви водите мишкою, дошки обертаються і показують свої боки з корою
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 2;
             const y = (e.clientY / window.innerHeight - 0.5) * 2;
             
-            gsap.to(".wood-01 .board-3d", { rotateX: 20 - y * 15, rotateY: -20 + x * 20, duration: 0.5 });
-            gsap.to(".wood-02 .board-3d", { rotateX: 10 - y * 15, rotateY: -5 + x * 20, duration: 0.5 });
-            gsap.to(".wood-03 .board-3d", { rotateX: 25 - y * 15, rotateY: -30 + x * 20, duration: 0.5 });
+            gsap.to(".wood-01 .board-3d", { rotateX: 25 - y * 15, rotateY: -35 + x * 20, duration: 0.5 });
+            gsap.to(".wood-02 .board-3d", { rotateX: 15 - y * 15, rotateY: -25 + x * 20, duration: 0.5 });
+            gsap.to(".wood-03 .board-3d", { rotateX: 30 - y * 15, rotateY: -45 + x * 20, duration: 0.5 });
         });
 
         // Слідкуємо за активним розділом для індикатора номера секції
