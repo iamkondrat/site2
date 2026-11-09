@@ -29,7 +29,6 @@
             overflow-x: hidden; 
         }
 
-        /* Фонові іскри */
         #webgl-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1; pointer-events: none; opacity: 0.6;
@@ -48,16 +47,24 @@
         .phones a { color: var(--text); text-decoration: none; font-weight: 700; margin-left: 15px; font-size: 1rem; }
         .phones a:hover { color: var(--accent); }
 
-        section {
-            min-height: 100vh; position: relative; display: flex; align-items: center;
-            padding: 100px 8%; border-bottom: 1px solid var(--border);
+        /* ЗМІНЕНА СТРУКТУРА HERO-СЕКЦІЇ */
+        .hero { 
+            position: relative;
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center;
+            padding: 100px 8%; 
+            border-bottom: 1px solid var(--border);
         }
-
-        .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-content: center; }
-        .hero-info { display: flex; flex-direction: column; justify-content: center; z-index: 5;}
+        .hero-info { 
+            position: relative;
+            display: flex; flex-direction: column; justify-content: center; 
+            z-index: 10;
+            max-width: 600px; /* Текст займає лише ліву частину екрана */
+        }
         .hero h1 { font-size: 4.8rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -1px; }
         .hero h1 span { color: var(--accent); }
-        .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 550px; }
+        .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; }
         
         .hero-btns { display: flex; gap: 20px; }
         .btn-primary { background: var(--gradient); color: #000; padding: 18px 40px; font-size: 1rem; font-weight: 700; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
@@ -65,13 +72,24 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* КОНТЕЙНЕР ДЛЯ ІДЕАЛЬНИХ ДОЩОК */
-        .hero-visual { position: relative; height: 650px; width: 100%; display: flex; justify-content: center; align-items: center; }
+        /* НОВИЙ КОНТЕЙНЕР ДЛЯ ДОЩОК: НА ВЕСЬ ЕКРАН */
+        .hero-visual { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100%; 
+            z-index: 5;
+            pointer-events: none; /* Щоб мишка проходила крізь полотно і кнопки натискались */
+        }
         #boards-canvas {
             width: 100%; height: 100%; outline: none;
-            filter: drop-shadow(0px 30px 25px rgba(0,0,0,0.8));
+            filter: drop-shadow(0px 25px 25px rgba(0,0,0,0.9)); 
         }
 
+        /* ІНШІ СЕКЦІЇ БЕЗ ЗМІН */
+        section:not(.hero) {
+            min-height: 100vh; position: relative; display: flex; align-items: center;
+            padding: 100px 8%; border-bottom: 1px solid var(--border);
+        }
         .categories { display: flex; flex-direction: column; justify-content: center; }
         .section-header { margin-bottom: 60px; }
         .section-header span { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem;}
@@ -121,11 +139,11 @@
         .section-numbers span { color: var(--accent); }
 
         @media (max-width: 1024px) {
-            .hero, .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; padding-top: 140px; }
+            .hero-info { max-width: 100%; z-index: 10; padding-top: 50px; }
             .hero h1 { font-size: 3.2rem; }
+            .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; }
             .cat-grid { grid-template-columns: 1fr; }
             header { padding: 20px; flex-direction: column; gap: 15px; }
-            .hero-visual { height: 400px; }
         }
     </style>
 </head>
@@ -163,13 +181,12 @@
             </div>
         </div>
         
-        <!-- КОНТЕЙНЕР ДЛЯ ІДЕАЛЬНИХ ДОЩОК -->
+        <!-- КОНТЕЙНЕР НА ВЕСЬ ЕКРАН ДЛЯ ДОЩОК -->
         <div class="hero-visual">
             <div id="boards-canvas"></div>
         </div>
     </section>
 
-    <!-- ІНШІ СЕКЦІЇ -->
     <section class="categories" id="sec-02">
         <div class="section-header"><span>Каталог</span><h2>Породи та вироби</h2></div>
         <div class="cat-grid">
@@ -237,7 +254,7 @@
         });
 
         // ----------------------------------------------------
-        // 1. АБСОЛЮТНО РЕАЛІСТИЧНА ДОШКА З НОВОЮ ФІЗИКОЮ
+        // 1. АБСОЛЮТНО РЕАЛІСТИЧНА ДОШКА (ШИРОКЕ ПОЛОТНО ТА КОРА)
         // ----------------------------------------------------
         function initPerfectBoards() {
             const container = document.getElementById('boards-canvas');
@@ -245,11 +262,12 @@
             container.innerHTML = ''; 
 
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            // Камера тепер має широкий огляд на весь екран
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
             camera.position.z = 9; 
 
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             container.appendChild(renderer.domElement);
 
@@ -261,20 +279,34 @@
 
             // ТЕКСТУРИ ТА МАТЕРІАЛИ
             const texLoader = new THREE.TextureLoader();
-            const faceTex = texLoader.load('wood_face.jpg');
             
+            // 1. Лицьова текстура
+            const faceTex = texLoader.load('wood_face.jpg');
             const matFace = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.8 });
-            // Імітація обзолу: матовий, темно-коричневий, шорсткий матеріал
-            const matBark = new THREE.MeshStandardMaterial({ color: 0x1c1008, roughness: 1.0 });
+            
+            // 2. Нова текстура КОРИ (bark.jpg)
+            const barkTex = texLoader.load('bark.jpg');
+            
+            // НАЛАШТУВАННЯ КОРИ: Дублюємо (тайлимо) текстуру вздовж довгої грані, без розтягування!
+            barkTex.wrapS = THREE.RepeatWrapping; 
+            barkTex.wrapT = THREE.RepeatWrapping;
+            barkTex.repeat.set(15, 1); // 15 разів вздовж довжини дошки
 
-            // 6 граней: 0-право, 1-ліво, 2-верх(кора), 3-низ(кора), 4-перед(лице), 5-зад(лице)
+            // Матеріал для кори
+            const matBark = new THREE.MeshStandardMaterial({ 
+                map: barkTex, 
+                color: 0x8a5a44, // Злегка коригуємо відтінок кори, щоб гармоніювало
+                roughness: 1.0 
+            });
+
+            // Матеріали для граней: [0:Право, 1:Ліво, 2:Верх(довга кора), 3:Низ(довга кора), 4:Лице, 5:Зад]
             const materials = [matBark, matBark, matBark, matBark, matFace, matFace];
 
             const boardGroup = new THREE.Group();
             scene.add(boardGroup);
 
-            // СТВОРЮЄМО ГЕОМЕТРІЮ (Товщина 0.4 замість 0.15)
-            const geometry = new THREE.BoxGeometry(4.5, 0.9, 0.4, 64, 1, 1);
+            // СТВОРЮЄМО ГЕОМЕТРІЮ (Тонка дошка: товщина 0.15)
+            const geometry = new THREE.BoxGeometry(4.5, 0.9, 0.15, 64, 1, 1);
             const pos = geometry.attributes.position;
 
             // Зменшена, реалістична амплітуда хвилі для живого краю
@@ -292,23 +324,35 @@
             }
             geometry.computeVertexNormals();
 
-            // НОВА КОМПОЗИЦІЯ (Зміщена ліворуч, щоб не ховалася за краєм екрана)
+            // ПОЗИЦІЇ ДОЩОК (Зміщені вправо екрану: X = 2.5)
             const b1 = new THREE.Mesh(geometry, materials);
-            b1.position.set(0.3, 1.8, -0.5);
+            b1.position.set(2.5, 1.8, -0.5);
             b1.rotation.set(0.4, -0.3, 0.1);
             boardGroup.add(b1);
 
             const b2 = new THREE.Mesh(geometry, materials);
-            b2.position.set(-0.4, 0, 1.2);
+            b2.position.set(1.8, 0, 1.2);
             b2.rotation.set(0.2, -0.1, -0.05);
             b2.scale.set(0.95, 0.95, 0.95);
             boardGroup.add(b2);
 
             const b3 = new THREE.Mesh(geometry, materials);
-            b3.position.set(0.1, -1.8, -1.5);
+            b3.position.set(2.3, -1.8, -1.5);
             b3.rotation.set(0.5, -0.4, -0.1);
             b3.scale.set(0.9, 0.9, 0.9);
             boardGroup.add(b3);
+
+            // АДАПТАЦІЯ ПІД МОБІЛЬНІ (Щоб дошки не налазили на текст на телефоні)
+            function updateBoardPositions() {
+                if (window.innerWidth <= 1024) {
+                    boardGroup.position.set(0, -2, -3); // Опускаємо вниз на телефонах
+                    boardGroup.scale.set(0.7, 0.7, 0.7);
+                } else {
+                    boardGroup.position.set(0, 0, 0); // Стандарт
+                    boardGroup.scale.set(1, 1, 1);
+                }
+            }
+            updateBoardPositions();
 
             // АНІМАЦІЯ ПАРАЛАКСУ
             let mouseX = 0, mouseY = 0;
@@ -327,9 +371,10 @@
             animate();
 
             window.addEventListener('resize', () => {
-                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                updateBoardPositions();
             });
         }
         initPerfectBoards();
