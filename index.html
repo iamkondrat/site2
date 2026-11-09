@@ -74,51 +74,93 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* 3D-ІЛЮСТРАЦІЯ (Художній колаж дерева) */
+        /* -------------------------------------------
+           3D-ІЛЮСТРАЦІЯ З РЕАЛЬНОЮ ТОВЩИНОЮ ТА КОРОЮ
+           ------------------------------------------- */
         .hero-visual {
             position: relative; height: 550px; display: flex; justify-content: center; align-items: center;
+            perspective: 1200px; /* Створює перспективу для 3D */
         }
         .illustration-3d {
             width: 100%; height: 100%;
             background: radial-gradient(circle, rgba(217,144,88,0.08) 0%, transparent 70%);
             border-radius: 50%; position: relative;
-        }
-        
-        /* Нові стилі для реалістичних необрізних дощок */
-        .floating-wood {
-            position: absolute; 
-            width: 380px; /* Трохи збільшив, щоб було краще видно фактуру */
-            height: auto; /* Дозволяє картинці зберігати свої пропорції */
-    
-            /* Створюємо природну об'ємну тінь під дошками у просторі */
-            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.7)); 
-    
-            /* Зберігаємо кут і перспективу каскаду */
-            transform: rotate(-15deg) skewX(20deg);
-            transition: transform 0.5s ease-out;
-            z-index: 2;
+            transform-style: preserve-3d;
         }
 
-        /* Налаштовуємо позиції та масштаб для каскаду */
-        .wood-01 { 
-            top: 15%; 
-            right: 5%; 
-            z-index: 3; 
+        /* Обгортка кожної дошки для позиціонування */
+        .board-wrapper {
+            position: absolute;
+            transform-style: preserve-3d;
+            z-index: 2;
         }
-        .wood-02 { 
-            top: 36%; 
-            left: 8%; 
-            transform: rotate(-10deg) skewX(15deg) scale(0.9); 
-            z-index: 2; 
-            opacity: 0.95;
+        /* Сам 3D об'єкт (дошка) */
+        .board-3d {
+            width: 360px;
+            height: 110px;
+            position: relative;
+            transform-style: preserve-3d;
+            /* Початкові кути нахилу задаються через GSAP нижче */
         }
-        .wood-03 { 
-            bottom: 12%; 
-            right: 12%; 
-            transform: rotate(-20deg) skewX(25deg) scale(0.85); 
-            z-index: 1; 
-            opacity: 0.85;
+
+        /* Всі грані дошки */
+        .face {
+            position: absolute;
+            background-size: cover;
+            background-position: center;
+            /* Затемнюємо краї для кращого 3D реалізму */
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
         }
+
+        /* 1. Лицьова і тильна сторони (ваша текстура wood_face.jpg) */
+        .face-front, .face-back {
+            width: 100%; height: 100%;
+            border-radius: 3px;
+        }
+        .face-front {
+            background-image: url('wood_face.jpg');
+            transform: translateZ(15px); /* Висуваємо на половину товщини */
+        }
+        .face-back {
+            background-image: url('wood_face.jpg');
+            transform: rotateY(180deg) translateZ(15px);
+            filter: brightness(0.4); /* Тильна сторона темніша */
+        }
+
+        /* 2. Торці (верхній та нижній зрізи деревини) */
+        .face-top, .face-bottom {
+            width: 100%; height: 30px; /* Товщина дошки 30px */
+            background-image: url('wood_face.jpg');
+            filter: brightness(0.6);
+        }
+        .face-top { top: -15px; transform: rotateX(90deg); }
+        .face-bottom { bottom: -15px; transform: rotateX(-90deg); }
+
+        /* 3. Бокові сторони (КОРА / Живий край) */
+        .face-left, .face-right {
+            width: 30px; height: 100%;
+            /* Текстура кори (можете замінити на свою bark.jpg) */
+            background-image: url('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=150&q=80');
+            filter: brightness(0.8);
+        }
+        .face-left { left: -15px; transform: rotateY(-90deg); }
+        .face-right { right: -15px; transform: rotateY(90deg); }
+
+        /* Глибока 3D тінь, яка літає ПІД дошкою */
+        .board-shadow {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            filter: blur(25px);
+            transform: translateZ(-60px) translateY(30px) scale(0.9);
+        }
+
+        /* Позиції дощок у просторі */
+        .wood-01 { top: 18%; right: 5%; z-index: 3; }
+        .wood-02 { top: 40%; left: 0%; transform: scale(0.9); z-index: 2; }
+        .wood-03 { bottom: 12%; right: 12%; transform: scale(0.85); z-index: 1; }
+        /* ------------------------------------------- */
+
 
         /* СЕКЦІЯ 02: КАТЕГОРІЇ (ГАЛЕРЕЯ) */
         .categories { display: flex; flex-direction: column; justify-content: center; }
@@ -132,7 +174,6 @@
             border-radius: 8px; overflow: hidden; position: relative;
             display: flex; align-items: flex-end; padding: 40px; cursor: pointer; transition: 0.4s;
         }
-        /* Фонове фото наведення */
         .cat-card-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center; filter: grayscale(40%) brightness(0.3);
@@ -258,7 +299,7 @@
         </div>
     </header>
 
-    <!-- 01. ГОЛОВНИЙ ЕКРАН -->
+    <!-- 01. ГОЛОВНИЙ ЕКРАН З 3D-ДОШКАМИ -->
     <section class="hero" id="sec-01">
         <div class="hero-info">
             <h1>Еталонні <br><span>Пиломатеріали</span></h1>
@@ -268,12 +309,50 @@
                 <a href="#sec-03" class="btn-secondary">Дізнатись про сушку</a>
             </div>
         </div>
-        <!-- Художня 3D-ілюстрація -->
+        
+        <!-- Справжні 3D Дошки з вашою текстурою wood_face.jpg та корою на боках -->
         <div class="hero-visual">
             <div class="illustration-3d">
-                <div class="floating-wood wood-01"></div>
-                <div class="floating-wood wood-02"></div>
-                <div class="floating-wood wood-03"></div>
+                
+                <!-- Дошка 1 -->
+                <div class="board-wrapper wood-01">
+                    <div class="board-3d">
+                        <div class="face face-front"></div>
+                        <div class="face face-back"></div>
+                        <div class="face face-top"></div>
+                        <div class="face face-bottom"></div>
+                        <div class="face face-left"></div>
+                        <div class="face face-right"></div>
+                        <div class="board-shadow"></div>
+                    </div>
+                </div>
+
+                <!-- Дошка 2 -->
+                <div class="board-wrapper wood-02">
+                    <div class="board-3d">
+                        <div class="face face-front"></div>
+                        <div class="face face-back"></div>
+                        <div class="face face-top"></div>
+                        <div class="face face-bottom"></div>
+                        <div class="face face-left"></div>
+                        <div class="face face-right"></div>
+                        <div class="board-shadow"></div>
+                    </div>
+                </div>
+
+                <!-- Дошка 3 -->
+                <div class="board-wrapper wood-03">
+                    <div class="board-3d">
+                        <div class="face face-front"></div>
+                        <div class="face face-back"></div>
+                        <div class="face face-top"></div>
+                        <div class="face face-bottom"></div>
+                        <div class="face face-left"></div>
+                        <div class="face face-right"></div>
+                        <div class="board-shadow"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -375,20 +454,25 @@
         // --- 1. АНІМАЦІЯ СКРОЛУ (GSAP & SCROLLTRIGGER) ---
         gsap.registerPlugin(ScrollTrigger);
 
-        // Вступна анімація
         gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
         gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
         gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
         gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
         
-        // Інтерактивний паралакс для 3D-ілюстрацій на першому екрані (реагує на мишку)
+        // --- 2. ФІЗИЧНИЙ 3D-ПАРАЛАКС ДЛЯ ДОЩОК ---
+        // Задаємо початкові красиві кути нахилу для кожної дошки
+        gsap.set(".wood-01 .board-3d", { rotateX: 20, rotateY: -20, rotateZ: -10 });
+        gsap.set(".wood-02 .board-3d", { rotateX: 10, rotateY: -5, rotateZ: -20 });
+        gsap.set(".wood-03 .board-3d", { rotateX: 25, rotateY: -30, rotateZ: -5 });
+
+        // Коли ви водите мишкою, дошки обертаються і показують свої боки з корою
         document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX - window.innerWidth / 2) * 0.03;
-            const y = (e.clientY - window.innerHeight / 2) * 0.03;
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
             
-            gsap.to(".wood-01", { x: x * 0.8, y: y * 0.8, duration: 0.5 });
-            gsap.to(".wood-02", { x: -x * 0.5, y: -y * 0.5, duration: 0.5 });
-            gsap.to(".wood-03", { x: x * 0.3, y: -y * 0.3, duration: 0.5 });
+            gsap.to(".wood-01 .board-3d", { rotateX: 20 - y * 15, rotateY: -20 + x * 20, duration: 0.5 });
+            gsap.to(".wood-02 .board-3d", { rotateX: 10 - y * 15, rotateY: -5 + x * 20, duration: 0.5 });
+            gsap.to(".wood-03 .board-3d", { rotateX: 25 - y * 15, rotateY: -30 + x * 20, duration: 0.5 });
         });
 
         // Слідкуємо за активним розділом для індикатора номера секції
@@ -407,7 +491,7 @@
             document.getElementById('active-num').innerText = "0" + num;
         }
 
-        // --- 2. THREE.JS (3D золотисті опилки та іскри на фоні) ---
+        // --- 3. THREE.JS (3D золотисті опилки та іскри на фоні) ---
         function initWebGL() {
             const canvas = document.getElementById('webgl-canvas');
             const scene = new THREE.Scene();
@@ -417,7 +501,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-            // Створення геометричних частинок
             const count = 500;
             const geom = new THREE.BufferGeometry();
             const pos = new Float32Array(count * 3);
@@ -432,7 +515,7 @@
 
             const mat = new THREE.PointsMaterial({
                 size: 0.03,
-                color: 0xd99058, // Теплий колір деревини
+                color: 0xd99058,
                 transparent: true,
                 opacity: 0.7,
                 blending: THREE.AdditiveBlending
