@@ -111,8 +111,6 @@
 <body>
 
     <canvas id="webgl-canvas"></canvas>
-    <div class="scroll-indicator">Scroll / Гортати вниз</div>
-    <div class="section-numbers"><span id="active-num">01</span> / 04</div>
 
     <header>
         <div class="logo">
@@ -199,22 +197,6 @@
     </section>
 
     <script>
-        gsap.registerPlugin(ScrollTrigger);
-
-        gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
-        gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
-        gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
-        gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
-
-        const sections = ["#sec-01", "#sec-02", "#sec-03", "#sec-04"];
-        sections.forEach((selector, i) => {
-            ScrollTrigger.create({
-                trigger: selector,
-                start: "top center", end: "bottom center",
-                onEnter: () => document.getElementById('active-num').innerText = "0" + (i + 1),
-                onEnterBack: () => document.getElementById('active-num').innerText = "0" + (i + 1)
-            });
-        });
 
         // ----------------------------------------------------
         // 1. АБСОЛЮТНО РЕАЛІСТИЧНА ДОШКА (ВИПРАВЛЕНА ТЕКСТУРА)
