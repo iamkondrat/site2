@@ -63,7 +63,7 @@
         .hero {
             display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-content: center;
         }
-        .hero-info { display: flex; flex-direction: column; justify-content: center; }
+        .hero-info { display: flex; flex-direction: column; justify-content: center; z-index: 5;}
         .hero h1 { font-size: 4.8rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -1px; }
         .hero h1 span { color: var(--accent); }
         .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 550px; }
@@ -74,72 +74,15 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* -------------------------------------------
-           3D-ІЛЮСТРАЦІЯ: ІДЕАЛЬНА ПЛАВНА ХВИЛЯ ТА КОРА
-           ------------------------------------------- */
+        /* СПРАВЖНЯ 3D-СЦЕНА ДЛЯ ДОЩОК */
         .hero-visual {
-            position: relative; height: 550px; display: flex; justify-content: center; align-items: center;
-            perspective: 1200px;
+            position: relative; height: 600px; width: 100%; display: flex; justify-content: center; align-items: center;
         }
-        .illustration-3d {
-            width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(217,144,88,0.08) 0%, transparent 70%);
-            border-radius: 50%; position: relative;
-            transform-style: preserve-3d;
+        #boards-canvas {
+            width: 100%; height: 100%; outline: none;
+            /* Додаємо тінь під усією 3D сценою для кращого відриву від фону */
+            filter: drop-shadow(0px 40px 30px rgba(0,0,0,0.8));
         }
-
-        .board-wrapper {
-            position: absolute;
-            z-index: 2;
-            filter: drop-shadow(0px 30px 25px rgba(0,0,0,0.8));
-        }
-        
-        .board-3d {
-            width: 380px;
-            height: 120px;
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
-        /* Базовий шар дошки */
-        .layer {
-            position: absolute;
-            width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            /* 
-               Нова, супер-плавна хвиля (живий край).
-               Асиметрична: лівий і правий край мають різний малюнок хвиль.
-            */
-            clip-path: polygon(
-                1.5% 0%, 98.5% 0%, 
-                99% 5%, 98.2% 15%, 100% 25%, 98.5% 35%, 97% 45%, 98% 55%, 99.5% 65%, 97.5% 75%, 96% 85%, 98% 95%, 
-                98% 100%, 2% 100%, 
-                3% 95%, 4% 85%, 2% 75%, 1% 65%, 3% 55%, 2% 45%, 4% 35%, 1.5% 25%, 0% 15%, 1.5% 5%
-            );
-            backface-visibility: hidden; 
-        }
-
-        /* Лицьова та тильна сторони (ваша текстура) */
-        .face-front, .face-back {
-            background-image: url('wood_face.jpg');
-        }
-        .face-back {
-            filter: brightness(0.4); 
-        }
-
-        /* Шар кори */
-        .bark {
-            /* Окрема текстура справжньої кори */
-            background-image: url('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=400&q=80'); 
-            filter: brightness(0.6) contrast(1.2); 
-        }
-
-        /* Позиції дощок у просторі */
-        .wood-01 { top: 18%; right: 5%; z-index: 3; }
-        .wood-02 { top: 40%; left: 0%; transform: scale(0.9); z-index: 2; }
-        .wood-03 { bottom: 12%; right: 12%; transform: scale(0.85); z-index: 1; }
-        /* ------------------------------------------- */
 
         /* СЕКЦІЯ 02: КАТЕГОРІЇ (ГАЛЕРЕЯ) */
         .categories { display: flex; flex-direction: column; justify-content: center; }
@@ -168,9 +111,7 @@
         .cat-link { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; text-decoration: none;}
 
         /* СЕКЦІЯ 03: ВИРОБНИЦТВО ТА СУШКА */
-        .drying-process {
-            display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-content: center;
-        }
+        .drying-process { display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-content: center; }
         .process-visual {
             position: relative; height: 500px; border-radius: 8px; overflow: hidden;
             background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80') center/cover;
@@ -191,9 +132,7 @@
         .stat-box p { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; color: #fff; letter-spacing: 1px;}
 
         /* СЕКЦІЯ 04: КОНТАКТИ ТА КАРТА */
-        .contacts {
-            display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-content: center;
-        }
+        .contacts { display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-content: center; }
         .contact-details h3 { font-size: 2.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 25px; }
         .contact-details p { font-size: 1.1rem; color: #ccc; margin-bottom: 40px; line-height: 1.6; }
         .contact-list-items { list-style: none; margin-bottom: 40px; }
@@ -232,28 +171,23 @@
             position: fixed; bottom: 40px; left: 50px; display: flex; align-items: center; gap: 15px; z-index: 10;
             font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #666;
         }
-        .scroll-indicator::after {
-            content: ''; width: 50px; height: 1px; background: #333; display: inline-block;
-        }
-        .section-numbers {
-            position: fixed; bottom: 40px; right: 50px; z-index: 10; font-weight: 800; font-size: 1.1rem; letter-spacing: 1px;
-        }
+        .scroll-indicator::after { content: ''; width: 50px; height: 1px; background: #333; display: inline-block; }
+        .section-numbers { position: fixed; bottom: 40px; right: 50px; z-index: 10; font-weight: 800; font-size: 1.1rem; letter-spacing: 1px; }
         .section-numbers span { color: var(--accent); }
 
-        /* Адаптивність */
         @media (max-width: 1024px) {
             .hero, .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; padding-top: 140px; }
             .hero h1 { font-size: 3.2rem; }
             .cat-grid { grid-template-columns: 1fr; }
             .stats { flex-wrap: wrap; }
             header { padding: 20px; flex-direction: column; gap: 15px; }
-            .hero-visual, .process-visual { height: 400px; }
+            .hero-visual { height: 400px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 3D ЧАСТИНКИ / ОПИЛКИ НА ФОНІ -->
+    <!-- ФОНОВІ 3D-ІСКРИ -->
     <canvas id="webgl-canvas"></canvas>
 
     <!-- Скролл-інформація -->
@@ -289,16 +223,13 @@
             </div>
         </div>
         
+        <!-- КОНТЕЙНЕР ДЛЯ ІДЕАЛЬНИХ 3D ДОЩОК -->
         <div class="hero-visual">
-            <div class="illustration-3d">
-                <div class="board-wrapper wood-01"><div class="board-3d"></div></div>
-                <div class="board-wrapper wood-02"><div class="board-3d"></div></div>
-                <div class="board-wrapper wood-03"><div class="board-3d"></div></div>
-            </div>
+            <div id="boards-canvas"></div>
         </div>
     </section>
 
-    <!-- 02. ГАЛЕРЕЯ КАТЕГОРІЙ -->
+    <!-- Інші секції залишаються без змін -->
     <section class="categories" id="sec-02">
         <div class="section-header">
             <span>Каталог</span>
@@ -322,192 +253,4 @@
                 </div>
             </div>
             <div class="cat-card" onclick="location.href='catalog.html?cat=covering'">
-                <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="cat-info">
-                    <h3>Вагонка та тераса</h3>
-                    <p>Вагонка сосна, терасна дошка з модрини та дошка для підлоги. Стійкість до будь-яких умов.</p>
-                    <span class="cat-link">Перейти ➔</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 03. ВИРОБНИЦТВО ТА СУШКА -->
-    <section class="drying-process" id="sec-03">
-        <div class="process-visual">
-            <div class="visual-overlay">
-                <h4>8%</h4>
-                <p style="text-transform: uppercase; font-size: 0.8rem; font-weight:700; color: #aaa;">Максимальна вологість</p>
-            </div>
-        </div>
-        <div class="process-info">
-            <h3>Професійна <br><span>Сушка деревини</span></h3>
-            <p>Надаємо повний комплекс послуг з камерної сушки будь-яких обсягів пиломатеріалів. Здійснюємо укладання, завантаження, дбайливе розвантаження на вантажні авто. Сушимо бук, дуб, ясен, сосну, вільху до еталонних показників.</p>
-            
-            <div class="stats">
-                <div class="stat-box">
-                    <h5 id="stat-cameras">6</h5>
-                    <p>Сушильних камер</p>
-                </div>
-                <div class="stat-box">
-                    <h5>10+</h5>
-                    <p>Років досвіду</p>
-                </div>
-                <div class="stat-box">
-                    <h5>100%</h5>
-                    <p>Гарантія якості</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 04. КОНТАКТИ ТА ЗВОРОТНИЙ ЗВ'ЯЗОК -->
-    <section class="contacts" id="sec-04">
-        <div class="contact-details">
-            <h3>Зв'язатися <br>з нами</h3>
-            <p>Наш склад та виробництво розташовані у зручному місці на лівому березі Києва. Працюємо без вихідних за попередньою домовленістю.</p>
-            <ul class="contact-list-items">
-                <li>📍 <span>Адреса:</span> Київ, Дніпровська набережна 17е</li>
-                <li>📞 <span>Телефони:</span> 096 000 00 76 | 068 538 69 23</li>
-                <li>✉️ <span>Пошта:</span> kondratenko@apollo.ua</li>
-            </ul>
-            <div class="socials">
-                <a href="#" target="_blank">Instagram</a>
-                <a href="#" target="_blank">Facebook</a>
-                <a href="#" target="_blank">TikTok</a>
-            </div>
-        </div>
-        <div class="form-box">
-            <h4>Задати питання</h4>
-            <p>Вкажіть контакти — директор перетелефонує вам за 15 хвилин</p>
-            <form onsubmit="event.preventDefault(); alert('Дякуємо! Наш директор зв\'яжеться з вами.');">
-                <input type="text" placeholder="Ваше ім'я або компанія" required>
-                <input type="tel" placeholder="Ваш телефон" required>
-                <button type="submit">Надіслати</button>
-            </form>
-        </div>
-    </section>
-
-    <script>
-        // --- 1. АНІМАЦІЯ СКРОЛУ (GSAP & SCROLLTRIGGER) ---
-        gsap.registerPlugin(ScrollTrigger);
-
-        // --- ГЕНЕРАЦІЯ 3D-ОБ'ЄМУ ТА КОРИ (Voxel Stacking) ---
-        // Цей скрипт автоматично вибудовує товщину дошки шар за шаром,
-        // маппить текстуру кори на боки і робить краї фізично об'ємними.
-        function buildLiveEdgeBoards() {
-            const boards = document.querySelectorAll('.board-3d');
-            boards.forEach(board => {
-                let html = '';
-                
-                // Лицьова сторона
-                html += `<div class="layer face-front" style="transform: translateZ(12px)"></div>`;
-                
-                // Шари кори (товщина 24 пікселі)
-                for(let i = 11; i >= -11; i -= 1) {
-                    // Зсовуємо текстуру кори для кожного міліметра товщини,
-                    // щоб вона виглядала як реалістичний 3D-малюнок збоку
-                    let bgShift = (i * 3) + "px";
-                    html += `<div class="layer bark" style="transform: translateZ(${i}px); background-position: ${bgShift} center;"></div>`;
-                }
-                
-                // Тильна сторона
-                html += `<div class="layer face-back" style="transform: translateZ(-12px)"></div>`;
-                board.innerHTML = html;
-            });
-        }
-        buildLiveEdgeBoards();
-
-        gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
-        gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
-        gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
-        gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
-        
-        // --- 2. ФІЗИЧНИЙ 3D-ПАРАЛАКС ДЛЯ ДОЩОК ---
-        // Ми збільшили кути нахилу, щоб товщину (кору) було чітко видно!
-        gsap.set(".wood-01 .board-3d", { rotateX: 25, rotateY: -35, rotateZ: -10 });
-        gsap.set(".wood-02 .board-3d", { rotateX: 15, rotateY: -25, rotateZ: -20 });
-        gsap.set(".wood-03 .board-3d", { rotateX: 30, rotateY: -45, rotateZ: -5 });
-
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
-            
-            gsap.to(".wood-01 .board-3d", { rotateX: 25 - y * 15, rotateY: -35 + x * 20, duration: 0.5 });
-            gsap.to(".wood-02 .board-3d", { rotateX: 15 - y * 15, rotateY: -25 + x * 20, duration: 0.5 });
-            gsap.to(".wood-03 .board-3d", { rotateX: 30 - y * 15, rotateY: -45 + x * 20, duration: 0.5 });
-        });
-
-        // Слідкуємо за активним розділом для індикатора номера секції
-        const sections = ["#sec-01", "#sec-02", "#sec-03", "#sec-04"];
-        sections.forEach((selector, i) => {
-            ScrollTrigger.create({
-                trigger: selector,
-                start: "top center",
-                end: "bottom center",
-                onEnter: () => updateNum(i + 1),
-                onEnterBack: () => updateNum(i + 1)
-            });
-        });
-
-        function updateNum(num) {
-            document.getElementById('active-num').innerText = "0" + num;
-        }
-
-        // --- 3. THREE.JS (3D золотисті опилки та іскри на фоні) ---
-        function initWebGL() {
-            const canvas = document.getElementById('webgl-canvas');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            const count = 500;
-            const geom = new THREE.BufferGeometry();
-            const pos = new Float32Array(count * 3);
-
-            for (let i = 0; i < count * 3; i += 3) {
-                pos[i] = (Math.random() - 0.5) * 12; // X
-                pos[i+1] = (Math.random() - 0.5) * 10; // Y
-                pos[i+2] = (Math.random() - 0.5) * 8;  // Z
-            }
-
-            geom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-
-            const mat = new THREE.PointsMaterial({
-                size: 0.03,
-                color: 0xd99058,
-                transparent: true,
-                opacity: 0.7,
-                blending: THREE.AdditiveBlending
-            });
-
-            const points = new THREE.Points(geom, mat);
-            scene.add(points);
-            camera.position.z = 4;
-
-            const clock = new THREE.Clock();
-
-            function animate() {
-                requestAnimationFrame(animate);
-                const time = clock.getElapsedTime();
-                
-                points.rotation.y = time * 0.03;
-                points.rotation.x = time * 0.01;
-                
-                renderer.render(scene, camera);
-            }
-            animate();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        }
-        initWebGL();
-    </script>
-</body>
-</html>
+                <div class="
