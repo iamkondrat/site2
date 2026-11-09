@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apollo LTD | Преміальні пиломатеріали у Києві</title>
-    <meta name="description" content="Суха дошка, пиломатеріали свіжопиляні, вагонка, терасна дошка. Послуги сушки деревини. Київ, Дніпровська набережна 17е.">
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Бібліотеки для анімацій та скролу -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -31,15 +29,12 @@
             overflow-x: hidden; 
         }
 
-        /* WebGL ФОН (іскри та волокна) */
+        /* Фонові іскри */
         #webgl-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: -1; pointer-events: none;
-            opacity: 0.6;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; pointer-events: none; opacity: 0.6;
         }
 
-        /* НАВІГАЦІЯ */
         header {
             position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;
             padding: 25px 50px; background: rgba(15, 17, 18, 0.85); backdrop-filter: blur(15px); z-index: 100;
@@ -53,16 +48,12 @@
         .phones a { color: var(--text); text-decoration: none; font-weight: 700; margin-left: 15px; font-size: 1rem; }
         .phones a:hover { color: var(--accent); }
 
-        /* СЕКЦІЇ ТА СКРОЛ */
         section {
             min-height: 100vh; position: relative; display: flex; align-items: center;
             padding: 100px 8%; border-bottom: 1px solid var(--border);
         }
 
-        /* СЕКЦІЯ 01: HERO СЕКЦІЯ */
-        .hero {
-            display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-content: center;
-        }
+        .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-content: center; }
         .hero-info { display: flex; flex-direction: column; justify-content: center; z-index: 5;}
         .hero h1 { font-size: 4.8rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -1px; }
         .hero h1 span { color: var(--accent); }
@@ -74,40 +65,22 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* СТИЛЬНА ФОТО-ПРЕЗЕНТАЦІЯ ДОЩОК З ПАРАЛАКСОМ */
-        .hero-visual {
-            position: relative; height: 600px; display: flex; justify-content: center; align-items: center;
-        }
-        .boards-image-container {
-            position: relative; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .boards-image-container img {
-            max-width: 110%; height: auto; object-fit: contain;
-            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8));
-            transition: transform 0.2s ease-out;
+        /* КОНТЕЙНЕР ДЛЯ ЗГЕНЕРОВАНИХ 3D ДОЩОК */
+        .hero-visual { position: relative; height: 600px; width: 100%; display: flex; justify-content: center; align-items: center; }
+        #boards-canvas {
+            width: 100%; height: 100%; outline: none;
+            filter: drop-shadow(0px 30px 20px rgba(0,0,0,0.9)); /* М'яка тінь під об'єктами */
         }
 
-        /* ІНШІ СЕКЦІЇ (Каталог, Сушка, Контакти) */
         .categories { display: flex; flex-direction: column; justify-content: center; }
         .section-header { margin-bottom: 60px; }
         .section-header span { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem;}
         .section-header h2 { font-size: 3rem; font-weight: 800; margin-top: 10px; text-transform: uppercase; }
-
         .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; }
-        .cat-card {
-            height: 450px; background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 8px; overflow: hidden; position: relative;
-            display: flex; align-items: flex-end; padding: 40px; cursor: pointer; transition: 0.4s;
-        }
-        .cat-card-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center; filter: grayscale(40%) brightness(0.3);
-            transition: 0.6s; z-index: 1;
-        }
+        .cat-card { height: 450px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; position: relative; display: flex; align-items: flex-end; padding: 40px; cursor: pointer; transition: 0.4s; }
+        .cat-card-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: grayscale(40%) brightness(0.3); transition: 0.6s; z-index: 1; }
         .cat-card:hover .cat-card-bg { transform: scale(1.08); filter: grayscale(0%) brightness(0.5); }
         .cat-card:hover { border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        
         .cat-info { position: relative; z-index: 2; }
         .cat-info h3 { font-size: 1.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; }
         .cat-info p { color: #ccc; font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; opacity: 0; transform: translateY(20px); transition: 0.4s; }
@@ -115,21 +88,12 @@
         .cat-link { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; text-decoration: none;}
 
         .drying-process { display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-content: center; }
-        .process-visual {
-            position: relative; height: 500px; border-radius: 8px; overflow: hidden;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80') center/cover;
-            border: 1px solid var(--border);
-        }
-        .visual-overlay {
-            position: absolute; bottom: 40px; left: 40px; background: rgba(15,17,18,0.9);
-            border: 1px solid var(--accent); padding: 30px; border-radius: 6px; backdrop-filter: blur(10px);
-        }
+        .process-visual { position: relative; height: 500px; border-radius: 8px; overflow: hidden; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80') center/cover; border: 1px solid var(--border); }
+        .visual-overlay { position: absolute; bottom: 40px; left: 40px; background: rgba(15,17,18,0.9); border: 1px solid var(--accent); padding: 30px; border-radius: 6px; backdrop-filter: blur(10px); }
         .visual-overlay h4 { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
-
         .process-info h3 { font-size: 2.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 30px; line-height: 1.2; }
         .process-info h3 span { color: var(--accent); }
         .process-info p { font-size: 1.1rem; color: #aaa; line-height: 1.8; margin-bottom: 40px; }
-        
         .stats { display: flex; gap: 50px; }
         .stat-box h5 { font-size: 3rem; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 10px;}
         .stat-box p { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; color: #fff; letter-spacing: 1px;}
@@ -140,38 +104,18 @@
         .contact-list-items { list-style: none; margin-bottom: 40px; }
         .contact-list-items li { margin-bottom: 20px; font-size: 1.1rem; display: flex; align-items: center; gap: 15px;}
         .contact-list-items span { color: var(--accent); font-weight: 700; }
-        
         .socials { display: flex; gap: 20px; }
-        .socials a {
-            background: var(--bg-card); border: 1px solid var(--border);
-            padding: 15px 30px; border-radius: 4px; text-decoration: none;
-            color: #fff; font-weight: 700; font-size: 0.9rem; transition: 0.3s;
-        }
+        .socials a { background: var(--bg-card); border: 1px solid var(--border); padding: 15px 30px; border-radius: 4px; text-decoration: none; color: #fff; font-weight: 700; font-size: 0.9rem; transition: 0.3s; }
         .socials a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
-
-        .form-box {
-            background: var(--bg-card); border: 1px solid var(--border);
-            padding: 50px; border-radius: 8px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-        }
+        .form-box { background: var(--bg-card); border: 1px solid var(--border); padding: 50px; border-radius: 8px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
         .form-box h4 { font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; }
         .form-box p { color: var(--accent); font-weight: 600; margin-bottom: 30px; font-size: 0.95rem;}
-        .form-box input {
-            width: 100%; padding: 15px; margin-bottom: 20px;
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border);
-            color: #fff; border-radius: 4px; font-family: 'Montserrat'; font-size: 1rem; outline: none;
-        }
+        .form-box input { width: 100%; padding: 15px; margin-bottom: 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); color: #fff; border-radius: 4px; font-family: 'Montserrat'; font-size: 1rem; outline: none; }
         .form-box input:focus { border-color: var(--accent); }
-        .form-box button {
-            width: 100%; padding: 18px; background: var(--gradient);
-            border: none; border-radius: 4px; color: #000; font-weight: 800;
-            font-size: 1.1rem; text-transform: uppercase; cursor: pointer; transition: 0.3s;
-        }
+        .form-box button { width: 100%; padding: 18px; background: var(--gradient); border: none; border-radius: 4px; color: #000; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .form-box button:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(217,144,88,0.3); }
 
-        .scroll-indicator {
-            position: fixed; bottom: 40px; left: 50px; display: flex; align-items: center; gap: 15px; z-index: 10;
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #666;
-        }
+        .scroll-indicator { position: fixed; bottom: 40px; left: 50px; display: flex; align-items: center; gap: 15px; z-index: 10; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #666; }
         .scroll-indicator::after { content: ''; width: 50px; height: 1px; background: #333; display: inline-block; }
         .section-numbers { position: fixed; bottom: 40px; right: 50px; z-index: 10; font-weight: 800; font-size: 1.1rem; letter-spacing: 1px; }
         .section-numbers span { color: var(--accent); }
@@ -180,7 +124,6 @@
             .hero, .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; padding-top: 140px; }
             .hero h1 { font-size: 3.2rem; }
             .cat-grid { grid-template-columns: 1fr; }
-            .stats { flex-wrap: wrap; }
             header { padding: 20px; flex-direction: column; gap: 15px; }
             .hero-visual { height: 400px; }
         }
@@ -189,7 +132,6 @@
 <body>
 
     <canvas id="webgl-canvas"></canvas>
-
     <div class="scroll-indicator">Scroll / Гортати вниз</div>
     <div class="section-numbers"><span id="active-num">01</span> / 04</div>
 
@@ -211,7 +153,6 @@
         </div>
     </header>
 
-    <!-- 01. ГОЛОВНИЙ ЕКРАН -->
     <section class="hero" id="sec-01">
         <div class="hero-info">
             <h1>Еталонні <br><span>Пиломатеріали</span></h1>
@@ -222,83 +163,49 @@
             </div>
         </div>
         
-        <!-- ПРЕМІАЛЬНЕ ФОТО-РЕФЕРЕНС ДОШОК З ПАРАЛАКСОМ -->
+        <!-- КОНТЕЙНЕР ДЛЯ ПРОГРАМНО ЗГЕНЕРОВАНОЇ 3D ДОШКИ -->
         <div class="hero-visual">
-            <div class="boards-image-container" id="parallax-img">
-                <!-- Замініть це посилання на ваше реальне гарне фото дошок у репозиторії, наприклад: src="boards-hero.png" -->
-                <img src="https://images.unsplash.com/photo-1549429186-0775d79fa451?auto=format&fit=crop&w=1000&q=80" alt="Преміальні дошки Apollo">
-            </div>
+            <div id="boards-canvas"></div>
         </div>
     </section>
 
-    <!-- 02. КАТЕГОРІЇ -->
+    <!-- ІНШІ СЕКЦІЇ -->
     <section class="categories" id="sec-02">
-        <div class="section-header">
-            <span>Каталог</span>
-            <h2>Породи та вироби</h2>
-        </div>
+        <div class="section-header"><span>Каталог</span><h2>Породи та вироби</h2></div>
         <div class="cat-grid">
             <div class="cat-card" onclick="location.href='catalog.html?cat=dry_board'">
                 <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1549429186-0775d79fa451?auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="cat-info">
-                    <h3>Суха дошка</h3>
-                    <p>Столярна дошка камерної сушки: дуб, ясен, сосна, вільха. Ідеальна геометрія та вологість.</p>
-                    <span class="cat-link">Перейти ➔</span>
-                </div>
+                <div class="cat-info"><h3>Суха дошка</h3><p>Столярна дошка камерної сушки: дуб, ясен, сосна, вільха.</p><span class="cat-link">Перейти ➔</span></div>
             </div>
             <div class="cat-card" onclick="location.href='catalog.html?cat=molded'">
                 <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1589146938971-ce9ebbdff1c5?auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="cat-info">
-                    <h3>Погонажні вироби</h3>
-                    <p>Дубові та соснові плінтуси, лиштва, кутники. Висока якість обробки поверхонь.</p>
-                    <span class="cat-link">Перейти ➔</span>
-                </div>
+                <div class="cat-info"><h3>Погонажні вироби</h3><p>Дубові та соснові плінтуси, лиштва, кутники.</p><span class="cat-link">Перейти ➔</span></div>
             </div>
             <div class="cat-card" onclick="location.href='catalog.html?cat=covering'">
                 <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="cat-info">
-                    <h3>Вагонка та тераса</h3>
-                    <p>Вагонка сосна, терасна дошка з модрини та дошка для підлоги. Стійкість до будь-яких умов.</p>
-                    <span class="cat-link">Перейти ➔</span>
-                </div>
+                <div class="cat-info"><h3>Вагонка та тераса</h3><p>Вагонка сосна, терасна дошка з модрини.</p><span class="cat-link">Перейти ➔</span></div>
             </div>
         </div>
     </section>
 
-    <!-- 03. СУШКА -->
     <section class="drying-process" id="sec-03">
-        <div class="process-visual">
-            <div class="visual-overlay">
-                <h4>8%</h4>
-                <p style="text-transform: uppercase; font-size: 0.8rem; font-weight:700; color: #aaa;">Максимальна вологість</p>
-            </div>
-        </div>
+        <div class="process-visual"><div class="visual-overlay"><h4>8%</h4><p style="text-transform: uppercase; font-size: 0.8rem; font-weight:700; color: #aaa;">Максимальна вологість</p></div></div>
         <div class="process-info">
             <h3>Професійна <br><span>Сушка деревини</span></h3>
             <p>Надаємо повний комплекс послуг з камерної сушки будь-яких обсягів пиломатеріалів. Здійснюємо укладання, завантаження, дбайливе розвантаження на вантажні авто. Сушимо бук, дуб, ясен, сосну, вільху до еталонних показників.</p>
-            <div class="stats">
-                <div class="stat-box"><h5 id="stat-cameras">6</h5><p>Сушильних камер</p></div>
-                <div class="stat-box"><h5>10+</h5><p>Років досвіду</p></div>
-                <div class="stat-box"><h5>100%</h5><p>Гарантія якості</p></div>
-            </div>
+            <div class="stats"><div class="stat-box"><h5 id="stat-cameras">6</h5><p>Камер</p></div><div class="stat-box"><h5>10+</h5><p>Років</p></div><div class="stat-box"><h5>100%</h5><p>Якість</p></div></div>
         </div>
     </section>
 
-    <!-- 04. КОНТАКТИ -->
     <section class="contacts" id="sec-04">
         <div class="contact-details">
             <h3>Зв'язатися <br>з нами</h3>
-            <p>Наш склад та виробництво розташовані у зручному місці на лівому березі Києва. Працюємо без вихідних за попередньою домовленістю.</p>
+            <p>Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.</p>
             <ul class="contact-list-items">
                 <li>📍 <span>Адреса:</span> Київ, Дніпровська набережна 17е</li>
                 <li>📞 <span>Телефони:</span> 096 000 00 76 | 068 538 69 23</li>
                 <li>✉️ <span>Пошта:</span> kondratenko@apollo.ua</li>
             </ul>
-            <div class="socials">
-                <a href="#" target="_blank">Instagram</a>
-                <a href="#" target="_blank">Facebook</a>
-                <a href="#" target="_blank">TikTok</a>
-            </div>
         </div>
         <div class="form-box">
             <h4>Задати питання</h4>
@@ -330,14 +237,125 @@
             });
         });
 
-        // Інтерактивний паралакс картинки за курсором миші
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 20;
-            const y = (e.clientY / window.innerHeight - 0.5) * 20;
-            gsap.to("#parallax-img img", { x: x, y: y, duration: 0.5, ease: "power2.out" });
-        });
+        // ----------------------------------------------------
+        // 1. ПРОГРАМНА ГЕНЕРАЦІЯ СПРАВЖНЬОЇ 3D ДОШКИ (Three.js)
+        // ----------------------------------------------------
+        function initProceduralBoards() {
+            const container = document.getElementById('boards-canvas');
+            if(!container) return;
 
-        // Фонові іскри (Three.js)
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.z = 10; 
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // М'яке світло для об'єму
+            const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambient);
+            const dirLight = new THREE.DirectionalLight(0xfff0dd, 0.9);
+            dirLight.position.set(5, 8, 5);
+            scene.add(dirLight);
+
+            // КРОК 1: Малюємо форму необрізної дошки з хвилястими краями
+            const shape = new THREE.Shape();
+            const len = 4.2; // довжина
+            const wid = 1.0; // ширина
+            
+            shape.moveTo(-len/2, wid/2);
+            // Верхній нерівний край
+            shape.bezierCurveTo(-len/4, wid/2 + 0.1, len/4, wid/2 - 0.15, len/2, wid/2 + 0.05);
+            // Правий торець (відпил)
+            shape.lineTo(len/2, -wid/2);
+            // Нижній нерівний край
+            shape.bezierCurveTo(len/4, -wid/2 + 0.15, -len/4, -wid/2 - 0.05, -len/2, -wid/2 + 0.1);
+            // Лівий торець
+            shape.lineTo(-len/2, wid/2);
+
+            // КРОК 2: Видавлюємо форму (надаємо товщину)
+            const extrudeSettings = {
+                depth: 0.12, // Товщина столярної дошки
+                bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 0.015, bevelThickness: 0.015
+            };
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            
+            // Щоб текстура накладалась рівно
+            geometry.computeBoundingBox();
+            const box = geometry.boundingBox;
+            const size = new THREE.Vector3();
+            box.getSize(size);
+
+            // КРОК 3: Підключаємо ВАШУ текстуру
+            const texLoader = new THREE.TextureLoader();
+            const faceTex = texLoader.load('wood_face.jpg');
+            faceTex.wrapS = THREE.RepeatWrapping; faceTex.wrapT = THREE.RepeatWrapping;
+            // Масштабуємо текстуру, щоб вона виглядала як волокна, а не розмита пляма
+            faceTex.repeat.set(0.2, 0.5); 
+
+            // Матеріали: 
+            // 1. Лицьова та задня сторони - ваша текстура (wood_face.jpg)
+            const matFace = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.8 });
+            
+            // 2. Бокові сторони (Кора) - темно-коричневий шорсткий матеріал, що імітує темний обзол
+            const matBark = new THREE.MeshStandardMaterial({ color: 0x3d2314, roughness: 1.0 });
+
+            // Застосовуємо матеріали до геометрії (0 - перед/зад, 1 - боки)
+            const materials = [matFace, matBark];
+
+            const boardGroup = new THREE.Group();
+            scene.add(boardGroup);
+
+            // Створюємо 3 дошки та розставляємо їх
+            const b1 = new THREE.Mesh(geometry, materials);
+            b1.position.set(1.5, 2.0, 0);
+            b1.rotation.set(0.3, -0.4, -0.1);
+            boardGroup.add(b1);
+
+            const b2 = new THREE.Mesh(geometry, materials);
+            b2.position.set(0.3, 0, 1);
+            b2.rotation.set(0.1, -0.2, -0.15);
+            b2.scale.set(0.9, 0.9, 0.9);
+            boardGroup.add(b2);
+
+            const b3 = new THREE.Mesh(geometry, materials);
+            b3.position.set(1.2, -2.0, -1);
+            b3.rotation.set(0.4, -0.5, -0.05);
+            b3.scale.set(0.85, 0.85, 0.85);
+            boardGroup.add(b3);
+
+            // Анімація: Плавний паралакс
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                boardGroup.rotation.y += (mouseX * 0.3 - boardGroup.rotation.y) * 0.05;
+                boardGroup.rotation.x += (mouseY * 0.3 - boardGroup.rotation.x) * 0.05;
+                
+                boardGroup.position.y = Math.sin(Date.now() * 0.001) * 0.15;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+        initProceduralBoards();
+
+        // ----------------------------------------------------
+        // 2. ФОНОВІ ІСКРИ ТА ОПИЛКИ
+        // ----------------------------------------------------
         function initWebGLBg() {
             const canvas = document.getElementById('webgl-canvas');
             const scene = new THREE.Scene();
