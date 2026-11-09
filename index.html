@@ -8,7 +8,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Бібліотеки для 3D та плавної анімації скролу -->
+    <!-- Бібліотеки для анімацій та скролу -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -31,7 +31,7 @@
             overflow-x: hidden; 
         }
 
-        /* WebGL ФОН (3D іскри та волокна) */
+        /* WebGL ФОН (іскри та волокна) */
         #webgl-canvas {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
@@ -74,17 +74,21 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* СПРАВЖНЯ 3D-СЦЕНА ДЛЯ ДОЩОК */
+        /* СТИЛЬНА ФОТО-ПРЕЗЕНТАЦІЯ ДОЩОК З ПАРАЛАКСОМ */
         .hero-visual {
-            position: relative; height: 600px; width: 100%; display: flex; justify-content: center; align-items: center;
+            position: relative; height: 600px; display: flex; justify-content: center; align-items: center;
         }
-        #boards-canvas {
-            width: 100%; height: 100%; outline: none;
-            /* Додаємо тінь під усією 3D сценою для кращого відриву від фону */
-            filter: drop-shadow(0px 40px 30px rgba(0,0,0,0.8));
+        .boards-image-container {
+            position: relative; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .boards-image-container img {
+            max-width: 110%; height: auto; object-fit: contain;
+            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8));
+            transition: transform 0.2s ease-out;
         }
 
-        /* СЕКЦІЯ 02: КАТЕГОРІЇ (ГАЛЕРЕЯ) */
+        /* ІНШІ СЕКЦІЇ (Каталог, Сушка, Контакти) */
         .categories { display: flex; flex-direction: column; justify-content: center; }
         .section-header { margin-bottom: 60px; }
         .section-header span { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem;}
@@ -110,7 +114,6 @@
         .cat-card:hover p { opacity: 1; transform: translateY(0); }
         .cat-link { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; text-decoration: none;}
 
-        /* СЕКЦІЯ 03: ВИРОБНИЦТВО ТА СУШКА */
         .drying-process { display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-content: center; }
         .process-visual {
             position: relative; height: 500px; border-radius: 8px; overflow: hidden;
@@ -131,7 +134,6 @@
         .stat-box h5 { font-size: 3rem; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 10px;}
         .stat-box p { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; color: #fff; letter-spacing: 1px;}
 
-        /* СЕКЦІЯ 04: КОНТАКТИ ТА КАРТА */
         .contacts { display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-content: center; }
         .contact-details h3 { font-size: 2.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 25px; }
         .contact-details p { font-size: 1.1rem; color: #ccc; margin-bottom: 40px; line-height: 1.6; }
@@ -166,7 +168,6 @@
         }
         .form-box button:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(217,144,88,0.3); }
 
-        /* ІНДИКАТОР СКРОЛУ ТА КІЛЬКІСТЬ СЕКЦІЙ */
         .scroll-indicator {
             position: fixed; bottom: 40px; left: 50px; display: flex; align-items: center; gap: 15px; z-index: 10;
             font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #666;
@@ -187,10 +188,8 @@
 </head>
 <body>
 
-    <!-- ФОНОВІ 3D-ІСКРИ -->
     <canvas id="webgl-canvas"></canvas>
 
-    <!-- Скролл-інформація -->
     <div class="scroll-indicator">Scroll / Гортати вниз</div>
     <div class="section-numbers"><span id="active-num">01</span> / 04</div>
 
@@ -223,13 +222,16 @@
             </div>
         </div>
         
-        <!-- КОНТЕЙНЕР ДЛЯ ІДЕАЛЬНИХ 3D ДОЩОК -->
+        <!-- ПРЕМІАЛЬНЕ ФОТО-РЕФЕРЕНС ДОШОК З ПАРАЛАКСОМ -->
         <div class="hero-visual">
-            <div id="boards-canvas"></div>
+            <div class="boards-image-container" id="parallax-img">
+                <!-- Замініть це посилання на ваше реальне гарне фото дошок у репозиторії, наприклад: src="boards-hero.png" -->
+                <img src="https://images.unsplash.com/photo-1549429186-0775d79fa451?auto=format&fit=crop&w=1000&q=80" alt="Преміальні дошки Apollo">
+            </div>
         </div>
     </section>
 
-    <!-- Інші секції залишаються без змін -->
+    <!-- 02. КАТЕГОРІЇ -->
     <section class="categories" id="sec-02">
         <div class="section-header">
             <span>Каталог</span>
@@ -263,6 +265,7 @@
         </div>
     </section>
 
+    <!-- 03. СУШКА -->
     <section class="drying-process" id="sec-03">
         <div class="process-visual">
             <div class="visual-overlay">
@@ -281,6 +284,7 @@
         </div>
     </section>
 
+    <!-- 04. КОНТАКТИ -->
     <section class="contacts" id="sec-04">
         <div class="contact-details">
             <h3>Зв'язатися <br>з нами</h3>
@@ -310,7 +314,7 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Вступні анімації тексту
+        // Вступні анімації
         gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
         gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
         gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
@@ -326,117 +330,14 @@
             });
         });
 
-        // ----------------------------------------------------
-        // 1. СПРАВЖНІ, СУЦІЛЬНІ 3D ДОШКИ (Three.js ExtrudeGeometry)
-        // ----------------------------------------------------
-        function initReal3DBoards() {
-            const container = document.getElementById('boards-canvas');
-            if(!container) return;
+        // Інтерактивний паралакс картинки за курсором миші
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            gsap.to("#parallax-img img", { x: x, y: y, duration: 0.5, ease: "power2.out" });
+        });
 
-            const scene = new THREE.Scene();
-            // Прозора камера, щоб було видно фон сайту
-            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-            camera.position.z = 10;
-
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            container.appendChild(renderer.domElement);
-
-            // М'яке, дороге студійне світло
-            const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-            scene.add(ambient);
-            const dirLight = new THREE.DirectionalLight(0xffeedd, 0.7);
-            dirLight.position.set(5, 10, 5);
-            scene.add(dirLight);
-
-            // МАЛЮЄМО ФОРМУ НЕОБРІЗНОЇ ДОШКИ
-            const shape = new THREE.Shape();
-            const w = 4.8; // Довжина дошки
-            const h = 1.2; // Ширина дошки
-            
-            // Стартуємо з лівого верхнього кута
-            shape.moveTo(-w/2, h/2 - 0.1);
-            // 1. Верхній "живий", хвилястий край (Кора)
-            shape.bezierCurveTo(-w/4, h/2 + 0.15,  w/4, h/2 - 0.1,  w/2, h/2 + 0.05);
-            // 2. Правий торець (Рівний відпил)
-            shape.lineTo(w/2, -h/2);
-            // 3. Нижній "живий", хвилястий край (Кора)
-            shape.bezierCurveTo(w/4, -h/2 + 0.1, -w/4, -h/2 - 0.15, -w/2, -h/2 + 0.1);
-            // 4. Лівий торець (Рівний відпил)
-            shape.lineTo(-w/2, h/2 - 0.1);
-
-            // Видавлюємо форму, щоб створити монолітний 3D об'єкт
-            const extrudeSettings = {
-                depth: 0.15, // Товщина дошки
-                bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 0.02, bevelThickness: 0.02
-            };
-            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-
-            // ЗАВАНТАЖЕННЯ ВАШИХ ТЕКСТУР
-            const texLoader = new THREE.TextureLoader();
-            
-            // Ваше фото дошки (лицьова сторона)
-            const faceTex = texLoader.load('wood_face.jpg');
-            faceTex.wrapS = THREE.RepeatWrapping; faceTex.wrapT = THREE.RepeatWrapping;
-            faceTex.repeat.set(0.15, 0.4); // Розтягуємо по геометрії
-
-            // Фото кори для бокових граней
-            const barkTex = texLoader.load('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=400&q=80');
-            barkTex.wrapS = THREE.RepeatWrapping; barkTex.wrapT = THREE.RepeatWrapping;
-            barkTex.repeat.set(2, 0.2);
-
-            // Матеріали (0 - верх/низ, 1 - боки з корою)
-            const matFace = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.8 });
-            const matBark = new THREE.MeshStandardMaterial({ map: barkTex, roughness: 1.0, color: 0x553311 });
-            const materials = [matFace, matBark];
-
-            const boardGroup = new THREE.Group();
-
-            // Створюємо 3 дошки, розставляємо і нахиляємо у просторі
-            const b1 = new THREE.Mesh(geometry, materials);
-            b1.position.set(1.5, 2.2, 0);
-            b1.rotation.set(0.2, -0.4, -0.1);
-
-            const b2 = new THREE.Mesh(geometry, materials);
-            b2.position.set(0.2, 0, 1);
-            b2.rotation.set(0.1, -0.3, -0.15);
-            b2.scale.set(0.9, 0.9, 0.9);
-
-            const b3 = new THREE.Mesh(geometry, materials);
-            b3.position.set(1.2, -2.2, -1);
-            b3.rotation.set(0.3, -0.5, -0.05);
-            b3.scale.set(0.85, 0.85, 0.85);
-
-            boardGroup.add(b1, b2, b3);
-            scene.add(boardGroup);
-
-            // Плавний відгук на мишку
-            let mouseX = 0, mouseY = 0;
-            document.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-            });
-
-            function animateBoards() {
-                requestAnimationFrame(animateBoards);
-                boardGroup.rotation.y += (mouseX * 0.4 - boardGroup.rotation.y) * 0.05;
-                boardGroup.rotation.x += (mouseY * 0.4 - boardGroup.rotation.x) * 0.05;
-                renderer.render(scene, camera);
-            }
-            animateBoards();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
-            });
-        }
-        initReal3DBoards();
-
-        // ----------------------------------------------------
-        // 2. ФОНОВІ 3D-ІСКРИ
-        // ----------------------------------------------------
+        // Фонові іскри (Three.js)
         function initWebGLBg() {
             const canvas = document.getElementById('webgl-canvas');
             const scene = new THREE.Scene();
