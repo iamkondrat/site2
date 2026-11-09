@@ -83,30 +83,42 @@
             background: radial-gradient(circle, rgba(217,144,88,0.08) 0%, transparent 70%);
             border-radius: 50%; position: relative;
         }
-        /* Імітація об'ємних дощок у просторі з реальною текстурою */
-.floating-wood {
-    position: absolute; 
-    width: 340px; 
-    height: 130px;
-    /* Замінюємо градієнт на безшовну текстуру дерева */
-    background: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=800&auto=format&fit=crop') center/cover;
-    border: 1px solid rgba(217,144,88,0.4); 
-    border-radius: 4px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5); /* Додано внутрішню тінь для об'єму */
-    transform: rotate(-15deg) skewX(20deg);
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    overflow: hidden;
-}
+        
+        /* Нові стилі для реалістичних необрізних дощок */
+        .floating-wood {
+            position: absolute; 
+            width: 380px; /* Трохи збільшив, щоб було краще видно фактуру */
+            height: auto; /* Дозволяє картинці зберігати свої пропорції */
+    
+            /* Створюємо природну об'ємну тінь під дошками у просторі */
+            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.7)); 
+    
+            /* Зберігаємо кут і перспективу каскаду */
+            transform: rotate(-15deg) skewX(20deg);
+            transition: transform 0.5s ease-out;
+            z-index: 2;
+        }
 
-/* Відключаємо старі намальовані смуги */
-.floating-wood::before {
-    display: none;
-}
-        .wood-01 { top: 15%; right: 5%; z-index: 3; }
-        .wood-02 { top: 38%; left: 10%; transform: rotate(-10deg) skewX(15deg) scale(0.9); z-index: 2; opacity: 0.8;}
-        .wood-03 { bottom: 15%; right: 15%; transform: rotate(-20deg) skewX(25deg) scale(0.85); z-index: 1; opacity: 0.6;}
+        /* Налаштовуємо позиції та масштаб для каскаду */
+        .wood-01 { 
+            top: 15%; 
+            right: 5%; 
+            z-index: 3; 
+        }
+        .wood-02 { 
+            top: 36%; 
+            left: 8%; 
+            transform: rotate(-10deg) skewX(15deg) scale(0.9); 
+            z-index: 2; 
+            opacity: 0.95;
+        }
+        .wood-03 { 
+            bottom: 12%; 
+            right: 12%; 
+            transform: rotate(-20deg) skewX(25deg) scale(0.85); 
+            z-index: 1; 
+            opacity: 0.85;
+        }
 
         /* СЕКЦІЯ 02: КАТЕГОРІЇ (ГАЛЕРЕЯ) */
         .categories { display: flex; flex-direction: column; justify-content: center; }
