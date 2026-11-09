@@ -75,7 +75,7 @@
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
         /* -------------------------------------------
-           3D-ІЛЮСТРАЦІЯ З РЕАЛЬНОЮ ТОВЩИНОЮ ТА КОРОЮ
+           3D-ІЛЮСТРАЦІЯ: ЖИВИЙ КРАЙ ТА ОБ'ЄМНА КОРА (Voxel 3D)
            ------------------------------------------- */
         .hero-visual {
             position: relative; height: 550px; display: flex; justify-content: center; align-items: center;
@@ -88,7 +88,7 @@
             transform-style: preserve-3d;
         }
 
-        /* Обгортка: сюди додаємо статичну тінь, щоб вона не крутилася як божевільна */
+        /* Обгортка з реальною, стабільною тінню, що не лагає */
         .board-wrapper {
             position: absolute;
             z-index: 2;
@@ -96,57 +96,41 @@
         }
         
         .board-3d {
-            width: 360px;
-            height: 110px;
+            width: 380px;
+            height: 120px;
             position: relative;
             transform-style: preserve-3d;
         }
 
-        .face {
+        /* Універсальний шар дошки */
+        .layer {
             position: absolute;
+            width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            /* ГОЛОВНИЙ ФІКС ЛАГІВ: приховуємо зворотний бік площин */
+            /* Форма НЕОБРІЗНОЇ дошки (хвилястий, органічний край) */
+            clip-path: polygon(
+                1% 8%, 15% 3%, 35% 7%, 60% 2%, 85% 6%, 98% 4%,
+                99% 94%, 80% 97%, 55% 92%, 30% 98%, 10% 93%, 2% 96%
+            );
+            /* Фікс лагів браузера під час обертання */
             backface-visibility: hidden; 
         }
 
-        /* 1. Лицьова і тильна сторони (Ваше фото) */
-        /* Робимо дошку тоншою: товщина 16px (відступ по 8px) */
+        /* Лицьова та тильна сторони (ваша текстура) */
         .face-front, .face-back {
-            width: 100%; height: 100%;
-            border-radius: 2px;
-        }
-        .face-front {
             background-image: url('wood_face.jpg');
-            transform: translateZ(8px); 
         }
         .face-back {
-            background-image: url('wood_face.jpg');
-            transform: rotateY(180deg) translateZ(8px);
-            filter: brightness(0.5); 
+            filter: brightness(0.4); 
         }
 
-        /* 2. Торці та боки (КОРА) */
-        .face-top, .face-bottom, .face-left, .face-right {
-            /* Текстура кори */
-            background-image: url('https://images.unsplash.com/photo-1597114138548-89ce14b8a472?auto=format&fit=crop&w=400&q=80');
-            /* Створюємо ілюзію нерівності та об'єму на корі */
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
+        /* Шари кори (внутрішня товщина) */
+        .bark {
+            background-image: url('wood_face.jpg'); 
+            /* Робимо кору темною та рельєфною, як у справжнього дерева */
+            filter: brightness(0.15) contrast(1.5); 
         }
-        
-        /* Верх і низ */
-        .face-top, .face-bottom {
-            width: 100%; height: 16px; 
-        }
-        .face-top { top: -8px; transform: rotateX(90deg); filter: brightness(0.7); }
-        .face-bottom { bottom: -8px; transform: rotateX(-90deg); filter: brightness(0.4); }
-
-        /* Лівий і правий бік */
-        .face-left, .face-right {
-            width: 16px; height: 100%;
-        }
-        .face-left { left: -8px; transform: rotateY(-90deg); filter: brightness(0.5); }
-        .face-right { right: -8px; transform: rotateY(90deg); filter: brightness(0.8); }
 
         /* Позиції дощок у просторі */
         .wood-01 { top: 18%; right: 5%; z-index: 3; }
@@ -305,46 +289,12 @@
         <!-- Справжні 3D Дошки з вашою текстурою wood_face.jpg та корою на боках -->
         <div class="hero-visual">
             <div class="illustration-3d">
-                
                 <!-- Дошка 1 -->
-                <div class="board-wrapper wood-01">
-                    <div class="board-3d">
-                        <div class="face face-front"></div>
-                        <div class="face face-back"></div>
-                        <div class="face face-top"></div>
-                        <div class="face face-bottom"></div>
-                        <div class="face face-left"></div>
-                        <div class="face face-right"></div>
-
-                    </div>
-                </div>
-
+                <div class="board-wrapper wood-01"><div class="board-3d"></div></div>
                 <!-- Дошка 2 -->
-                <div class="board-wrapper wood-02">
-                    <div class="board-3d">
-                        <div class="face face-front"></div>
-                        <div class="face face-back"></div>
-                        <div class="face face-top"></div>
-                        <div class="face face-bottom"></div>
-                        <div class="face face-left"></div>
-                        <div class="face face-right"></div>
-                        <div class="board-shadow"></div>
-                    </div>
-                </div>
-
+                <div class="board-wrapper wood-02"><div class="board-3d"></div></div>
                 <!-- Дошка 3 -->
-                <div class="board-wrapper wood-03">
-                    <div class="board-3d">
-                        <div class="face face-front"></div>
-                        <div class="face face-back"></div>
-                        <div class="face face-top"></div>
-                        <div class="face face-bottom"></div>
-                        <div class="face face-left"></div>
-                        <div class="face face-right"></div>
-                        <div class="board-shadow"></div>
-                    </div>
-                </div>
-
+                <div class="board-wrapper wood-03"><div class="board-3d"></div></div>
             </div>
         </div>
     </section>
@@ -443,6 +393,29 @@
     </section>
 
     <script>
+        // --- ГЕНЕРАЦІЯ 3D-ОБ'ЄМУ ТА КОРИ (Voxel Stacking) ---
+        function buildLiveEdgeBoards() {
+            const boards = document.querySelectorAll('.board-3d');
+            boards.forEach(board => {
+                let html = '';
+                
+                // Лицьова сторона
+                html += `<div class="layer face-front" style="transform: translateZ(8px)"></div>`;
+                
+                // Шари кори (робимо дошку тоншою: загальна товщина 16px)
+                for(let i = 7; i >= -7; i -= 1) {
+                    // Мікро-зміщення (jitter) робить кору фізично шорсткою та об'ємною
+                    let jx = (Math.random() - 0.5) * 2;
+                    let jy = (Math.random() - 0.5) * 2;
+                    html += `<div class="layer bark" style="transform: translateZ(${i}px) translate(${jx}px, ${jy}px)"></div>`;
+                }
+                
+                // Тильна сторона
+                html += `<div class="layer face-back" style="transform: translateZ(-8px)"></div>`;
+                board.innerHTML = html;
+            });
+        }
+        buildLiveEdgeBoards();
         // --- 1. АНІМАЦІЯ СКРОЛУ (GSAP & SCROLLTRIGGER) ---
         gsap.registerPlugin(ScrollTrigger);
 
