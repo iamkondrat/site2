@@ -116,6 +116,15 @@
         @media (max-width: 768px) {
             .cat-grid { grid-template-columns: 1fr; }
         }
+        /* Стилі для клікабельних контактів */
+        .contact-list-items a { 
+            color: #ccc; 
+            text-decoration: none; 
+            transition: color 0.3s ease; 
+        }
+        .contact-list-items a:hover { 
+            color: var(--accent); 
+        }
     </style>
 </head>
 <body>
@@ -223,9 +232,17 @@
             <h3>Зв'язатися <br>з нами</h3>
             <p>Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.</p>
             <ul class="contact-list-items">
-                <li>📍 <span>Адреса:</span> Київ, Дніпровська набережна 17е</li>
-                <li>📞 <span>Телефони:</span> 096 000 00 76 | 068 538 69 23</li>
-                <li>✉️ <span>Пошта:</span> kondratenko@apollo.ua</li>
+                <li>📍 <span>Адреса:</span> 
+                    <a href="https://maps.app.goo.gl/WJ87XQhyACKQWLE1A" target="_blank" rel="noopener noreferrer">Київ, Дніпровська набережна 17е</a>
+                </li>
+                <li>📞 <span>Телефони:</span> 
+                    <a href="tel:+380960000076">096 000 00 76</a> 
+                    <span style="color: #666; margin: 0 5px;">|</span> 
+                    <a href="tel:+380685386923">068 538 69 23</a>
+                </li>
+                <li>✉️ <span>Пошта:</span> 
+                    <a href="mailto:kondratenko@apollo.ua">kondratenko@apollo.ua</a>
+                </li>
             </ul>
         </div>
         <div class="form-box">
