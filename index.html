@@ -44,12 +44,26 @@
             width: auto;
         }
         
-        .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; }
-        /* Ідеально підігнані розміри шрифтів для однакової ширини */
-        .title-top { font-size: 3.75rem; font-weight: 900; line-height: 1.05; color: var(--text); white-space: nowrap; letter-spacing: 0.05rem; }
-        .title-bottom { font-size: 5.2rem; font-weight: 900; line-height: 1; color: var(--accent); white-space: nowrap; letter-spacing: -0.02rem; }
+        /* Рядки заголовка ідеально однакової ширини */
+        .hero-title { 
+            display: flex; flex-direction: column; 
+            margin-bottom: 25px; text-transform: uppercase; 
+            width: fit-content; /* Контейнер обтискає текст */
+        }
+        .title-top { 
+            font-size: 4.25rem; /* Ідеально вирахуваний розмір */
+            font-weight: 900; line-height: 1; color: var(--text); 
+            white-space: nowrap; 
+            letter-spacing: 0.17rem; /* Додатковий інтервал для розтягнення */
+            text-align: justify; text-align-last: justify;
+        }
+        .title-bottom { 
+            font-size: 5.2rem; font-weight: 900; line-height: 1; 
+            color: var(--accent); white-space: nowrap; 
+            letter-spacing: 0; 
+        }
         
-        .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 650px; }
+        .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 550px; }
         
         .hero-btns { display: flex; gap: 20px; }
         .btn-primary { background: var(--gradient); color: #000; padding: 18px 40px; font-size: 1rem; font-weight: 700; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
@@ -58,7 +72,7 @@
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
         .hero-visual { position: absolute; top: 0; left: 0; width: 100vw; height: 100%; z-index: 5; pointer-events: none; }
-        #boards-canvas { width: 100%; height: 100%; outline: none; filter: drop-shadow(0px 25px 25px rgba(0,0,0,0.9)); }
+        #boards-canvas { width: 100%; height: 100%; outline: none; filter: drop-shadow(0px 35px 35px rgba(0,0,0,0.9)); }
 
         section:not(.hero) { min-height: 100vh; position: relative; display: flex; align-items: center; padding: 100px 8%; border-bottom: 1px solid var(--border); }
         .categories { display: flex; flex-direction: column; justify-content: center; }
@@ -106,7 +120,7 @@
 
         @media (max-width: 1024px) {
             .hero-info { max-width: 100%; z-index: 10; padding-top: 50px; }
-            .title-top { font-size: 2.8rem; }
+            .title-top { font-size: 2.8rem; letter-spacing: 0.1rem; }
             .title-bottom { font-size: 3.6rem; }
             .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; }
             .cat-grid { grid-template-columns: 1fr; }
@@ -156,7 +170,6 @@
         </div>
     </section>
 
-    <!-- ІНШІ СЕКЦІЇ -->
     <section class="categories" id="sec-02">
         <div class="section-header"><span>Каталог</span><h2>Породи та вироби</h2></div>
         <div class="cat-grid">
@@ -214,7 +227,7 @@
         gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
 
         // ----------------------------------------------------
-        // ОДНА МАСИВНА ДОШКА (НОВИЙ РАКУРС)
+        // ОДНА МАСИВНА ДОШКА (КРАЩИЙ РАКУРС ПО ДІАГОНАЛІ)
         // ----------------------------------------------------
         function initPerfectBoards() {
             const container = document.getElementById('boards-canvas');
@@ -236,7 +249,6 @@
             dirLight.position.set(5, 8, 7);
             scene.add(dirLight);
 
-            // ТЕКСТУРИ ТА МАТЕРІАЛИ
             const texLoader = new THREE.TextureLoader();
             
             const faceTex = texLoader.load('wood_face.jpg');
@@ -256,11 +268,10 @@
             const boardGroup = new THREE.Group();
             scene.add(boardGroup);
 
-            // Геометрія (довжина 5.0, ширина 1.2)
-            const geometry = new THREE.BoxGeometry(5.0, 1.2, 0.15, 64, 1, 1);
+            // Геометрія (трохи ширша для солідності: 5.0 x 1.5)
+            const geometry = new THREE.BoxGeometry(5.0, 1.5, 0.15, 64, 1, 1);
             const pos = geometry.attributes.position;
 
-            // Формуємо плавний хвилястий живий край
             for (let i = 0; i < pos.count; i++) {
                 let x = pos.getX(i);
                 let y = pos.getY(i);
@@ -281,13 +292,14 @@
             function updateBoardPositions() {
                 if (window.innerWidth <= 1024) {
                     b1.position.set(0, -2.5, -3); 
-                    b1.rotation.set(0.6, -0.2, -1.0);
+                    b1.rotation.set(0.6, -0.6, -1.0);
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                 } else {
-                    // Зміщено та нахилено точнісінько по червоному прямокутнику з вашого скріншоту
-                    b1.position.set(3.3, -0.2, 0); 
-                    b1.rotation.set(0.4, -0.15, -1.05); // -1.05 радіан = майже вертикальний нахил
-                    boardGroup.scale.set(1.2, 1.2, 1.2); 
+                    // Ракурс точно за вашим червоним ескізом: 
+                    // повернуто діагонально і розвернуто правим боком (корою) до нас
+                    b1.position.set(3.5, 0.2, 0); 
+                    b1.rotation.set(0.5, -0.7, -1.1); 
+                    boardGroup.scale.set(1.4, 1.4, 1.4); 
                 }
             }
             updateBoardPositions();
