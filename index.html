@@ -36,16 +36,19 @@
         .phones a { color: var(--text); text-decoration: none; font-weight: 700; margin-left: 15px; font-size: 1rem; }
         .phones a:hover { color: var(--accent); }
 
-        /* HERO СЕКЦІЯ: Змінено сітку, щоб дати більше місця тексту */
+        /* HERO СЕКЦІЯ ТА НОВА ТИПОГРАФІКА */
         .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 100px 8%; border-bottom: 1px solid var(--border); }
         .hero-info { 
             position: relative; display: flex; flex-direction: column; justify-content: center; 
             z-index: 10; 
-            width: 100%;
-            max-width: 800px; /* Збільшено ширину контейнера, щоб текст вліз в один рядок */
+            width: auto;
         }
-        .hero h1 { font-size: 4.2rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -1px; }
-        .hero h1 span { color: var(--accent); }
+        
+        /* Рівні рядки заголовка */
+        .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -1px; }
+        .title-top { font-size: 3.9rem; font-weight: 900; line-height: 1.05; color: var(--text); white-space: nowrap; }
+        .title-bottom { font-size: 5.2rem; font-weight: 900; line-height: 1; color: var(--accent); white-space: nowrap; }
+        
         .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 650px; }
         
         .hero-btns { display: flex; gap: 20px; }
@@ -54,7 +57,6 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* 3D ПОЛОТНО НА ВЕСЬ ЕКРАН */
         .hero-visual { position: absolute; top: 0; left: 0; width: 100vw; height: 100%; z-index: 5; pointer-events: none; }
         #boards-canvas { width: 100%; height: 100%; outline: none; filter: drop-shadow(0px 25px 25px rgba(0,0,0,0.9)); }
 
@@ -109,7 +111,8 @@
 
         @media (max-width: 1024px) {
             .hero-info { max-width: 100%; z-index: 10; padding-top: 50px; }
-            .hero h1 { font-size: 3.2rem; }
+            .title-top { font-size: 2.8rem; }
+            .title-bottom { font-size: 3.6rem; }
             .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; }
             .cat-grid { grid-template-columns: 1fr; }
             header { padding: 20px; flex-direction: column; gap: 15px; }
@@ -123,7 +126,6 @@
     <div class="section-numbers"><span id="active-num">01</span> / 04</div>
 
     <header>
-        <!-- Логотип тепер виводиться через картинку -->
         <div class="logo">
             <a href="index.html">
                 <img src="logo.png" alt="Apollo LTD">
@@ -145,8 +147,10 @@
 
     <section class="hero" id="sec-01">
         <div class="hero-info">
-            <!-- Текст оновлено відповідно до вашого скріншоту -->
-            <h1>НАЙБІЛЬШИЙ СКЛАД <br><span>ПИЛОМАТЕРІАЛІВ</span></h1>
+            <div class="hero-title">
+                <span class="title-top">НАЙБІЛЬШИЙ СКЛАД</span>
+                <span class="title-bottom">ПИЛОМАТЕРІАЛІВ</span>
+            </div>
             <p>Суха столярна дошка, пиломатеріали свіжопиляні, пиломатеріал сухий струганий, погонажні вироби та професійне сушіння будь-якої деревини до 8% вологості.</p>
             <div class="hero-btns">
                 <a href="catalog.html" class="btn-primary">ВІДКРИТИ ПРАЙС</a>
@@ -159,7 +163,6 @@
         </div>
     </section>
 
-    <!-- ІНШІ СЕКЦІЇ -->
     <section class="categories" id="sec-02">
         <div class="section-header"><span>Каталог</span><h2>Породи та вироби</h2></div>
         <div class="cat-grid">
@@ -212,7 +215,7 @@
         gsap.registerPlugin(ScrollTrigger);
 
         gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
-        gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
+        gsap.from(".hero-info .hero-title", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
         gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
         gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
 
@@ -269,7 +272,7 @@
             const boardGroup = new THREE.Group();
             scene.add(boardGroup);
 
-            // Робимо дошку масивнішою (довжина 5.0, ширина 1.2)
+            // Геометрія (довжина 5.0, ширина 1.2)
             const geometry = new THREE.BoxGeometry(5.0, 1.2, 0.15, 64, 1, 1);
             const pos = geometry.attributes.position;
 
@@ -298,11 +301,9 @@
                     b1.rotation.set(0.6, -0.2, 0.1);
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                 } else {
-                    // Ставимо дошку праворуч (X = 3.2), щоб вона не заважала тексту
-                    b1.position.set(3.2, 0, 0); 
-                    // Гарний кут: видно лице і верхній край з корою
-                    b1.rotation.set(0.7, -0.3, 0.2); 
-                    // Робимо її масштабнішою, щоб виглядало преміально
+                    // Зміщено та нахилено точнісінько по червоному прямокутнику з вашого скріншоту
+                    b1.position.set(3.0, 0, 0); 
+                    b1.rotation.set(0.5, -0.2, -0.7); 
                     boardGroup.scale.set(1.2, 1.2, 1.2); 
                 }
             }
@@ -316,10 +317,8 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                // Дошка ледь помітно реагує на мишку
                 boardGroup.rotation.y += (mouseX * 0.2 - boardGroup.rotation.y) * 0.05;
                 boardGroup.rotation.x += (mouseY * 0.2 - boardGroup.rotation.x) * 0.05;
-                // Левітує у повітрі
                 boardGroup.position.y = Math.sin(Date.now() * 0.001) * 0.15;
                 renderer.render(scene, camera);
             }
