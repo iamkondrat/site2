@@ -63,17 +63,17 @@
         .section-header { margin-bottom: 60px; }
         .section-header span { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; font-size: 0.9rem;}
         .section-header h2 { font-size: 3rem; font-weight: 800; margin-top: 10px; text-transform: uppercase; }
-        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; }
-        .cat-card { height: 450px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; position: relative; display: flex; align-items: flex-end; padding: 40px; cursor: pointer; transition: 0.4s; }
+        /* Оновлена сітка для 4 карток */
+        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        .cat-card { height: 450px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; position: relative; display: flex; align-items: flex-end; padding: 30px; cursor: pointer; transition: 0.4s; }
         .cat-card-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: grayscale(40%) brightness(0.3); transition: 0.6s; z-index: 1; }
         .cat-card:hover .cat-card-bg { transform: scale(1.08); filter: grayscale(0%) brightness(0.5); }
         .cat-card:hover { border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .cat-info { position: relative; z-index: 2; }
-        .cat-info h3 { font-size: 1.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; }
-        .cat-info p { color: #ccc; font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; opacity: 0; transform: translateY(20px); transition: 0.4s; }
-        .cat-card:hover p { opacity: 1; transform: translateY(0); }
+        .cat-info { position: relative; z-index: 2; width: 100%; }
+        
+        /* Зменшений шрифт для 4 колонок */
+        .cat-info h3 { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; line-height: 1.3; }
         .cat-link { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; text-decoration: none;}
-
         .drying-process { display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-content: center; }
         .process-visual { position: relative; height: 500px; border-radius: 8px; overflow: hidden; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80') center/cover; border: 1px solid var(--border); }
         .visual-overlay { position: absolute; bottom: 40px; left: 40px; background: rgba(15,17,18,0.9); border: 1px solid var(--accent); padding: 30px; border-radius: 6px; backdrop-filter: blur(10px); }
@@ -109,6 +109,12 @@
             .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; }
             .cat-grid { grid-template-columns: 1fr; }
             header { padding: 20px; flex-direction: column; gap: 15px; }
+        }
+        @media (max-width: 1200px) {
+            .cat-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .cat-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -157,18 +163,39 @@
     <section class="categories" id="sec-02">
         <div class="section-header"><span>Каталог</span><h2>Породи та вироби</h2></div>
         <div class="cat-grid">
+            
             <div class="cat-card" onclick="location.href='catalog.html?cat=dry_board'">
                 <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1549429186-0775d79fa451?auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="cat-info"><h3>Суха дошка</h3><p>Столярна дошка камерної сушки: дуб, ясен, сосна, вільха.</p><span class="cat-link">Перейти ➔</span></div>
+                <div class="cat-info">
+                    <h3>Дошка суха столярна</h3>
+                    <span class="cat-link">Перейти ➔</span>
+                </div>
             </div>
+            
+            <div class="cat-card" onclick="location.href='catalog.html?cat=fresh'">
+                <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=600&q=80')"></div>
+                <div class="cat-info">
+                    <h3>Пиломатеріали свіжопиляні</h3>
+                    <span class="cat-link">Перейти ➔</span>
+                </div>
+            </div>
+            
+            <div class="cat-card" onclick="location.href='catalog.html?cat=planed'">
+                <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80')"></div>
+                <div class="cat-info">
+                    <h3>Пиломатеріал сухий струганий</h3>
+                    <span class="cat-link">Перейти ➔</span>
+                </div>
+            </div>
+            
             <div class="cat-card" onclick="location.href='catalog.html?cat=molded'">
                 <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1589146938971-ce9ebbdff1c5?auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="cat-info"><h3>Погонажні вироби</h3><p>Дубові та соснові плінтуси, лиштва, кутники.</p><span class="cat-link">Перейти ➔</span></div>
+                <div class="cat-info">
+                    <h3>Погонажні вироби</h3>
+                    <span class="cat-link">Перейти ➔</span>
+                </div>
             </div>
-            <div class="cat-card" onclick="location.href='catalog.html?cat=covering'">
-                <div class="cat-card-bg" style="background-image: url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80')"></div>
-                <div class="cat-info"><h3>Вагонка та тераса</h3><p>Вагонка сосна, терасна дошка з модрини.</p><span class="cat-link">Перейти ➔</span></div>
-            </div>
+
         </div>
     </section>
 
