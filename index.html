@@ -36,7 +36,7 @@
         .phones a { color: var(--text); text-decoration: none; font-weight: 700; margin-left: 15px; font-size: 1rem; }
         .phones a:hover { color: var(--accent); }
 
-        /* HERO СЕКЦІЯ ТА НОВА ТИПОГРАФІКА */
+        /* HERO СЕКЦІЯ ТА ІДЕАЛЬНА ТИПОГРАФІКА */
         .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 100px 8%; border-bottom: 1px solid var(--border); }
         .hero-info { 
             position: relative; display: flex; flex-direction: column; justify-content: center; 
@@ -44,10 +44,10 @@
             width: auto;
         }
         
-        /* Рівні рядки заголовка */
-        .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -1px; }
-        .title-top { font-size: 3.9rem; font-weight: 900; line-height: 1.05; color: var(--text); white-space: nowrap; }
-        .title-bottom { font-size: 5.2rem; font-weight: 900; line-height: 1; color: var(--accent); white-space: nowrap; }
+        .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; }
+        /* Ідеально підігнані розміри шрифтів для однакової ширини */
+        .title-top { font-size: 3.75rem; font-weight: 900; line-height: 1.05; color: var(--text); white-space: nowrap; letter-spacing: 0.05rem; }
+        .title-bottom { font-size: 5.2rem; font-weight: 900; line-height: 1; color: var(--accent); white-space: nowrap; letter-spacing: -0.02rem; }
         
         .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 650px; }
         
@@ -104,11 +104,6 @@
         .form-box button { width: 100%; padding: 18px; background: var(--gradient); border: none; border-radius: 4px; color: #000; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .form-box button:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(217,144,88,0.3); }
 
-        .scroll-indicator { position: fixed; bottom: 40px; left: 50px; display: flex; align-items: center; gap: 15px; z-index: 10; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #666; }
-        .scroll-indicator::after { content: ''; width: 50px; height: 1px; background: #333; display: inline-block; }
-        .section-numbers { position: fixed; bottom: 40px; right: 50px; z-index: 10; font-weight: 800; font-size: 1.1rem; letter-spacing: 1px; }
-        .section-numbers span { color: var(--accent); }
-
         @media (max-width: 1024px) {
             .hero-info { max-width: 100%; z-index: 10; padding-top: 50px; }
             .title-top { font-size: 2.8rem; }
@@ -122,8 +117,6 @@
 <body>
 
     <canvas id="webgl-canvas"></canvas>
-    <div class="scroll-indicator">Scroll / Гортати вниз</div>
-    <div class="section-numbers"><span id="active-num">01</span> / 04</div>
 
     <header>
         <div class="logo">
@@ -163,6 +156,7 @@
         </div>
     </section>
 
+    <!-- ІНШІ СЕКЦІЇ -->
     <section class="categories" id="sec-02">
         <div class="section-header"><span>Каталог</span><h2>Породи та вироби</h2></div>
         <div class="cat-grid">
@@ -219,18 +213,8 @@
         gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
         gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
 
-        const sections = ["#sec-01", "#sec-02", "#sec-03", "#sec-04"];
-        sections.forEach((selector, i) => {
-            ScrollTrigger.create({
-                trigger: selector,
-                start: "top center", end: "bottom center",
-                onEnter: () => document.getElementById('active-num').innerText = "0" + (i + 1),
-                onEnterBack: () => document.getElementById('active-num').innerText = "0" + (i + 1)
-            });
-        });
-
         // ----------------------------------------------------
-        // ОДНА МАСИВНА ДОШКА (КРАЩИЙ РАКУРС ТА ДЕТАЛІЗАЦІЯ)
+        // ОДНА МАСИВНА ДОШКА (НОВИЙ РАКУРС)
         // ----------------------------------------------------
         function initPerfectBoards() {
             const container = document.getElementById('boards-canvas');
@@ -291,19 +275,18 @@
             }
             geometry.computeVertexNormals();
 
-            // ДОДАЄМО ЛИШЕ ОДНУ ДОШКУ
             const b1 = new THREE.Mesh(geometry, materials);
             boardGroup.add(b1);
 
             function updateBoardPositions() {
                 if (window.innerWidth <= 1024) {
                     b1.position.set(0, -2.5, -3); 
-                    b1.rotation.set(0.6, -0.2, 0.1);
+                    b1.rotation.set(0.6, -0.2, -1.0);
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                 } else {
                     // Зміщено та нахилено точнісінько по червоному прямокутнику з вашого скріншоту
-                    b1.position.set(3.0, 0, 0); 
-                    b1.rotation.set(0.5, -0.2, -0.7); 
+                    b1.position.set(3.3, -0.2, 0); 
+                    b1.rotation.set(0.4, -0.15, -1.05); // -1.05 радіан = майже вертикальний нахил
                     boardGroup.scale.set(1.2, 1.2, 1.2); 
                 }
             }
