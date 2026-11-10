@@ -264,30 +264,37 @@
             }
             geometry.computeVertexNormals();
 
-            // КОМПОЗИЦІЯ "ВІЯЛО" (зміщена ліворуч, щоб не ховалася за край)
+            // --- НОВАЯ КОМПОЗИЦИЯ: ПИРАМИДКА (Две внизу, одна сверху) ---
+            
+            // Левая нижняя доска
             const b1 = new THREE.Mesh(geometry, materials);
-            b1.position.set(1.5, 1.8, -0.5);
-            b1.rotation.set(0.4, -0.3, 0.1);
+            b1.position.set(1.0, -0.8, -0.5);
+            b1.rotation.set(0.1, -0.3, 0.05);
             boardGroup.add(b1);
 
+            // Правая нижняя доска (чуть дальше в глубине)
             const b2 = new THREE.Mesh(geometry, materials);
-            b2.position.set(1.2, 0.1, 0.5);
-            b2.rotation.set(0.2, -0.4, -0.05);
+            b2.position.set(2.8, -0.5, -1.5);
+            b2.rotation.set(0.2, -0.5, -0.1);
+            b2.scale.set(0.95, 0.95, 0.95);
             boardGroup.add(b2);
 
+            // Верхняя центральная доска (лежит поверх двух нижних)
             const b3 = new THREE.Mesh(geometry, materials);
-            b3.position.set(1.8, -1.6, -1.0);
-            b3.rotation.set(0.6, -0.6, -0.25);
+            b3.position.set(1.8, 0.6, 0.5);
+            b3.rotation.set(0.3, -0.3, 0.1);
+            b3.scale.set(1.0, 1.0, 1.0);
             boardGroup.add(b3);
 
             function updateBoardPositions() {
                 if (window.innerWidth <= 1024) {
-                    // На телефонах залишаємо по центру і знизу
+                    // На мобильных опускаем вниз
                     boardGroup.position.set(0, -2, -3); 
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                 } else {
-                    // На комп'ютерах зсуваємо всю групу вправо (було 0, стало 0.8 по осі X)
-                    boardGroup.position.set(1.2, 0, 0); 
+                    // На компьютерах сдвигаем всю пирамидку еще на полшага вправо, 
+                    // чтобы гарантированно освободить место для текста
+                    boardGroup.position.set(0.5, 0, 0); 
                     boardGroup.scale.set(1, 1, 1);
                 }
             }
