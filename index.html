@@ -236,7 +236,7 @@
 
     <section class="contacts" id="sec-04">
         <div class="contact-details">
-            <h3>Зв'язатися <br>з нами</h3>
+            <h3 style="white-space: nowrap;">Зв'язатися з нами</h3>
             <p>Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.</p>
             <ul class="contact-list-items">
                 <li>
@@ -261,10 +261,10 @@
         <div class="form-box">
             <h4>Задати питання</h4>
             <p>Вкажіть контакти — перетелефонуємо вам за 15 хвилин</p>
-            <form onsubmit="event.preventDefault(); alert('Дякуємо! Скоро ми зв'яжемось з вами.');">
-                <input type="text" placeholder="Ваше ім'я або компанія" required>
-                <input type="tel" placeholder="Ваш телефон" required>
-                <button type="submit">Надіслати</button>
+            <form id="tg-form">
+                <input type="text" id="tg-name" placeholder="Ваше ім'я або компанія" required>
+                <input type="tel" id="tg-phone" placeholder="Ваш телефон" required>
+                <button type="submit" id="tg-button">Надіслати</button>
             </form>
         </div>
     </section>
@@ -421,6 +421,49 @@
             });
         }
         initWebGLBg();
+        // ----------------------------------------------------
+        // ТЕЛЕГРАМ БОТ ДЛЯ ФОРМИ
+        // ----------------------------------------------------
+        document.getElementById('tg-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('tg-name').value;
+            const phone = document.getElementById('tg-phone').value;
+            const btn = document.getElementById('tg-button');
+            
+            // ВСТАВТЕ СВОЇ ДАНІ ТУТ
+            const BOT_TOKEN = '8828109529:AAHxYZQkGVLftBxBiEIIEVVXVM8_a0BsX9w'; 
+            const CHAT_ID = '710362478';
+            
+            const text = `🔥 Нова заявка з сайту Apollo!\n\n👤 Ім'я: ${name}\n📞 Телефон: ${phone}`;
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
+            
+            btn.innerText = 'Відправка...';
+            
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        btn.innerText = 'Відправлено!';
+                        btn.style.background = '#4CAF50'; // Зелений колір успіху
+                        btn.style.color = '#fff';
+                        document.getElementById('tg-form').reset();
+                        
+                        // Повертаємо кнопку в початковий стан через 3 секунди
+                        setTimeout(() => {
+                            btn.innerText = 'Надіслати';
+                            btn.style.background = 'var(--gradient)';
+                            btn.style.color = '#000';
+                        }, 3000);
+                    } else {
+                        alert('Помилка відправки.');
+                        btn.innerText = 'Надіслати';
+                    }
+                })
+                .catch(error => {
+                    alert('Помилка з\'єднання.');
+                    btn.innerText = 'Надіслати';
+                });
+        });
     </script>
 </body>
 </html>
