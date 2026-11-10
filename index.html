@@ -29,17 +29,24 @@
         header { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 25px 50px; background: rgba(15, 17, 18, 0.85); backdrop-filter: blur(15px); z-index: 100; border-bottom: 1px solid var(--border); }
         .logo h2 { letter-spacing: 2px; font-weight: 800; font-size: 1.4rem;}
         .logo span { color: var(--accent); }
+        .logo img { height: 45px; display: block; width: auto; }
         .nav-links a { color: var(--text); text-decoration: none; margin: 0 20px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
         .nav-links a:hover { color: var(--accent); }
         .header-controls { display: flex; gap: 30px; align-items: center; }
         .phones a { color: var(--text); text-decoration: none; font-weight: 700; margin-left: 15px; font-size: 1rem; }
         .phones a:hover { color: var(--accent); }
 
+        /* HERO СЕКЦІЯ: Змінено сітку, щоб дати більше місця тексту */
         .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 100px 8%; border-bottom: 1px solid var(--border); }
-        .hero-info { position: relative; display: flex; flex-direction: column; justify-content: center; z-index: 10; max-width: 600px; }
-        .hero h1 { font-size: 4.8rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -1px; }
+        .hero-info { 
+            position: relative; display: flex; flex-direction: column; justify-content: center; 
+            z-index: 10; 
+            width: 100%;
+            max-width: 800px; /* Збільшено ширину контейнера, щоб текст вліз в один рядок */
+        }
+        .hero h1 { font-size: 4.2rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -1px; }
         .hero h1 span { color: var(--accent); }
-        .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; }
+        .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 650px; }
         
         .hero-btns { display: flex; gap: 20px; }
         .btn-primary { background: var(--gradient); color: #000; padding: 18px 40px; font-size: 1rem; font-weight: 700; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
@@ -47,6 +54,7 @@
         .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 18px 40px; font-size: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase;}
         .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
+        /* 3D ПОЛОТНО НА ВЕСЬ ЕКРАН */
         .hero-visual { position: absolute; top: 0; left: 0; width: 100vw; height: 100%; z-index: 5; pointer-events: none; }
         #boards-canvas { width: 100%; height: 100%; outline: none; filter: drop-shadow(0px 25px 25px rgba(0,0,0,0.9)); }
 
@@ -111,11 +119,14 @@
 <body>
 
     <canvas id="webgl-canvas"></canvas>
+    <div class="scroll-indicator">Scroll / Гортати вниз</div>
+    <div class="section-numbers"><span id="active-num">01</span> / 04</div>
 
     <header>
+        <!-- Логотип тепер виводиться через картинку -->
         <div class="logo">
             <a href="index.html">
-                <img src="logo.png" alt="Apollo" style="height: 70px; display: block; width: auto;">
+                <img src="logo.png" alt="Apollo LTD">
             </a>
         </div>
         <nav class="nav-links">
@@ -134,10 +145,11 @@
 
     <section class="hero" id="sec-01">
         <div class="hero-info">
-            <h1>Найбільший склад <br><span>Пиломатеріалів</span></h1>
-            <p>Суха столярна дошка, пиломатеріали свіжопилені, пиломатеріал сухий струганий, погонажні вироби та професійне сушіння будь-якої деревини до 8% вологості.</p>
+            <!-- Текст оновлено відповідно до вашого скріншоту -->
+            <h1>НАЙБІЛЬШИЙ СКЛАД <br><span>ПИЛОМАТЕРІАЛІВ</span></h1>
+            <p>Суха столярна дошка, пиломатеріали свіжопиляні, пиломатеріал сухий струганий, погонажні вироби та професійне сушіння будь-якої деревини до 8% вологості.</p>
             <div class="hero-btns">
-                <a href="catalog.html" class="btn-primary">Відкрити прайс</a>
+                <a href="catalog.html" class="btn-primary">ВІДКРИТИ ПРАЙС</a>
                 <a href="#sec-03" class="btn-secondary">Дізнатись про сушку</a>
             </div>
         </div>
@@ -197,9 +209,25 @@
     </section>
 
     <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.from("header", { y: -50, opacity: 0, duration: 1.2, ease: "power4.out" });
+        gsap.from(".hero-info h1", { y: 60, opacity: 0, duration: 1.2, delay: 0.2, ease: "power3.out" });
+        gsap.from(".hero-info p", { y: 40, opacity: 0, duration: 1.2, delay: 0.4, ease: "power3.out" });
+        gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
+
+        const sections = ["#sec-01", "#sec-02", "#sec-03", "#sec-04"];
+        sections.forEach((selector, i) => {
+            ScrollTrigger.create({
+                trigger: selector,
+                start: "top center", end: "bottom center",
+                onEnter: () => document.getElementById('active-num').innerText = "0" + (i + 1),
+                onEnterBack: () => document.getElementById('active-num').innerText = "0" + (i + 1)
+            });
+        });
 
         // ----------------------------------------------------
-        // 1. АБСОЛЮТНО РЕАЛІСТИЧНА ДОШКА (ВИПРАВЛЕНА ТЕКСТУРА)
+        // ОДНА МАСИВНА ДОШКА (КРАЩИЙ РАКУРС ТА ДЕТАЛІЗАЦІЯ)
         // ----------------------------------------------------
         function initPerfectBoards() {
             const container = document.getElementById('boards-canvas');
@@ -224,29 +252,25 @@
             // ТЕКСТУРИ ТА МАТЕРІАЛИ
             const texLoader = new THREE.TextureLoader();
             
-            // 1. Лицьова текстура (ВИМКНЕНО REPEAT, щоб вона лягала цілісно)
             const faceTex = texLoader.load('wood_face.jpg');
             const matFace = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.8 });
             
-            // 2. Текстура кори для довгих граней (повторюється вздовж)
             const barkTexLong = texLoader.load('bark.jpg');
             barkTexLong.wrapS = THREE.RepeatWrapping; 
             barkTexLong.wrapT = THREE.RepeatWrapping;
             barkTexLong.repeat.set(6, 1); 
             const matBarkLong = new THREE.MeshStandardMaterial({ map: barkTexLong, color: 0x5c3a21, roughness: 1.0 });
 
-            // 3. Текстура кори для коротких торців (без повторень)
             const barkTexShort = texLoader.load('bark.jpg');
             const matBarkShort = new THREE.MeshStandardMaterial({ map: barkTexShort, color: 0x5c3a21, roughness: 1.0 });
 
-            // BoxGeometry матеріали: [0:Право, 1:Ліво, 2:Верх(довга кора), 3:Низ(довга кора), 4:Лице, 5:Зад]
             const materials = [matBarkShort, matBarkShort, matBarkLong, matBarkLong, matFace, matFace];
 
             const boardGroup = new THREE.Group();
             scene.add(boardGroup);
 
-            // ГЕОМЕТРІЯ (Тонка дошка: товщина 0.15)
-            const geometry = new THREE.BoxGeometry(4.5, 0.9, 0.15, 64, 1, 1);
+            // Робимо дошку масивнішою (довжина 5.0, ширина 1.2)
+            const geometry = new THREE.BoxGeometry(5.0, 1.2, 0.15, 64, 1, 1);
             const pos = geometry.attributes.position;
 
             // Формуємо плавний хвилястий живий край
@@ -264,45 +288,26 @@
             }
             geometry.computeVertexNormals();
 
-            
-
-            // --- ИДЕАЛЬНАЯ ГОРИЗОНТАЛЬНАЯ ПИРАМИДКА ---
-            
-            // 1. Нижняя левая доска (задняя)
+            // ДОДАЄМО ЛИШЕ ОДНУ ДОШКУ
             const b1 = new THREE.Mesh(geometry, materials);
-            b1.position.set(-0.4, -0.6, -0.5);
-            // Угол почти горизонтальный, доски не смотрят влево
-            b1.rotation.set(0.6, -0.15, 0.05); 
             boardGroup.add(b1);
 
-            // 2. Нижняя правая доска (передняя)
-            const b2 = new THREE.Mesh(geometry, materials);
-            b2.position.set(0.4, -0.8, 0.5);
-            b2.rotation.set(0.6, -0.15, 0.05);
-            boardGroup.add(b2);
-
-            // 3. Верхняя доска (лежит ровно по центру на двух нижних)
-            const b3 = new THREE.Mesh(geometry, materials);
-            b3.position.set(0, 0.0, 0.8);
-            b3.rotation.set(0.6, -0.15, 0.05);
-            boardGroup.add(b3);
-
-            // СДВИГ ВСЕЙ ГРУППЫ ВПРАВО
             function updateBoardPositions() {
                 if (window.innerWidth <= 1024) {
-                    // На телефонах опускаем пирамидку вниз
-                    boardGroup.position.set(0, -2.5, -3); 
-                    boardGroup.scale.set(0.6, 0.6, 0.6);
+                    b1.position.set(0, -2.5, -3); 
+                    b1.rotation.set(0.6, -0.2, 0.1);
+                    boardGroup.scale.set(0.7, 0.7, 0.7);
                 } else {
-                    // На компьютерах жестко сдвигаем всю стопку далеко вправо (X = 3.8)
-                    // Масштаб чуть уменьшен (0.85), чтобы доски смотрелись элегантнее
-                    boardGroup.position.set(3.8, 0, 0); 
-                    boardGroup.scale.set(0.85, 0.85, 0.85); 
+                    // Ставимо дошку праворуч (X = 3.2), щоб вона не заважала тексту
+                    b1.position.set(3.2, 0, 0); 
+                    // Гарний кут: видно лице і верхній край з корою
+                    b1.rotation.set(0.7, -0.3, 0.2); 
+                    // Робимо її масштабнішою, щоб виглядало преміально
+                    boardGroup.scale.set(1.2, 1.2, 1.2); 
                 }
             }
             updateBoardPositions();
 
-            // АНІМАЦІЯ ПАРАЛАКСУ
             let mouseX = 0, mouseY = 0;
             document.addEventListener('mousemove', (e) => {
                 mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -311,8 +316,10 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                boardGroup.rotation.y += (mouseX * 0.3 - boardGroup.rotation.y) * 0.05;
-                boardGroup.rotation.x += (mouseY * 0.3 - boardGroup.rotation.x) * 0.05;
+                // Дошка ледь помітно реагує на мишку
+                boardGroup.rotation.y += (mouseX * 0.2 - boardGroup.rotation.y) * 0.05;
+                boardGroup.rotation.x += (mouseY * 0.2 - boardGroup.rotation.x) * 0.05;
+                // Левітує у повітрі
                 boardGroup.position.y = Math.sin(Date.now() * 0.001) * 0.15;
                 renderer.render(scene, camera);
             }
@@ -328,7 +335,7 @@
         initPerfectBoards();
 
         // ----------------------------------------------------
-        // 2. ФОНОВІ ІСКРИ
+        // ФОНОВІ ІСКРИ
         // ----------------------------------------------------
         function initWebGLBg() {
             const canvas = document.getElementById('webgl-canvas');
