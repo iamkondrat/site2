@@ -43,12 +43,12 @@
             width: auto;
         }
         
-        /* Повернено чисту типографіку без штучного розтягування */
         .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; }
         .title-top { font-size: 3.9rem; font-weight: 900; line-height: 1.05; color: var(--text); white-space: nowrap; }
         .title-bottom { font-size: 5.2rem; font-weight: 900; line-height: 1; color: var(--accent); white-space: nowrap; }
         
-        .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 550px; }
+        /* Збільшено max-width до 750px для ширшого блоку тексту */
+        .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 750px; }
         
         .hero-btns { display: flex; gap: 20px; }
         .btn-primary { background: var(--gradient); color: #000; padding: 18px 40px; font-size: 1rem; font-weight: 700; text-decoration: none; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
@@ -212,7 +212,7 @@
         gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
 
         // ----------------------------------------------------
-        // ОДНА МАСИВНА ДОШКА (СТРОГИЙ ДІАГОНАЛЬНИЙ НАХИЛ)
+        // ОДНА МАСИВНА ДОШКА (КРАЩИЙ РАКУРС ПО ДІАГОНАЛІ)
         // ----------------------------------------------------
         function initPerfectBoards() {
             const container = document.getElementById('boards-canvas');
@@ -276,13 +276,13 @@
             function updateBoardPositions() {
                 if (window.innerWidth <= 1024) {
                     b1.position.set(0, -2.5, -3); 
-                    b1.rotation.set(0.6, -0.6, -1.2);
+                    b1.rotation.set(0.6, -0.6, -1.0);
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                 } else {
-                    // Сильний діагональний нахил (-1.35) та довертання кори до камери (-0.85)
-                    b1.position.set(3.8, 0.5, 0); 
-                    b1.rotation.set(0.3, -0.85, -1.35); 
-                    boardGroup.scale.set(1.4, 1.4, 1.4); 
+                    // Ракурс повернуто до попереднього збалансованого діагонального нахилу (-1.05)
+                    b1.position.set(3.3, -0.2, 0); 
+                    b1.rotation.set(0.4, -0.15, -1.05); 
+                    boardGroup.scale.set(1.2, 1.2, 1.2); 
                 }
             }
             updateBoardPositions();
