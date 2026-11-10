@@ -26,15 +26,46 @@
 
         #webgl-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.6; }
 
+        /* ОНОВЛЕНІ СТИЛІ ШАПКИ ТА ПЕРЕМИКАЧА МОВ */
         header { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 25px 50px; background: rgba(15, 17, 18, 0.85); backdrop-filter: blur(15px); z-index: 100; border-bottom: 1px solid var(--border); }
         .logo h2 { letter-spacing: 2px; font-weight: 800; font-size: 1.4rem;}
         .logo span { color: var(--accent); }
         .logo img { height: 45px; display: block; width: auto; }
         .nav-links a { color: var(--text); text-decoration: none; margin: 0 20px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
         .nav-links a:hover { color: var(--accent); }
+        
         .header-controls { display: flex; gap: 30px; align-items: center; }
         .phones a { color: var(--text); text-decoration: none; font-weight: 700; margin-left: 15px; font-size: 1rem; }
         .phones a:hover { color: var(--accent); }
+
+        /* Перемикач мов */
+        .lang-switcher {
+            display: flex;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 8px 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .lang-btn.active, .lang-btn:hover {
+            background: var(--gradient);
+            color: #000;
+        }
+
+        @media (max-width: 1024px) {
+            header { padding: 20px; flex-direction: column; gap: 15px; }
+        }
 
         .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 100px 8%; border-bottom: 1px solid var(--border); }
         .hero-info { 
@@ -108,7 +139,6 @@
             .title-bottom { font-size: 3.6rem; }
             .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; }
             .cat-grid { grid-template-columns: 1fr; }
-            header { padding: 20px; flex-direction: column; gap: 15px; }
         }
         @media (max-width: 1200px) {
             .cat-grid { grid-template-columns: repeat(2, 1fr); }
@@ -145,16 +175,21 @@
             </a>
         </div>
         <nav class="nav-links">
+            <a href="index.html">Головна</a>
             <a href="catalog.html">Каталог</a>
-            <a href="about.html">Про нас</a>
-            <a href="catalog.html?cat=molded">Погонаж</a>
+            <a href="#sec-04">Контакти</a>
         </nav>
         <div class="header-controls">
             <div class="phones">
                 <a href="tel:+380960000076">096 000 00 76</a>
                 <a href="tel:+380685386923">068 538 69 23</a>
             </div>
-            <a href="catalog.html" class="btn-primary" style="padding: 12px 25px; font-size: 0.85rem;">Магазин</a>
+            <!-- Перемикач мов -->
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="changeLang('uk')">UA</button>
+                <button class="lang-btn" onclick="changeLang('ru')">RU</button>
+                <button class="lang-btn" onclick="changeLang('en')">EN</button>
+            </div>
         </div>
     </header>
 
@@ -166,7 +201,7 @@
             </div>
             <p>Суха столярна дошка, пиломатеріали свіжопиляні, пиломатеріал сухий струганий, погонажні вироби та професійне сушіння будь-якої деревини до 8% вологості.</p>
             <div class="hero-btns">
-                <a href="catalog.html" class="btn-primary">ВІДКРИТИ ПРАЙС</a>
+                <a href="price.html" class="btn-primary">ВІДКРИТИ ПРАЙС</a>
                 <a href="#sec-03" class="btn-secondary">Дізнатись про сушку</a>
             </div>
         </div>
@@ -464,6 +499,12 @@
                     btn.innerText = 'Надіслати';
                 });
         });
+        // Простий перемикач активної кнопки мови
+        function changeLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            localStorage.setItem('apollo_lang', lang);
+        }
     </script>
 </body>
 </html>
