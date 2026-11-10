@@ -135,7 +135,11 @@
                     return;
                 }
 
-                const response = await fetch(SCRIPT_URL);
+                // Google Apps Script requires following redirects for GET requests
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
                 const tabs = await response.json(); 
                 
                 let html = '';
