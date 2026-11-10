@@ -210,38 +210,41 @@
     </section>
 
     <section class="categories" id="sec-02">
-        <div class="section-header"><span>Каталог</span><h2>Категорії товарів</h2></div>
+        <div class="section-header">
+            <span data-i18n="cat_subtitle">Каталог</span>
+            <h2 data-i18n="cat_title">Категорії товарів</h2>
+        </div>
         <div class="cat-grid">
             
             <div class="cat-card" onclick="location.href='catalog.html?cat=dry_board'">
                 <div class="cat-card-bg" style="background-image: url('cat-dry.webp')"></div>
                 <div class="cat-info">
-                    <h3>Дошка суха столярна</h3>
-                    <span class="cat-link">Перейти ➔</span>
+                    <h3 data-i18n="card_1">Дошка суха столярна</h3>
+                    <span class="cat-link" data-i18n="card_link">Перейти ➔</span>
                 </div>
             </div>
             
             <div class="cat-card" onclick="location.href='catalog.html?cat=fresh'">
-                <div class="cat-card-bg" style="background-image: url('cat-fresh.webp')")"></div>
+                <div class="cat-card-bg" style="background-image: url('cat-fresh.webp')"></div>
                 <div class="cat-info">
-                    <h3>Пиломатеріали свіжопиляні</h3>
-                    <span class="cat-link">Перейти ➔</span>
+                    <h3 data-i18n="card_2">Пиломатеріали свіжопиляні</h3>
+                    <span class="cat-link" data-i18n="card_link">Перейти ➔</span>
                 </div>
             </div>
             
             <div class="cat-card" onclick="location.href='catalog.html?cat=planed'">
                 <div class="cat-card-bg" style="background-image: url('cat-planed.webp')"></div>
                 <div class="cat-info">
-                    <h3>Пиломатеріал сухий струганий</h3>
-                    <span class="cat-link">Перейти ➔</span>
+                    <h3 data-i18n="card_3">Пиломатеріал сухий струганий</h3>
+                    <span class="cat-link" data-i18n="card_link">Перейти ➔</span>
                 </div>
             </div>
             
             <div class="cat-card" onclick="location.href='catalog.html?cat=molded'">
                 <div class="cat-card-bg" style="background-image: url('cat-molded.webp')"></div>
                 <div class="cat-info">
-                    <h3>Погонажні вироби</h3>
-                    <span class="cat-link">Перейти ➔</span>
+                    <h3 data-i18n="card_4">Погонажні вироби</h3>
+                    <span class="cat-link" data-i18n="card_link">Перейти ➔</span>
                 </div>
             </div>
 
@@ -250,58 +253,57 @@
 
     <section class="drying-process" id="sec-03">
         <div class="process-info">
-            <h3>Професійна <br><span>Сушка деревини</span></h3>
-            <p>Надаємо повний комплекс послуг з камерної сушки будь-яких обсягів пиломатеріалів. Здійснюємо укладання, завантаження, дбайливе розвантаження на вантажні авто. Сушимо усі породи до еталонних показників.</p>
+            <h3 data-i18n="dry_title">Професійна <br><span>Сушка деревини</span></h3>
+            <p data-i18n="dry_desc">Надаємо повний комплекс послуг з камерної сушки будь-яких обсягів пиломатеріалів. Здійснюємо укладання, завантаження, дбайливе розвантаження на вантажні авто. Сушимо усі породи до еталонних показників.</p>
             <div class="stats">
-                <div class="stat-box"><h5 id="stat-cameras">4</h5><p>Камери</p></div>
-                <div class="stat-box"><h5>25+</h5><p>Років</p></div>
-                <div class="stat-box"><h5>100%</h5><p>Якість</p></div>
+                <div class="stat-box"><h5 id="stat-cameras">4</h5><p data-i18n="stat_cam">Камери</p></div>
+                <div class="stat-box"><h5>25+</h5><p data-i18n="stat_years">Років</p></div>
+                <div class="stat-box"><h5>100%</h5><p data-i18n="stat_quality">Якість</p></div>
             </div>
         </div>
 
         <div class="process-visual" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('lumber-klin.webp');">
             <div class="visual-overlay">
                 <h4>8%</h4>
-                <p style="text-transform: uppercase; font-size: 0.8rem; font-weight:700; color: #aaa;">Максимальна вологість</p>
+                <p style="text-transform: uppercase; font-size: 0.8rem; font-weight:700; color: #aaa;" data-i18n="dry_humidity">Максимальна вологість</p>
             </div>
         </div>
     </section>
 
     <section class="contacts" id="sec-04">
         <div class="contact-details">
-            <h3 style="white-space: nowrap;">Зв'язатися з нами</h3>
-            <p>Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.</p>
+            <h3 style="white-space: nowrap;" data-i18n="contact_title">Зв'язатися з нами</h3>
+            <p data-i18n="contact_desc">Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.</p>
             <ul class="contact-list-items">
                 <li>
                     <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    <span>Адреса:</span> 
-                    <a href="https://maps.app.goo.gl/WJ87XQhyACKQWLE1A" target="_blank" rel="noopener noreferrer">Київ, Дніпровська набережна 17е</a>
+                    <span data-i18n="contact_addr_label">Адреса:</span> 
+                    <a href="https://maps.app.goo.gl/WJ87XQhyACKQWLE1A" target="_blank" rel="noopener noreferrer" data-i18n="contact_addr_val">Київ, Дніпровська набережна 17е</a>
                 </li>
                 <li>
                     <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    <span>Телефони:</span> 
+                    <span data-i18n="contact_phone_label">Телефони:</span> 
                     <a href="tel:+380960000076">096 000 00 76</a> 
                     <span style="color: #666; margin: 0 5px;">|</span> 
                     <a href="tel:+380685386923">068 538 69 23</a>
                 </li>
                 <li>
                     <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    <span>Пошта:</span> 
+                    <span data-i18n="contact_mail_label">Пошта:</span> 
                     <a href="mailto:kondratenko@apollo.ua">kondratenko@apollo.ua</a>
                 </li>
             </ul>
         </div>
         <div class="form-box">
-            <h4>Задати питання</h4>
-            <p>Вкажіть контакти — перетелефонуємо вам за 15 хвилин</p>
+            <h4 data-i18n="form_title">Задати питання</h4>
+            <p data-i18n="form_desc">Вкажіть контакти — перетелефонуємо вам за 15 хвилин</p>
             <form id="tg-form">
-                <input type="text" id="tg-name" placeholder="Ваше ім'я або компанія" required>
-                <input type="tel" id="tg-phone" placeholder="Ваш телефон" required>
-                <button type="submit" id="tg-button">Надіслати</button>
+                <input type="text" id="tg-name" placeholder="Ваше ім'я або компанія" data-i18n-placeholder="form_placeholder_name" required>
+                <input type="tel" id="tg-phone" placeholder="Ваш телефон" data-i18n-placeholder="form_placeholder_phone" required>
+                <button type="submit" id="tg-button" data-i18n="form_btn">Надіслати</button>
             </form>
         </div>
     </section>
-
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
@@ -509,7 +511,32 @@
                 hero_bottom: "ПИЛОМАТЕРІАЛІВ",
                 hero_desc: "Суха столярна дошка, пиломатеріали свіжопиляні, пиломатеріал сухий струганий, погонажні вироби та професійне сушіння будь-якої деревини до 8% вологості.",
                 btn_price: "ВІДКРИТИ ПРАЙС",
-                btn_drying: "Дізнатись про сушку"
+                btn_drying: "Дізнатись про сушку",
+                cat_subtitle: "Каталог",
+                cat_title: "Категорії товарів",
+                card_1: "Дошка суха столярна",
+                card_2: "Пиломатеріали свіжопиляні",
+                card_3: "Пиломатеріал сухий струганий",
+                card_4: "Погонажні вироби",
+                card_link: "Перейти ➔",
+                // Сушка і контакти
+                dry_title: "Професійна Сушка деревини",
+                dry_desc: "Надаємо повний комплекс послуг з камерної сушки будь-яких обсягів пиломатеріалів. Здійснюємо укладання, завантаження, дбайливе розвантаження на вантажні авто. Сушимо усі породи до еталонних показників.",
+                stat_cam: "Камери",
+                stat_years: "Років",
+                stat_quality: "Якість",
+                dry_humidity: "Максимальна вологість",
+                contact_title: "Зв'язатися з нами",
+                contact_desc: "Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.",
+                contact_addr_label: "Адреса:",
+                contact_addr_val: "Київ, Дніпровська набережна 17е",
+                contact_phone_label: "Телефони:",
+                contact_mail_label: "Пошта:",
+                form_title: "Задати питання",
+                form_desc: "Вкажіть контакти — перетелефонуємо вам за 15 хвилин",
+                form_placeholder_name: "Ваше ім'я або компанія",
+                form_placeholder_phone: "Ваш телефон",
+                form_btn: "Надіслати"
             },
             ru: {
                 nav_home: "Главная",
@@ -519,7 +546,32 @@
                 hero_bottom: "ПИЛОМАТЕРИАЛОВ",
                 hero_desc: "Сухая столярная доска, пиломатериалы свежепиленные, пиломатериал сухой строганый, погонажные изделия и профессиональная сушка любой древесины до 8% влажности.",
                 btn_price: "ОТКРЫТЬ ПРАЙС",
-                btn_drying: "Узнать о сушке"
+                btn_drying: "Узнать о сушке",
+                cat_subtitle: "Каталог",
+                cat_title: "Категории товаров",
+                card_1: "Доска сухая столярная",
+                card_2: "Пиломатериалы свежепиленные",
+                card_3: "Пиломатериал сухой строганый",
+                card_4: "Погонажные изделия",
+                card_link: "Перейти ➔",
+                // Сушка и контакты
+                dry_title: "Профессиональная Сушка древесины",
+                dry_desc: "Предоставляем полный комплекс услуг по камерной сушке любых объемов пиломатериалов. Осуществляем укладку, погрузку, бережную разгрузку на грузовые авто. Сушим все породы до эталонных показателей.",
+                stat_cam: "Камеры",
+                stat_years: "Лет",
+                stat_quality: "Качество",
+                dry_humidity: "Максимальная влажность",
+                contact_title: "Связаться с нами",
+                contact_desc: "Наш склад и производство расположены в удобном месте на левом берегу Киева.",
+                contact_addr_label: "Адрес:",
+                contact_addr_val: "Киев, Днепровская набережная 17е",
+                contact_phone_label: "Телефоны:",
+                contact_mail_label: "Почта:",
+                form_title: "Задать вопрос",
+                form_desc: "Укажите контакты — перезвоним вам за 15 минут",
+                form_placeholder_name: "Ваше имя или компания",
+                form_placeholder_phone: "Ваш телефон",
+                form_btn: "Отправить"
             },
             en: {
                 nav_home: "Home",
@@ -529,7 +581,32 @@
                 hero_bottom: "LUMBER PRODUCTS",
                 hero_desc: "Dry joinery board, fresh-sawn lumber, dry planed lumber, molding products, and professional drying of any wood down to 8% moisture.",
                 btn_price: "OPEN PRICE LIST",
-                btn_drying: "Learn about drying"
+                btn_drying: "Learn about drying",
+                cat_subtitle: "Catalog",
+                cat_title: "Product Categories",
+                card_1: "Dry joinery board",
+                card_2: "Fresh-sawn lumber",
+                card_3: "Dry planed lumber",
+                card_4: "Molding products",
+                card_link: "Explore ➔",
+                // Drying and contacts
+                dry_title: "Professional Wood Drying",
+                dry_desc: "We provide a full range of chamber drying services for any volume of lumber. We handle stacking, loading, and careful unloading onto trucks. We dry all wood species to benchmark standards.",
+                stat_cam: "Chambers",
+                stat_years: "Years",
+                stat_quality: "Quality",
+                dry_humidity: "Maximum moisture",
+                contact_title: "Contact Us",
+                contact_desc: "Our warehouse and production facilities are conveniently located on the left bank of Kyiv.",
+                contact_addr_label: "Address:",
+                contact_addr_val: "Kyiv, Dniprovska Embankment 17e",
+                contact_phone_label: "Phones:",
+                contact_mail_label: "Email:",
+                form_title: "Ask a Question",
+                form_desc: "Provide your contacts — we will call you back within 15 minutes",
+                form_placeholder_name: "Your name or company",
+                form_placeholder_phone: "Your phone",
+                form_btn: "Send"
             }
         };
 
