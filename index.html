@@ -435,7 +435,7 @@
             const BOT_TOKEN = '8828109529:AAHxYZQkGVLftBxBiEIIEVVXVM8_a0BsX9w'; 
             const CHAT_ID = '710362478';
             
-            const text = `🔥 Нова заявка з сайту Apollo!\n\n👤 Ім'я: ${name}\n📞 Телефон: ${phone}`;
+            const text = `🔥 Нова заявка з сайту Apollo!\nТреба передзвонити\n\n👤 Ім'я: ${name}\n📞 Телефон: ${phone}`;
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
             
             btn.innerText = 'Відправка...';
