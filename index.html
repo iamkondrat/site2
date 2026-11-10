@@ -36,7 +36,6 @@
         .phones a { color: var(--text); text-decoration: none; font-weight: 700; margin-left: 15px; font-size: 1rem; }
         .phones a:hover { color: var(--accent); }
 
-        /* HERO СЕКЦІЯ ТА ІДЕАЛЬНА ТИПОГРАФІКА */
         .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 100px 8%; border-bottom: 1px solid var(--border); }
         .hero-info { 
             position: relative; display: flex; flex-direction: column; justify-content: center; 
@@ -44,24 +43,10 @@
             width: auto;
         }
         
-        /* Рядки заголовка ідеально однакової ширини */
-        .hero-title { 
-            display: flex; flex-direction: column; 
-            margin-bottom: 25px; text-transform: uppercase; 
-            width: fit-content; /* Контейнер обтискає текст */
-        }
-        .title-top { 
-            font-size: 4.25rem; /* Ідеально вирахуваний розмір */
-            font-weight: 900; line-height: 1; color: var(--text); 
-            white-space: nowrap; 
-            letter-spacing: 0.17rem; /* Додатковий інтервал для розтягнення */
-            text-align: justify; text-align-last: justify;
-        }
-        .title-bottom { 
-            font-size: 5.2rem; font-weight: 900; line-height: 1; 
-            color: var(--accent); white-space: nowrap; 
-            letter-spacing: 0; 
-        }
+        /* Повернено чисту типографіку без штучного розтягування */
+        .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; }
+        .title-top { font-size: 3.9rem; font-weight: 900; line-height: 1.05; color: var(--text); white-space: nowrap; }
+        .title-bottom { font-size: 5.2rem; font-weight: 900; line-height: 1; color: var(--accent); white-space: nowrap; }
         
         .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 550px; }
         
@@ -120,7 +105,7 @@
 
         @media (max-width: 1024px) {
             .hero-info { max-width: 100%; z-index: 10; padding-top: 50px; }
-            .title-top { font-size: 2.8rem; letter-spacing: 0.1rem; }
+            .title-top { font-size: 2.8rem; }
             .title-bottom { font-size: 3.6rem; }
             .drying-process, .contacts { grid-template-columns: 1fr; gap: 50px; }
             .cat-grid { grid-template-columns: 1fr; }
@@ -227,7 +212,7 @@
         gsap.from(".hero-btns", { y: 30, opacity: 0, duration: 1.2, delay: 0.6, ease: "power3.out" });
 
         // ----------------------------------------------------
-        // ОДНА МАСИВНА ДОШКА (КРАЩИЙ РАКУРС ПО ДІАГОНАЛІ)
+        // ОДНА МАСИВНА ДОШКА (СТРОГИЙ ДІАГОНАЛЬНИЙ НАХИЛ)
         // ----------------------------------------------------
         function initPerfectBoards() {
             const container = document.getElementById('boards-canvas');
@@ -268,7 +253,6 @@
             const boardGroup = new THREE.Group();
             scene.add(boardGroup);
 
-            // Геометрія (трохи ширша для солідності: 5.0 x 1.5)
             const geometry = new THREE.BoxGeometry(5.0, 1.5, 0.15, 64, 1, 1);
             const pos = geometry.attributes.position;
 
@@ -292,13 +276,12 @@
             function updateBoardPositions() {
                 if (window.innerWidth <= 1024) {
                     b1.position.set(0, -2.5, -3); 
-                    b1.rotation.set(0.6, -0.6, -1.0);
+                    b1.rotation.set(0.6, -0.6, -1.2);
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                 } else {
-                    // Ракурс точно за вашим червоним ескізом: 
-                    // повернуто діагонально і розвернуто правим боком (корою) до нас
-                    b1.position.set(3.5, 0.2, 0); 
-                    b1.rotation.set(0.5, -0.7, -1.1); 
+                    // Сильний діагональний нахил (-1.35) та довертання кори до камери (-0.85)
+                    b1.position.set(3.8, 0.5, 0); 
+                    b1.rotation.set(0.3, -0.85, -1.35); 
                     boardGroup.scale.set(1.4, 1.4, 1.4); 
                 }
             }
