@@ -266,38 +266,38 @@
 
             
 
-            // --- НОВАЯ КОМПОЗИЦИЯ: КЛАССИЧЕСКАЯ ПИРАМИДКА (2 снизу, 1 сверху) ---
+            // --- ИДЕАЛЬНАЯ ГОРИЗОНТАЛЬНАЯ ПИРАМИДКА ---
             
-            // 1. Нижняя задняя доска
+            // 1. Нижняя левая доска (задняя)
             const b1 = new THREE.Mesh(geometry, materials);
-            b1.position.set(-0.2, -0.8, -1.0);
-            b1.rotation.set(0.4, -0.3, 0.05);
+            b1.position.set(-0.4, -0.6, -0.5);
+            // Угол почти горизонтальный, доски не смотрят влево
+            b1.rotation.set(0.6, -0.15, 0.05); 
             boardGroup.add(b1);
 
-            // 2. Нижняя передняя доска (лежит параллельно первой, чуть ближе к нам)
+            // 2. Нижняя правая доска (передняя)
             const b2 = new THREE.Mesh(geometry, materials);
-            b2.position.set(0.4, -1.2, 0.5);
-            b2.rotation.set(0.35, -0.4, 0.1);
-            b2.scale.set(0.95, 0.95, 0.95);
+            b2.position.set(0.4, -0.8, 0.5);
+            b2.rotation.set(0.6, -0.15, 0.05);
             boardGroup.add(b2);
 
-            // 3. Верхняя доска (лежит ровно посередине на двух нижних)
+            // 3. Верхняя доска (лежит ровно по центру на двух нижних)
             const b3 = new THREE.Mesh(geometry, materials);
-            b3.position.set(0.1, 0.3, 0.6);
-            b3.rotation.set(0.45, -0.35, 0.08);
+            b3.position.set(0, 0.0, 0.8);
+            b3.rotation.set(0.6, -0.15, 0.05);
             boardGroup.add(b3);
 
-            // АДАПТАЦИЯ И СДВИГ ВПРАВО
+            // СДВИГ ВСЕЙ ГРУППЫ ВПРАВО
             function updateBoardPositions() {
                 if (window.innerWidth <= 1024) {
-                    // На телефонах опускаем композицию вниз под текст
-                    boardGroup.position.set(0, -2, -3); 
-                    boardGroup.scale.set(0.7, 0.7, 0.7);
+                    // На телефонах опускаем пирамидку вниз
+                    boardGroup.position.set(0, -2.5, -3); 
+                    boardGroup.scale.set(0.6, 0.6, 0.6);
                 } else {
-                    // На компьютерах сдвигаем ВСЮ пирамидку далеко вправо (X = 2.4), 
-                    // чтобы она гарантированно не перекрывала текст
-                    boardGroup.position.set(2.4, 0.2, 0); 
-                    boardGroup.scale.set(1, 1, 1);
+                    // На компьютерах жестко сдвигаем всю стопку далеко вправо (X = 3.8)
+                    // Масштаб чуть уменьшен (0.85), чтобы доски смотрелись элегантнее
+                    boardGroup.position.set(3.8, 0, 0); 
+                    boardGroup.scale.set(0.85, 0.85, 0.85); 
                 }
             }
             updateBoardPositions();
