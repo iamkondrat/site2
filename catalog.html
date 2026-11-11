@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог | Apollo LTD - Пиломатеріали</title>
+    <title>Каталог | Apollo LTD</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* ПРЕМИАЛЬНАЯ ПАЛИТРА */
         :root {
             --bg-dark: #121416;
             --card-bg: #1a1d20;
@@ -20,69 +19,59 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: var(--text); overflow-x: hidden; }
 
-        /* HEADER */
         header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 50px; background: rgba(18, 20, 22, 0.95);
             border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(10px);
         }
-        .logo h2 { letter-spacing: 2px; font-weight: 800; }
+        .logo h2 { letter-spacing: 2px; font-weight: 800; cursor: pointer; }
         .logo span { color: var(--accent); }
+        .logo img { height: 45px; display: block; width: auto; }
+        
         .nav-links a { color: var(--text); text-decoration: none; margin-right: 25px; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         
         .header-controls { display: flex; gap: 30px; align-items: center; }
-        .lang-switch span { cursor: pointer; margin: 0 5px; opacity: 0.5; font-weight: 600; transition: 0.3s; }
-        .lang-switch span.active, .lang-switch span:hover { opacity: 1; color: var(--accent); }
         
-        .cart-btn { background: var(--accent); color: #000; padding: 10px 25px; border-radius: 5px; cursor: pointer; font-weight: 700; transition: 0.3s; }
+        .lang-switcher { display: flex; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .lang-btn { background: transparent; border: none; color: #888; padding: 8px 12px; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .lang-btn.active, .lang-btn:hover { background: var(--accent); color: #000; }
+
+        .cart-btn { background: var(--accent); color: #000; padding: 10px 25px; border-radius: 5px; cursor: pointer; font-weight: 700; transition: 0.3s; text-transform: uppercase; font-size: 0.85rem;}
         .cart-btn:hover { box-shadow: 0 5px 15px rgba(217, 144, 88, 0.3); transform: translateY(-2px); }
 
-        /* КАТАЛОГ LAYOUT */
         .catalog-container { display: flex; padding: 40px 50px; gap: 40px; max-width: 1600px; margin: 0 auto; min-height: 80vh; }
         
-        /* БОКОВОЕ МЕНЮ */
         .sidebar { width: 250px; flex-shrink: 0; }
-        .sidebar h3 { margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; font-weight: 700; }
+        .sidebar h3 { margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; font-weight: 700; text-transform: uppercase;}
         .category-list { list-style: none; }
         .category-list li { margin-bottom: 15px; cursor: pointer; transition: 0.2s; color: var(--text-muted); font-weight: 600; }
         .category-list li:hover, .category-list li.active { color: var(--accent); padding-left: 10px; }
 
-        /* СЕТКА ТОВАРОВ */
-        .products-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; align-content: start; }
+        .products-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; align-content: start; }
         
-        /* КАРТОЧКА ТОВАРА */
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; cursor: pointer; }
         .card:hover { border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.4); transform: translateY(-5px); }
         
-        /* СЛАЙДЕР В КАРТОЧКЕ */
         .card-img { width: 100%; height: 220px; background-color: #0a0b0c; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        
-        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #fff; padding: 12px 15px; cursor: pointer; opacity: 0; transition: 0.3s; font-weight: bold; font-size: 1.2rem; user-select: none; }
-        .slider-btn:hover { background: var(--accent); color: #000; }
-        .slider-btn.left { left: 0; border-radius: 0 5px 5px 0; }
-        .slider-btn.right { right: 0; border-radius: 5px 0 0 5px; }
-        .card-img:hover .slider-btn { opacity: 1; }
-        
-        .photo-counter { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; }
+        .card:hover .card-img img { transform: scale(1.05); }
         .no-photo { color: #444; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; }
 
-        /* ИНФО В КАРТОЧКЕ */
         .card-content { padding: 25px; flex: 1; display: flex; flex-direction: column; }
         .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.4; flex: 1; }
-        .card-price { color: var(--accent); font-size: 1.3rem; font-weight: 800; margin-bottom: 15px; }
+        .card-price { color: var(--accent); font-size: 1.3rem; font-weight: 800; margin-bottom: 20px; }
         
-        .card-total { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 15px; text-align: right; height: 20px; font-weight: 600; }
-        .card-total b { font-size: 1.1rem; }
+        .card-buy-section { display: flex; gap: 10px; margin-top: auto; }
+        .card-buy-section input { width: 70px; padding: 12px; background: #0a0b0c; border: 1px solid var(--border); color: #fff; border-radius: 5px; text-align: center; font-size: 1rem; font-weight: 600; outline: none; }
+        .card-buy-section input:focus { border-color: var(--accent); }
+        .card-buy-section button { flex: 1; background: transparent; border: 1px solid var(--accent); color: var(--accent); cursor: pointer; border-radius: 5px; font-weight: 700; transition: 0.3s; font-size: 0.9rem; text-transform: uppercase; }
+        .card-buy-section button:hover { background: var(--accent); color: #000; }
 
-        .card-actions { display: flex; gap: 10px; }
-        .card-actions input { width: 80px; padding: 12px; background: #0a0b0c; border: 1px solid var(--border); color: #fff; border-radius: 5px; text-align: center; font-size: 1rem; font-weight: 600; outline: none; }
-        .card-actions input:focus { border-color: var(--accent); }
-        .card-actions button { flex: 1; background: transparent; border: 1px solid var(--accent); color: var(--accent); cursor: pointer; border-radius: 5px; font-weight: 700; transition: 0.3s; font-size: 1rem; text-transform: uppercase; }
-        .card-actions button:hover { background: var(--accent); color: #000; }
+        .loader { width: 100%; text-align: center; padding: 100px; font-size: 1.2rem; color: #777; font-weight: 600; grid-column: 1 / -1; text-transform: uppercase; letter-spacing: 2px;}
 
-        /* МОДАЛЬНОЕ ОКНО КОРЗИНЫ */
+        /* КОРЗИНА */
         .cart-modal {
             position: fixed; top: 0; right: -100%; width: 450px; height: 100vh;
             background: rgba(18, 20, 22, 0.98); backdrop-filter: blur(20px);
@@ -93,16 +82,11 @@
         .cart-modal.open { right: 0; }
         .close-cart { cursor: pointer; color: var(--text-muted); font-size: 2rem; text-align: right; margin-bottom: 20px; transition: 0.3s; }
         .close-cart:hover { color: var(--accent); transform: scale(1.1); }
-        
         .cart-items { flex: 1; overflow-y: auto; margin-bottom: 20px; padding-right: 10px; }
-        .cart-items::-webkit-scrollbar { width: 5px; }
-        .cart-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
-        
         .cart-item { border-bottom: 1px solid var(--border); padding: 20px 0; position: relative; }
         .cart-item-title { font-weight: 700; margin-bottom: 10px; font-size: 1.05rem; padding-right: 25px;}
         .cart-item-details { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.95rem; }
         .remove-item { position: absolute; top: 20px; right: 0; color: #ff4444; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
-        
         .cart-total-wrap { font-size: 1.5rem; font-weight: 800; text-align: right; margin-bottom: 30px; color: var(--accent); }
         
         .checkout-form input { width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: white; border-radius: 5px; font-family: 'Montserrat'; font-size: 1rem; outline: none;}
@@ -116,7 +100,6 @@
             .sidebar h3 { width: 100%; border: none; margin-bottom: 0;}
             .category-list { display: flex; flex-wrap: wrap; gap: 10px; }
             .category-list li { background: var(--card-bg); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); margin: 0; }
-            .category-list li:hover, .category-list li.active { padding-left: 15px; border-color: var(--accent); background: rgba(217, 144, 88, 0.1); }
             .cart-modal { width: 100%; }
             header { padding: 15px 20px; flex-direction: column; gap: 15px; }
         }
@@ -125,19 +108,19 @@
 <body>
 
     <header>
-        <div class="logo">
-            <h2>APOLLO<span>LTD</span></h2>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <img src="logo.png" alt="Apollo LTD">
         </div>
         <nav class="nav-links">
             <a href="index.html" data-i18n="nav_home">Головна</a>
             <a href="catalog.html" class="active" data-i18n="nav_catalog">Каталог</a>
-            <a href="about.html" data-i18n="nav_about">Про нас</a>
+            <a href="index.html#sec-04" data-i18n="nav_contacts">Контакти</a>
         </nav>
         <div class="header-controls">
-            <div class="lang-switch">
-                <span onclick="setLang('uk')" id="lang-uk">UA</span>
-                <span onclick="setLang('ru')" id="lang-ru">RU</span>
-                <span onclick="setLang('en')" id="lang-en">EN</span>
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLang('uk')" id="btn-uk">UA</button>
+                <button class="lang-btn" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
             </div>
             <div class="cart-btn" onclick="toggleCart()">
                 <span data-i18n="cart">Кошик</span> (<span id="cart-counter">0</span>)
@@ -146,21 +129,17 @@
     </header>
 
     <div class="catalog-container">
-        <!-- ФИЛЬТРЫ -->
+        <!-- БОКОВЕ МЕНЮ -->
         <aside class="sidebar">
             <h3 data-i18n="cat_title">Категорії</h3>
-            <ul class="category-list">
-                <li class="active" onclick="filterCategory('all', this)" data-i18n="cat_all">Всі товари</li>
-                <li onclick="filterCategory('dry_board', this)" data-i18n="cat_dry">Дошка суха столярна</li>
-                <li onclick="filterCategory('fresh', this)" data-i18n="cat_fresh">Пиломатеріали свіжопиляні</li>
-                <li onclick="filterCategory('molded', this)" data-i18n="cat_molded">Погонажні вироби</li>
-                <li onclick="filterCategory('covering', this)" data-i18n="cat_covering">Вагонка та терасна дошка</li>
+            <ul class="category-list" id="category-list">
+                <!-- Генерується через JS -->
             </ul>
         </aside>
 
-        <!-- ТОВАРЫ -->
+        <!-- СІТКА ТОВАРІВ -->
         <main class="products-grid" id="products-grid">
-            <!-- JS загрузит карточки сюда -->
+            <div class="loader" id="loader" data-i18n="wait">Завантаження каталогу...</div>
         </main>
     </div>
 
@@ -168,12 +147,8 @@
     <div class="cart-modal" id="cart-modal">
         <div class="close-cart" onclick="toggleCart()">×</div>
         <h2 style="margin-bottom: 25px; font-weight: 800;" data-i18n="cart_title">Ваше замовлення</h2>
-        <div class="cart-items" id="cart-items">
-            <!-- Товары корзины -->
-        </div>
-        <div class="cart-total-wrap">
-            <span data-i18n="total">Разом:</span> <span id="cart-total-sum">0</span> ₴
-        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-total-wrap"><span data-i18n="total">Разом:</span> <span id="cart-total-sum">0</span> ₴</div>
         
         <div class="checkout-form">
             <input type="text" id="client-name" data-i18n-placeholder="name_ph" placeholder="Ваше ім'я або компанія" required>
@@ -183,132 +158,143 @@
     </div>
 
     <script>
-        // --- 1. СЛОВАРИ И МУЛЬТИЯЗЫЧНОСТЬ ---
-        const dict = {
-            uk: { nav_home: "Головна", nav_catalog: "Каталог", nav_about: "Про нас", cart: "Кошик", cat_title: "Категорії", cat_all: "Всі товари", cat_dry: "Дошка суха столярна", cat_fresh: "Пиломатеріали свіжопиляні", cat_molded: "Погонажні вироби", cat_covering: "Вагонка та терасна", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", sum_label: "Сума:" },
-            ru: { nav_home: "Главная", nav_catalog: "Каталог", nav_about: "О нас", cart: "Корзина", cat_title: "Категории", cat_all: "Все товары", cat_dry: "Доска сухая столярная", cat_fresh: "Свежепиленные", cat_molded: "Погонажные изделия", cat_covering: "Вагонка и террасная", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", sum_label: "Сумма:" },
-            en: { nav_home: "Home", nav_catalog: "Catalog", nav_about: "About us", cart: "Cart", cat_title: "Categories", cat_all: "All Products", cat_dry: "Dry Joinery Board", cat_fresh: "Fresh Sawn Timber", cat_molded: "Molded Products", cat_covering: "Lining & Decking", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name or Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", sum_label: "Sum:" }
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usiAUUKZNymW_EMstPbLE9h_RAIjt4uiMHJxX3QISRLrvv9No/exec'; 
+        
+        const siteTranslations = {
+            uk: { nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", cart: "Кошик", cat_title: "Категорії", cat_all: "Всі товари", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", wait: "Завантаження каталогу...", "Сорт": "Сорт" },
+            ru: { nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", cart: "Корзина", cat_title: "Категории", cat_all: "Все товары", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", wait: "Загрузка каталога...", "Сорт": "Сорт" },
+            en: { nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", cart: "Cart", cat_title: "Categories", cat_all: "All Products", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name/Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", wait: "Loading catalog...", "Сорт": "Grade" }
         };
 
+        let catalogData = []; 
+        let categoriesSet = new Set();
+        let currentCategory = 'all';
+        let cart = JSON.parse(localStorage.getItem('apollo_cart')) || [];
         let currentLang = localStorage.getItem('apollo_lang') || 'uk';
 
-        function setLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('apollo_lang', lang);
-            
-            document.querySelectorAll('.lang-switch span').forEach(el => el.classList.remove('active'));
-            document.getElementById('lang-' + lang).classList.add('active');
+        async function fetchCatalog() {
+            try {
+                const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
+                const tabs = await response.json();
+                
+                tabs.forEach(tab => {
+                    const rows = tab.data;
+                    if(rows.length > 2) {
+                        
+                        // 1. ПОПОВНЮЄМО СЛОВНИК (ідентично прайсу)
+                        for(let i = 0; i < rows.length; i++) {
+                            if(rows[i].length >= 3) {
+                                let ukWord = rows[i][0] ? rows[i][0].trim() : '';
+                                let ruWord = rows[i][1] ? rows[i][1].trim() : '';
+                                let enWord = rows[i][2] ? rows[i][2].trim() : '';
+                                if(ukWord && ukWord !== "УКР") {
+                                    siteTranslations.uk[ukWord] = ukWord;
+                                    siteTranslations.ru[ukWord] = ruWord || ukWord;
+                                    siteTranslations.en[ukWord] = enWord || ukWord;
+                                }
+                            }
+                        }
 
-            // Перевод текста
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(dict[lang][key]) el.innerText = dict[lang][key];
-            });
-            // Перевод плейсхолдеров
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if(dict[lang][key]) el.setAttribute('placeholder', dict[lang][key]);
-            });
+                        // 2. ДИНАМІЧНИЙ ПОШУК КОЛОНОК (в 3-му рядку)
+                        let headerRow = rows[2];
+                        let priceIdx = -1, unitIdx = -1, idIdx = -1, photoIdx = -1, sortIdx = 3; 
+                        
+                        for(let j = 0; j < headerRow.length; j++) {
+                            let h = headerRow[j] ? headerRow[j].trim().toLowerCase() : '';
+                            if(h.includes('ціна') || h.includes('цена') || h.includes('price')) priceIdx = j;
+                            if(h.includes('од') || h.includes('вимір') || h.includes('unit')) unitIdx = j;
+                            if(h === 'id' || h === 'ід') idIdx = j;
+                            if(h.includes('фото') || h.includes('photo')) photoIdx = j;
+                        }
 
-            renderProducts(currentFilter);
-            updateCartUI();
-        }
+                        if(priceIdx === -1) return; // Пропускаємо, якщо немає ціни
 
-        // --- 2. БАЗА ДАННЫХ (Эмуляция) ---
-        // Ссылки на фото можно вставлять с любого внешнего источника
-        const db = [
-            { 
-                id: 1, category: 'dry_board', price: 25000, 
-                photos: [
-                    'https://images.unsplash.com/photo-1549429186-0775d79fa451?w=600&q=80', 
-                    'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=80'
-                ], 
-                name: { uk: 'Дошка дуб 30мм (1 сорт)', ru: 'Доска дуб 30мм (1 сорт)', en: 'Oak board 30mm (Grade 1)' } 
-            },
-            { 
-                id: 2, category: 'dry_board', price: 18000, 
-                photos: ['https://images.unsplash.com/photo-1582231268686-2dbb41b9d413?w=600&q=80'], 
-                name: { uk: 'Дошка ясен 50мм', ru: 'Доска ясень 50мм', en: 'Ash board 50mm' } 
-            },
-            { 
-                id: 3, category: 'covering', price: 250, 
-                photos: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=600&q=80', 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&q=80'], 
-                name: { uk: 'Вагонка сосна', ru: 'Вагонка сосна', en: 'Pine lining' } 
-            },
-            { 
-                id: 4, category: 'covering', price: 800, 
-                photos: ['https://images.unsplash.com/photo-1589146938971-ce9ebbdff1c5?w=600&q=80'], 
-                name: { uk: 'Терасна дошка (модрина)', ru: 'Террасная доска (лиственница)', en: 'Larch decking board' } 
-            },
-            { 
-                id: 5, category: 'molded', price: 120, 
-                photos: [], // Нет фото
-                name: { uk: 'Плінтус дубовий 60мм', ru: 'Плинтус дубовый 60мм', en: 'Oak skirting 60mm' } 
-            },
-            { 
-                id: 6, category: 'fresh', price: 6500, 
-                photos: ['https://images.unsplash.com/photo-1590217036724-40344d21e25e?w=600&q=80'], 
-                name: { uk: 'Брус сосна 100х100', ru: 'Брус сосна 100х100', en: 'Pine beam 100x100' } 
+                        categoriesSet.add(tab.name);
+
+                        // 3. ЗБИРАЄМО ТОВАРИ
+                        for(let i = 3; i < rows.length; i++) {
+                            let ukName = rows[i][0] ? rows[i][0].trim() : '';
+                            let priceVal = rows[i][priceIdx] ? parseFloat(rows[i][priceIdx].trim().replace(/\s/g,'').replace(',','.')) : 0;
+                            
+                            if(ukName && !isNaN(priceVal) && priceVal > 0) {
+                                let sortVal = rows[i][sortIdx] ? rows[i][sortIdx].trim() : '';
+                                let idVal = idIdx !== -1 && rows[i][idIdx] ? rows[i][idIdx].trim() : `prod_${tab.name}_${i}`;
+                                let unitVal = unitIdx !== -1 && rows[i][unitIdx] ? rows[i][unitIdx].trim() : 'шт';
+                                let photoVal = photoIdx !== -1 && rows[i][photoIdx] ? rows[i][photoIdx].trim() : '';
+
+                                catalogData.push({
+                                    id: idVal,
+                                    category: tab.name,
+                                    baseName: ukName,
+                                    sort: sortVal,
+                                    price: priceVal,
+                                    unit: unitVal,
+                                    photo: photoVal
+                                });
+                            }
+                        }
+                    }
+                });
+
+                document.getElementById('loader').style.display = 'none';
+                renderSidebar();
+                setLang(currentLang); // Встановлює мову, рендерить товари і корзину
+            } catch (error) {
+                document.getElementById('loader').innerText = "Помилка завантаження.";
             }
-        ];
-
-        // Автоматические единицы измерения
-        function getUnit(category) {
-            if (category === 'dry_board' || category === 'fresh') return 'м³';
-            if (category === 'covering') return 'м²';
-            if (category === 'molded') return 'м.п.';
-            return 'од';
         }
 
-        let currentFilter = 'all';
-        const sliderStates = {};
-
-        function filterCategory(cat, element) {
-            currentFilter = cat;
-            document.querySelectorAll('.category-list li').forEach(el => el.classList.remove('active'));
-            if(element) element.classList.add('active');
-            renderProducts(cat);
+        function getTranslatedName(item, lang) {
+            let name = (siteTranslations[lang] && siteTranslations[lang][item.baseName]) ? siteTranslations[lang][item.baseName] : item.baseName;
+            if(item.sort && item.sort !== "-") {
+                let sortWord = (siteTranslations[lang] && siteTranslations[lang]["Сорт"]) ? siteTranslations[lang]["Сорт"] : "Сорт";
+                name += ` (${sortWord} ${item.sort})`;
+            }
+            return name;
         }
 
-        // --- 3. РЕНДЕР КАРТОЧЕК, СЛАЙДЕР И КАЛЬКУЛЯТОР ---
-        function renderProducts(filter) {
+        function renderSidebar() {
+            const list = document.getElementById('category-list');
+            list.innerHTML = `<li onclick="setCategory('all')" id="cat-all" data-i18n="cat_all">Всі товари</li>`;
+            
+            categoriesSet.forEach(cat => {
+                const li = document.createElement('li');
+                li.setAttribute('data-cat', cat);
+                li.onclick = () => setCategory(cat);
+                li.id = `cat-${cat.replace(/\s+/g, '-')}`;
+                list.appendChild(li);
+            });
+        }
+
+        function setCategory(categoryName) {
+            currentCategory = categoryName;
+            document.querySelectorAll('.category-list li').forEach(li => li.classList.remove('active'));
+            const activeLi = document.getElementById(categoryName === 'all' ? 'cat-all' : `cat-${categoryName.replace(/\s+/g, '-')}`);
+            if(activeLi) activeLi.classList.add('active');
+            
+            renderProducts();
+        }
+
+        function renderProducts() {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
-            const filtered = filter === 'all' ? db : db.filter(p => p.category === filter);
+
+            const filtered = currentCategory === 'all' ? catalogData : catalogData.filter(p => p.category === currentCategory);
 
             filtered.forEach(item => {
-                const unit = getUnit(item.category);
-                sliderStates[item.id] = 0; 
-                
-                let sliderControls = '';
-                if (item.photos && item.photos.length > 1) {
-                    sliderControls = `
-                        <div class="slider-btn left" onclick="changePhoto(${item.id}, -1)">❮</div>
-                        <div class="slider-btn right" onclick="changePhoto(${item.id}, 1)">❯</div>
-                        <div class="photo-counter" id="counter-${item.id}">1/${item.photos.length}</div>
-                    `;
-                }
-
-                const imgHtml = item.photos && item.photos.length > 0 
-                    ? `<img id="img-${item.id}" src="${item.photos[0]}" alt="${item.name[currentLang]}">` 
-                    : `<div class="no-photo">ФОТО ОЧІКУЄТЬСЯ</div>`;
+                const imgHtml = item.photo ? `<img src="${item.photo}" alt="">` : `<div class="no-photo">ФОТО ОЧІКУЄТЬСЯ</div>`;
+                const displayName = getTranslatedName(item, currentLang);
 
                 grid.innerHTML += `
-                    <div class="card">
-                        <div class="card-img">
-                            ${imgHtml}
-                            ${sliderControls}
-                        </div>
+                    <div class="card" onclick="openProduct('${item.category}', '${item.id}')">
+                        <div class="card-img">${imgHtml}</div>
                         <div class="card-content">
-                            <div class="card-title">${item.name[currentLang]}</div>
-                            <div class="card-price">${item.price} ₴ / ${unit}</div>
+                            <div class="card-title">${displayName}</div>
+                            <div class="card-price">${item.price} ₴ / ${item.unit}</div>
                             
-                            <div class="card-total" id="total-${item.id}">${dict[currentLang].sum_label} <b>0 ₴</b></div>
-                            
-                            <div class="card-actions">
-                                <input type="text" inputmode="decimal" placeholder="0.0" 
-                                    oninput="calcLiveTotal(this, ${item.price}, ${item.id})" id="qty-${item.id}">
-                                <button onclick="addToCart(${item.id})">${dict[currentLang].btn_add}</button>
+                            <div class="card-buy-section" onclick="event.stopPropagation()">
+                                <input type="number" step="0.01" placeholder="0.0" id="qty-${item.id}">
+                                <button onclick="addToCart('${item.id}')" data-i18n="btn_add">${siteTranslations[currentLang].btn_add}</button>
                             </div>
                         </div>
                     </div>
@@ -316,49 +302,48 @@
             });
         }
 
-        function changePhoto(id, direction) {
-            const product = db.find(p => p.id === id);
-            let curr = sliderStates[id];
-            curr += direction;
-            if (curr < 0) curr = product.photos.length - 1;
-            if (curr >= product.photos.length) curr = 0;
-            
-            sliderStates[id] = curr;
-            document.getElementById(`img-${id}`).src = product.photos[curr];
-            document.getElementById(`counter-${id}`).innerText = `${curr + 1}/${product.photos.length}`;
+        function openProduct(category, productId) {
+            window.location.href = `product.html?category=${encodeURIComponent(category)}&id=${encodeURIComponent(productId)}`;
         }
 
-        function calcLiveTotal(input, price, id) {
-            let val = input.value.replace(',', '.').replace(/[^0-9.]/g, '');
-            if ((val.match(/\./g) || []).length > 1) {
-                val = val.substring(0, val.lastIndexOf('.'));
-            }
-            input.value = val;
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('apollo_lang', lang);
             
-            const num = parseFloat(val);
-            const totalBox = document.getElementById(`total-${id}`);
-            const sumLabel = dict[currentLang].sum_label;
-            
-            if (!isNaN(num) && num > 0) {
-                totalBox.innerHTML = `${sumLabel} <b style="color:var(--accent)">${(num * price).toFixed(0)} ₴</b>`;
-            } else {
-                totalBox.innerHTML = `${sumLabel} <b>0 ₴</b>`;
-            }
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const btn = document.getElementById('btn-' + lang);
+            if(btn) btn.classList.add('active');
+
+            // Статичні тексти
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(siteTranslations[lang] && siteTranslations[lang][key]) el.innerText = siteTranslations[lang][key];
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(siteTranslations[lang] && siteTranslations[lang][key]) el.setAttribute('placeholder', siteTranslations[lang][key]);
+            });
+
+            // Динамічні категорії в боковому меню
+            document.querySelectorAll('.sidebar li[data-cat]').forEach(el => {
+                const catName = el.getAttribute('data-cat');
+                el.innerText = (siteTranslations[lang] && siteTranslations[lang][catName]) ? siteTranslations[lang][catName] : catName;
+            });
+
+            renderProducts();
+            updateCartUI();
         }
 
-        // --- 4. ЛОГИКА КОРЗИНЫ (localStorage) ---
-        let cart = JSON.parse(localStorage.getItem('apollo_cart')) || [];
-
+        // --- ЛОГІКА КОРЗИНИ ---
         function toggleCart() { document.getElementById('cart-modal').classList.toggle('open'); }
 
         function addToCart(id) {
-            const product = db.find(p => p.id === id);
-            const unit = getUnit(product.category);
+            const product = catalogData.find(p => p.id === id);
             const inputField = document.getElementById(`qty-${id}`);
-            const qty = parseFloat(inputField.value);
+            const qty = parseFloat(inputField.value.replace(',','.'));
 
             if(isNaN(qty) || qty <= 0) {
-                // Если забыли ввести объем, подсвечиваем поле
                 inputField.style.borderColor = '#ff4444';
                 setTimeout(() => inputField.style.borderColor = 'var(--border)', 1000);
                 return;
@@ -368,19 +353,17 @@
             if(existing) {
                 existing.qty += qty;
             } else {
-                cart.push({ id, price: product.price, unit, qty, name_uk: product.name.uk });
+                // Зберігаємо базові дані для відтворення корзини в майбутньому
+                cart.push({ id, baseName: product.baseName, sort: product.sort, price: product.price, unit: product.unit, qty });
             }
             
             localStorage.setItem('apollo_cart', JSON.stringify(cart));
-            inputField.value = ''; // очищаем поле после добавления
-            calcLiveTotal(inputField, product.price, id); // сбрасываем калькулятор
+            inputField.value = '';
             
             updateCartUI();
-            
-            // Визуальный отклик кнопки корзины
-            const btn = document.querySelector('.cart-btn');
-            btn.style.transform = 'scale(1.1)';
-            setTimeout(() => btn.style.transform = 'scale(1)', 200);
+            const cartBtn = document.querySelector('.cart-btn');
+            cartBtn.style.transform = 'scale(1.1)';
+            setTimeout(() => cartBtn.style.transform = 'scale(1)', 200);
         }
 
         function removeFromCart(id) {
@@ -396,19 +379,17 @@
             
             let total = 0;
             if(cart.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px 0;">${dict[currentLang].empty_cart}</p>`;
+                container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px 0;">${siteTranslations[currentLang].empty_cart}</p>`;
             }
 
             cart.forEach(item => {
-                const productDbInfo = db.find(p => p.id === item.id);
-                // Динамически подтягиваем имя на текущем языке
-                const displayName = productDbInfo ? productDbInfo.name[currentLang] : item.name_uk; 
                 const sum = item.price * item.qty;
                 total += sum;
+                const displayName = getTranslatedName(item, currentLang);
                 
                 container.innerHTML += `
                     <div class="cart-item">
-                        <div class="remove-item" onclick="removeFromCart(${item.id})">×</div>
+                        <div class="remove-item" onclick="removeFromCart('${item.id}')">×</div>
                         <div class="cart-item-title">${displayName}</div>
                         <div class="cart-item-details">
                             <span>${item.qty} ${item.unit} × ${item.price} ₴</span>
@@ -421,15 +402,13 @@
             document.getElementById('cart-total-sum').innerText = total.toFixed(0);
         }
 
-        // --- 5. ОТПРАВКА В TELEGRAM ---
         async function sendOrder() {
             const name = document.getElementById('client-name').value.trim();
             const phone = document.getElementById('client-phone').value.trim();
 
-            if(!name || !phone) return alert(currentLang === 'uk' ? "Заповніть контакти" : "Заполните контакты");
+            if(!name || !phone) return alert(currentLang === 'uk' ? "Заповніть контакти" : "Fill the contacts");
             if(cart.length === 0) return;
 
-            // ЗДЕСЬ ВСТАВЬТЕ ДАННЫЕ ВАШЕГО БОТА ИЗ PWA-СИСТЕМЫ
             const BOT_TOKEN = '8828109529:AAHxYZQkGVLftBxBiEIIEVVXVM8_a0BsX9w'; 
             const CHAT_ID = '710362478';
 
@@ -442,33 +421,36 @@
             cart.forEach((item, i) => {
                 const sum = item.price * item.qty;
                 totalSum += sum;
-                // Всегда отправляем директору на украинском
-                text += `${i+1}. ${item.name_uk} — ${item.qty} ${item.unit} (x ${item.price} ₴)\n`;
+                // В Телеграм завжди відправляємо українську назву
+                const ukName = getTranslatedName(item, 'uk');
+                text += `${i+1}. ${ukName} — ${item.qty} ${item.unit} (x ${item.price} ₴)\n`;
             });
             text += `\n💰 <b>РАЗОМ: ${totalSum.toFixed(0)} ₴</b>`;
-
             
             try {
+                const btn = document.querySelector('.checkout-form button');
+                btn.innerText = "Відправка...";
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' })
                 });
-                alert(currentLang === 'uk' ? "Замовлення успішно відправлено!" : "Заказ успешно отправлен!");
+                alert(currentLang === 'uk' ? "Замовлення успішно відправлено!" : "Order sent successfully!");
                 cart = [];
                 localStorage.setItem('apollo_cart', JSON.stringify([]));
                 updateCartUI();
                 toggleCart();
                 document.getElementById('client-name').value = '';
                 document.getElementById('client-phone').value = '';
+                btn.innerText = siteTranslations[currentLang].checkout_btn;
             } catch (error) {
                 alert("Помилка відправки.");
             }
         }
 
-        // Запуск при загрузке страницы
         document.addEventListener('DOMContentLoaded', () => {
-            setLang(currentLang); // Установит язык, отрендерит товары и обновит корзину
+            fetchCatalog();
+            updateCartUI();
         });
     </script>
 </body>
