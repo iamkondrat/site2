@@ -181,7 +181,7 @@
                     const rows = tab.data;
                     if(rows.length > 2) {
                         
-                        // 1. ПОПОВНЮЄМО СЛОВНИК З ПЕРШИХ КОЛОНОК
+                        // 1. ПОПОВНЮЄМО СЛОВНИК З ПЕРШИХ КОЛОНОК (для перекладу категорій і назв)
                         for(let i = 0; i < rows.length; i++) {
                             if(rows[i].length >= 3) {
                                 let ukWord = rows[i][0] ? rows[i][0].trim() : '';
@@ -195,46 +195,57 @@
                             }
                         }
 
-                        // 2. АВТОМАТИЧНО ШУКАЄМО ІНДЕКСИ КОЛОНОК ЗА ЇХНІМИ НАЗВАМИ В ШАПЦІ (рядок з індексом 2)
-                        let headerRow = rows[2];
-                        let priceIdx = -1, unitIdx = -1, idIdx = -1, photoIdx = -1, sortIdx = -1; 
-                        
-                        for(let j = 0; j < headerRow.length; j++) {
-                            let h = headerRow[j] ? headerRow[j].trim().toLowerCase() : '';
-                            if(h.includes('ціна') || h.includes('цена') || h.includes('price')) priceIdx = j;
-                            if(h.includes('од') || h.includes('вимір') || h.includes('unit')) unitIdx = j;
-                            if(h === 'id' || h === 'ід') idIdx = j;
-                            if(h.includes('фото') || h.includes('photo')) photoIdx = j;
-                            if(h.includes('сорт') || h.includes('товщина') || h.includes('ширина')) sortIdx = j;
-                        }
-
-                        if(priceIdx === -1) return; // Пропускаємо аркуші без ціни
-
                         categoriesSet.add(tab.name);
 
-                        // 3. ЗБИРАЄМО ТОВАРИ ПРАВИЛЬНО
+                        // Визначаємо одиницю виміру залежно від назви аркуша
+                        let defaultUnit = "м³";
+                        let lowerTabName = tab.name.toLowerCase();
+                        if (lowerTabName.includes('погонаж') || lowerTabName.includes('брус')) {
+                            defaultUnit = "м.п.";
+                        }
+
+                        // 2. ЗБИРАЄМО ТОВАРИ ЗА ЧІТКИМИ ІНДЕКСАМИ КОЛОНОК
+                        // Колонка 0 (A) - Назва (Порода)
+                        // Колонка 3 (D) - Сорт (або параметр)
+                        // Колонка 4 (E) - Ціна
+                        // Колонка 5 (F) - ID (якщо є)
+                        // Колонка 6 (G) - Фото (якщо є)
                         for(let i = 3; i < rows.length; i++) {
                             let ukName = rows[i][0] ? rows[i][0].trim() : '';
-                            let priceVal = rows[i][priceIdx] ? parseFloat(rows[i][priceIdx].trim().replace(/\s/g,'').replace(',','.')) : 0;
                             
-                            // Пропускаємо порожні або службові рядки (якщо назви нема або ціна не число)
+                            // Шукаємо ціну (зазвичай вона в колонці E (індекс 4) або D (індекс 3))
+                            // Давайте знайдемо першу колонку, де є число (ціна) після індексу 2
+                            let priceVal = 0;
+                            let priceIdx = -1;
+                            let sortVal = '';
+                            
+                            for(let j = 3; j < rows[i].length; j++) {
+                                let val = rows[i][j] ? rows[i][j].trim().replace(/\s/g,'').replace(',','.') : '';
+                                let num = parseFloat(val);
+                                // Якщо це схоже на ціну (більше 10 і не порожньо)
+                                if(!isNaN(num) && num > 5 && priceIdx === -1) {
+                                    priceIdx = j;
+                                    priceVal = num;
+                                }
+                            }
+
+                            // Якщо колонка перед ціною — це сорт/параметр
+                            if(priceIdx > 3) {
+                                sortVal = rows[i][priceIdx - 1] ? rows[i][priceIdx - 1].trim() : '';
+                            }
+
                             if(!ukName || isNaN(priceVal) || priceVal <= 0) continue;
 
-                            let sortVal = (sortIdx !== -1 && rows[i][sortIdx]) ? rows[i][sortIdx].trim() : '';
-                            let idVal = (idIdx !== -1 && rows[i][idIdx]) ? rows[i][idIdx].trim() : `prod_${tab.name}_${i}`;
-                            let unitVal = (unitIdx !== -1 && rows[i][unitIdx]) ? rows[i][unitIdx].trim() : 'м³';
-                            let photoVal = (photoIdx !== -1 && rows[i][photoIdx]) ? rows[i][photoIdx].trim() : '';
-
-                            // Якщо це брус чи інший виріб, де перша колонка — цифра (товщина), сформуємо гарну назву
-                            let finalName = ukName;
+                            let idVal = `prod_${tab.name}_${i}`.replace(/\s+/g, '_');
+                            let photoVal = ''; // Тут можна буде додати зчитування з колонки фото, якщо вона є
 
                             catalogData.push({
                                 id: idVal,
                                 category: tab.name,
-                                baseName: finalName,
+                                baseName: ukName,
                                 sort: sortVal,
                                 price: priceVal,
-                                unit: unitVal,
+                                unit: defaultUnit,
                                 photo: photoVal
                             });
                         }
@@ -249,17 +260,17 @@
                 document.getElementById('loader').innerText = "Помилка завантаження каталогу.";
             }
         }
-        function getTranslatedName(item, lang) {
-            let name = (siteTranslations[lang] && siteTranslations[lang][item.baseName]) ? siteTranslations[lang][item.baseName] : item.baseName;
-            
-            // Якщо є сорт або додатковий параметр і він не пустий
-            if(item.sort && item.sort !== "-") {
-                // Перевіримо чи це цифра (для бруса) чи сорт
-                name += ` (${item.sort})`;
-            }
-            return name;
-        }
 
+        // Форматування назви та сорту без дублювання
+        function getTranslatedName(item, lang) {
+            let translatedBase = (siteTranslations[lang] && siteTranslations[lang][item.baseName]) ? siteTranslations[lang][item.baseName] : item.baseName;
+            
+            if (item.sort && item.sort !== "-" && item.sort !== "") {
+                let sortWord = (siteTranslations[lang] && siteTranslations[lang]["Сорт"]) ? siteTranslations[lang]["Сорт"] : "Сорт";
+                return `${translatedBase} (${sortWord} ${item.sort})`;
+            }
+            return translatedBase;
+        }
         function renderSidebar() {
             const list = document.getElementById('category-list');
             list.innerHTML = `<li onclick="setCategory('all')" id="cat-all" data-i18n="cat_all">Всі товари</li>`;
