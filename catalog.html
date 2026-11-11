@@ -367,7 +367,7 @@
         function addToCart(id) {
             const product = catalogData.find(p => p.id === id);
             const inputField = document.getElementById(`qty-${id}`);
-            const qty = parseFloat(inputField.value.replace(',','.'));
+            const qty = parseFloat(inputField.value.replace(',', '.'));
 
             if(isNaN(qty) || qty <= 0) {
                 inputField.style.borderColor = '#ff4444';
@@ -379,8 +379,18 @@
             if(existing) {
                 existing.qty += qty;
             } else {
-                // Зберігаємо базові дані для відтворення корзини в майбутньому
-                cart.push({ id, baseName: product.baseName, sort: product.sort, price: product.price, unit: product.unit, qty });
+                // Зберігаємо повні дані (включаючи товщину та ширину для бруса)
+                cart.push({ 
+                    id: product.id, 
+                    isTimber: product.isTimber,
+                    thickness: product.thickness,
+                    width: product.width,
+                    baseName: product.baseName, 
+                    sort: product.sort, 
+                    price: product.price, 
+                    unit: product.unit, 
+                    qty 
+                });
             }
             
             localStorage.setItem('apollo_cart', JSON.stringify(cart));
@@ -391,7 +401,6 @@
             cartBtn.style.transform = 'scale(1.1)';
             setTimeout(() => cartBtn.style.transform = 'scale(1)', 200);
         }
-
         function removeFromCart(id) {
             cart = cart.filter(item => item.id !== id);
             localStorage.setItem('apollo_cart', JSON.stringify(cart));
