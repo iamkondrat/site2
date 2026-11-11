@@ -109,55 +109,50 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usiAUUKZNymW_EMstPbLE9h_RAIjt4uiMHJxX3QISRLrvv9No/exec'; 
 
 // Словник для фіксованих слів (шапка, назви категорій, заголовки колонок)
-const siteTranslations = {
-    uk: {
-        nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", loading: "Оновлення прайсу...",
-        "Дошка необрізна": "Дошка необрізна", "Дошка обрізна": "Дошка обрізна", "Брус": "Брус", "Погонаж": "Погонажні вироби",
-        "Порода (Укр)": "Порода", "Сорт": "Сорт", "Ціна": "Ціна", "Товщина": "Товщина", "Ширина": "Ширина", "Ціна (грн/м3)": "Ціна (грн/м3)", "Товщина (мм)": "Товщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Ціна (грн/м.п.)", price_title: "Аполло | Прайс-лист"
-    },
-    ru: {
-        nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", loading: "Обновление прайса...",
-        "Дошка необрізна": "Доска необрезная", "Дошка обрізна": "Доска обрезная", "Брус": "Брус", "Погонаж": "Погонажные изделия",
-        "Порода (Укр)": "Порода", "Сорт": "Сорт", "Ціна": "Цена", "Товщина": "Толщина", "Ширина": "Ширина", "Ціна (грн/м3)": "Цена (грн/м3)", "Товщина (мм)": "Толщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Цена (грн/м.п.)", price_title: "Аполло | Прайс-лист"
-    },
-    en: {
-        nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", loading: "Loading prices...",
-        "Дошка необрізна": "Unedged Board", "Дошка обрізна": "Edged Board", "Брус": "Timber", "Погонаж": "Molding Products",
-        "Порода (Укр)": "Wood Type", "Сорт": "Grade", "Ціна": "Price", "Товщина": "Thickness", "Ширина": "Width", "Ціна (грн/м3)": "Price (UAH/m3)", "Товщина (мм)": "Thickness (mm)", "Ширина (мм)": "Width (mm)", "Ціна (грн/м.п.)": "Price (UAH/lin. m.)", price_title: "Apollo | Price list"
-    }
-};
+// Словник для фіксованих слів та заголовків
+        const siteTranslations = {
+            uk: {
+                nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", loading: "Оновлення прайсу...",
+                "Дошка необрізна": "Дошка необрізна", "Дошка обрізна": "Дошка обрізна", "Брус": "Брус", "Погонаж": "Погонажні вироби",
+                "Порода (Укр)": "Порода", "Порода": "Порода", "Сорт": "Сорт", "Ціна": "Ціна", 
+                "Товщина": "Товщина", "Ширина": "Ширина", "Ціна (грн/м3)": "Ціна (грн/м³)",
+                "Товщина (мм)": "Товщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Ціна (грн/м.п.)"
+            },
+            ru: {
+                nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", loading: "Обновление прайса...",
+                "Дошка необрізна": "Доска необрезная", "Дошка обрізна": "Доска обрезная", "Брус": "Брус", "Погонаж": "Погонажные изделия",
+                "Порода (Укр)": "Порода", "Порода": "Порода", "Сорт": "Сорт", "Ціна": "Цена", 
+                "Товщина": "Толщина", "Ширина": "Ширина", "Ціна (грн/м3)": "Цена (грн/м³)",
+                "Товщина (мм)": "Толщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Цена (грн/м.п.)"
+            },
+            en: {
+                nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", loading: "Loading prices...",
+                "Дошка необрізна": "Unedged Board", "Дошка обрізна": "Edged Board", "Брус": "Timber", "Погонаж": "Molding Products",
+                "Порода (Укр)": "Wood Type", "Порода": "Wood Type", "Сорт": "Grade", "Ціна": "Price", 
+                "Товщина": "Thickness", "Ширина": "Width", "Ціна (грн/м3)": "Price (UAH/m³)",
+                "Товщина (мм)": "Thickness (mm)", "Ширина (мм)": "Width (mm)", "Ціна (грн/м.п.)": "Price (UAH/l.m.)"
+            }
+        };
 
-async function loadDynamicPrices() {
+        async function loadDynamicPrices() {
             const container = document.getElementById('dynamic-price-container');
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
                 const tabs = await response.json(); 
 
-                if (!Array.isArray(tabs)) {
-                    throw new Error("Невідомий формат даних від Google Sheets");
-                }
+                if (!Array.isArray(tabs)) throw new Error("Невідомий формат даних");
                 
                 let html = '';
                 
                 tabs.forEach(tab => {
                     const rows = tab.data;
-                    if(!rows || rows.length === 0) return;
+                    if(!rows || rows.length < 3) return;
 
                     html += `<div class="category-block">`;
                     html += `<h2 data-dyn="${tab.name}">${tab.name}</h2>`;
                     html += `<div class="table-container"><table>`;
 
-                    // Знаходимо рядок із заголовком ("Порода" або "Товщина")
-                    let headerIdx = -1;
-                    for(let i = 0; i < Math.min(rows.length, 4); i++) {
-                        if(rows[i] && rows[i][0] && (rows[i][0].trim() === 'Порода' || rows[i][0].trim() === 'Товщина' || rows[i][0].trim() === 'УКР')) {
-                            headerIdx = i;
-                            if(rows[i][0].trim() !== 'УКР') break;
-                        }
-                    }
-                    if(headerIdx === -1) headerIdx = 0;
-
-                    // 1. Поповнюємо словник
+                    // 1. Поповнюємо словник перекладів з колонок A, B, C
                     for(let i = 0; i < rows.length; i++) {
                         if(rows[i] && rows[i].length >= 3) {
                             let ukWord = rows[i][0] ? rows[i][0].trim() : '';
@@ -171,19 +166,25 @@ async function loadDynamicPrices() {
                         }
                     }
 
-                    // 2. Шапка
+                    // 2. Шапка строго береться з 3-го рядка таблиці (індекс 2)
+                    let headerRow = rows[2];
                     html += `<thead><tr>`;
-                    html += `<th data-dyn="${rows[headerIdx][0].trim()}">${rows[headerIdx][0].trim()}</th>`;
-                    for(let j = 3; j < rows[headerIdx].length; j++) {
-                        let headerText = rows[headerIdx][j] ? rows[headerIdx][j].trim() : '';
-                        if(headerText) html += `<th data-dyn="${headerText}">${headerText}</th>`;
+                    let h0 = headerRow[0] ? headerRow[0].trim() : '';
+                    html += `<th data-dyn="${h0}">${h0}</th>`;
+
+                    for(let j = 3; j < headerRow.length; j++) {
+                        let headerText = headerRow[j] ? headerRow[j].trim() : '';
+                        if(headerText) {
+                            html += `<th data-dyn="${headerText}">${headerText}</th>`;
+                        }
                     }
                     html += `</tr></thead><tbody>`;
 
-                    // 3. Тіло таблиці
+                    // 3. Тіло таблиці починається строго з 4-го рядка (індекс 3)
                     let skipCount = 0;
-                    for(let i = headerIdx + 1; i < rows.length; i++) {
-                        let cellValue = rows[i][0] ? rows[i][0].trim() : '';
+                    for(let i = 3; i < rows.length; i++) {
+                        if(!rows[i] || !rows[i][0]) continue;
+                        let cellValue = rows[i][0].trim();
                         if(!cellValue || cellValue === 'УКР') continue;
 
                         html += `<tr>`;
@@ -191,7 +192,7 @@ async function loadDynamicPrices() {
                             skipCount--;
                         } else {
                             let rowspan = 1;
-                            while (i + rowspan < rows.length && (rows[i + rowspan][0] ? rows[i + rowspan][0].trim() : '') === cellValue) {
+                            while (i + rowspan < rows.length && rows[i + rowspan] && rows[i + rowspan][0] && rows[i + rowspan][0].trim() === cellValue) {
                                 rowspan++;
                             }
                             if (rowspan > 1) {
@@ -202,6 +203,7 @@ async function loadDynamicPrices() {
                             }
                         }
 
+                        // Колонка 4 і далі (індекс 3 і далі)
                         for(let j = 3; j < rows[i].length; j++) {
                             let cellData = rows[i][j] ? rows[i][j].trim() : '';
                             html += `<td data-dyn="${cellData}">${cellData}</td>`;
