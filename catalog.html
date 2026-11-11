@@ -231,7 +231,7 @@
                         siteTranslations.ru[col0] = ruWord || col0;
                         siteTranslations.en[col0] = enWord || col0;
 
-                        if (isTimberTab || (r.length >= 6 && r[3] && r[4] && r[5])) {
+                        if (isTimberTab) {
                             // Структура Бруса: A (Назва), B (РУС), C (АНГЛ), D (Товщина), E (Ширина), F (Ціна), G (Одиниця), H (Фото)
                             let thickness = r[3] ? r[3].trim() : '';
                             let width = r[4] ? r[4].trim() : '';
@@ -253,7 +253,7 @@
                                 photo: photoVal
                             });
                         } else {
-                            // Структура Дошок: A (Назва), B (РУС), C (АНГЛ), D (Сорт), E (Ціна), F (Одиниця), G (Фото)
+                            // Структура Дошок та Погонажу: A (Назва), B (РУС), C (АНГЛ), D (Сорт), E (Ціна), F (Одиниця), G (Фото)
                             let sortVal = r[3] ? r[3].trim() : '';
                             let priceVal = parseFloat(r[4] ? r[4].trim().replace(/\s/g,'').replace(',','.') : 0);
                             let unitVal = r[5] ? r[5].trim() : (tab.name.toLowerCase().includes('погонаж') ? 'м.п.' : 'м³');
