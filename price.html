@@ -166,50 +166,80 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usi
                         }
                     }
 
-                    // 2. Шапка строго береться з 3-го рядка таблиці (індекс 2)
-                    let headerRow = rows[2];
-                    html += `<thead><tr>`;
-                    let h0 = headerRow[0] ? headerRow[0].trim() : '';
-                    html += `<th data-dyn="${h0}">${h0}</th>`;
+                    // 2. Беремо заголовок (3-й рядок таблиці, індекс 2)
+                    let headerIdx = 2;
+                    let headerRow = rows[headerIdx];
+                    if(!headerRow) return;
 
-                    for(let j = 3; j < headerRow.length; j++) {
-                        let headerText = headerRow[j] ? headerRow[j].trim() : '';
-                        if(headerText) {
-                            html += `<th data-dyn="${headerText}">${headerText}</th>`;
+                    // 3. Формуємо масив колонок для відображення
+                    let isTimberTab = tab.name.toLowerCase().includes('брус');
+                    let colIndices = [];
+
+                    if (isTimberTab) {
+                        // Для Бруса пропускаємо колонки A, B, C і беремо починаючи з D (індекс 3: Товщина, Ширина, Ціна)
+                        for(let j = 3; j < headerRow.length; j++) {
+                            if(headerRow[j] && headerRow[j].trim() !== '') colIndices.push(j);
+                        }
+                        if(colIndices.length === 0) colIndices = [3, 4, 5];
+                    } else {
+                        // Для Дощок: колонка A (Порода) + колонки з індексу 3 (Сорт, Ціна)
+                        colIndices.push(0);
+                        for(let j = 3; j < headerRow.length; j++) {
+                            if(headerRow[j] && headerRow[j].trim() !== '') colIndices.push(j);
                         }
                     }
+
+                    // 4. Малюємо шапку (<thead>)
+                    html += `<thead><tr>`;
+                    colIndices.forEach(j => {
+                        let headerText = headerRow[j] ? headerRow[j].trim() : '';
+                        html += `<th data-dyn="${headerText}">${headerText}</th>`;
+                    });
                     html += `</tr></thead><tbody>`;
 
-                    // 3. Тіло таблиці починається строго з 4-го рядка (індекс 3)
+                    // 5. Малюємо тіло таблиці (<tbody>) з об'єднанням комірок першої колонки
                     let skipCount = 0;
-                    for(let i = 3; i < rows.length; i++) {
-                        if(!rows[i] || !rows[i][0]) continue;
-                        let cellValue = rows[i][0].trim();
-                        if(!cellValue || cellValue === 'УКР') continue;
+                    let groupColIdx = colIndices[0]; // Індекс колонки для об'єднання (Товщина для бруса або Порода для дощок)
+
+                    for(let i = headerIdx + 1; i < rows.length; i++) {
+                        let r = rows[i];
+                        if(!r || r.length <= groupColIdx) continue;
+                        let groupVal = r[groupColIdx] ? r[groupColIdx].trim() : '';
+                        if(!groupVal || groupVal === 'УКР') continue;
 
                         html += `<tr>`;
+
+                        // Об'єднання комірок (rowspan) для однакових значень товщини / породи
                         if (skipCount > 0) {
                             skipCount--;
                         } else {
                             let rowspan = 1;
-                            while (i + rowspan < rows.length && rows[i + rowspan] && rows[i + rowspan][0] && rows[i + rowspan][0].trim() === cellValue) {
+                            while (
+                                i + rowspan < rows.length && 
+                                rows[i + rowspan] && 
+                                rows[i + rowspan][groupColIdx] && 
+                                rows[i + rowspan][groupColIdx].trim() === groupVal
+                            ) {
                                 rowspan++;
                             }
                             if (rowspan > 1) {
-                                html += `<td rowspan="${rowspan}" data-dyn="${cellValue}"><strong>${cellValue}</strong></td>`;
+                                html += `<td rowspan="${rowspan}" data-dyn="${groupVal}"><strong>${groupVal}</strong></td>`;
                                 skipCount = rowspan - 1;
                             } else {
-                                html += `<td data-dyn="${cellValue}"><strong>${cellValue}</strong></td>`;
+                                html += `<td data-dyn="${groupVal}"><strong>${groupVal}</strong></td>`;
                             }
                         }
 
-                        // Колонка 4 і далі (індекс 3 і далі)
-                        for(let j = 3; j < rows[i].length; j++) {
-                            let cellData = rows[i][j] ? rows[i][j].trim() : '';
+                        // Усі інші колонки в рядку (Ширина, Ціна)
+                        for(let k = 1; k < colIndices.length; k++) {
+                            let colIdx = colIndices[k];
+                            let cellData = r[colIdx] ? r[colIdx].trim() : '';
                             html += `<td data-dyn="${cellData}">${cellData}</td>`;
                         }
+
                         html += `</tr>`;
                     }
+
                     html += `</tbody></table></div></div>`;
                 });
                 
