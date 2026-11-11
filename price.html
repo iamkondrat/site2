@@ -150,16 +150,16 @@ async function loadDynamicPrices() {
             html += `<div class="table-container"><table>`;
 
             const rows = tab.data;
-            if(rows.length > 0) {
-                // 1. ПОПОВНЮЄМО СЛОВНИК З 1, 2 і 3 КОЛОНКИ (пропускаємо заголовок)
-                for(let i = 1; i < rows.length; i++) {
-                    // Якщо колонок хоча б 3, вважаємо, що там є переклади
+            if(rows.length > 2) { // Перевіряємо, що є хоча б заголовки
+                // 1. ПОПОВНЮЄМО СЛОВНИК З 1, 2 і 3 КОЛОНКИ (проходимо по всіх рядках)
+                for(let i = 0; i < rows.length; i++) {
                     if(rows[i].length >= 3) {
-                        let ukWord = rows[i][0].trim();
-                        let ruWord = rows[i][1].trim();
-                        let enWord = rows[i][2].trim();
+                        let ukWord = rows[i][0] ? rows[i][0].trim() : '';
+                        let ruWord = rows[i][1] ? rows[i][1].trim() : '';
+                        let enWord = rows[i][2] ? rows[i][2].trim() : '';
                         
-                        if(ukWord) {
+                        // Пропускаємо технічний заголовок мов
+                        if(ukWord && ukWord !== "УКР") { 
                             siteTranslations.uk[ukWord] = ukWord;
                             siteTranslations.ru[ukWord] = ruWord || ukWord;
                             siteTranslations.en[ukWord] = enWord || ukWord;
@@ -167,28 +167,33 @@ async function loadDynamicPrices() {
                     }
                 }
 
-                // 2. БУДУЄМО ШАПКУ (Пропускаючи колонки 1 і 2, тобто Рос і Англ переклади)
+                // 2. БУДУЄМО ШАПКУ (Беремо з 3-го рядка таблиці, індекс 2)
+                let headerRow = 2; 
                 html += `<thead><tr>`;
-                html += `<th data-dyn="${rows[0][0].trim()}">${rows[0][0].trim()}</th>`; // Перша колонка (Укр)
-                // Починаємо з 3-го індексу (тобто з 4-ї колонки: Сорт, Ціна тощо)
-                for(let j = 3; j < rows[0].length; j++) {
-                    html += `<th data-dyn="${rows[0][j].trim()}">${rows[0][j].trim()}</th>`;
+                html += `<th data-dyn="${rows[headerRow][0].trim()}">${rows[headerRow][0].trim()}</th>`; // "Порода"
+                
+                for(let j = 3; j < rows[headerRow].length; j++) {
+                    let headerText = rows[headerRow][j] ? rows[headerRow][j].trim() : '';
+                    if (headerText) {
+                        html += `<th data-dyn="${headerText}">${headerText}</th>`;
+                    }
                 }
                 html += `</tr></thead><tbody>`;
 
-                // 3. БУДУЄМО ТІЛО ТАБЛИЦІ (Також пропускаючи технічні колонки з перекладами)
+                // 3. БУДУЄМО ТІЛО ТАБЛИЦІ (Починаємо з 4-го рядка, індекс 3)
                 let skipCount = 0;
-                for(let i = 1; i < rows.length; i++) {
+                let dataStartRow = 3; 
+                
+                for(let i = dataStartRow; i < rows.length; i++) {
                     html += `<tr>`;
                     
-                    // Завжди малюємо першу колонку з назвою (Укр), вона буде об'єднуватись
-                    let cellValue = rows[i][0].trim();
+                    let cellValue = rows[i][0] ? rows[i][0].trim() : '';
                     if (cellValue !== "") {
                         if (skipCount > 0) {
                             skipCount--;
                         } else {
                             let rowspan = 1;
-                            while (i + rowspan < rows.length && rows[i + rowspan][0].trim() === cellValue) {
+                            while (i + rowspan < rows.length && (rows[i + rowspan][0] ? rows[i + rowspan][0].trim() : '') === cellValue) {
                                 rowspan++;
                             }
                             if (rowspan > 1) {
@@ -202,9 +207,10 @@ async function loadDynamicPrices() {
                         html += `<td data-dyn="${cellValue}"></td>`;
                     }
 
-                    // Малюємо всі інші колонки, починаючи з 4-ї (індекс 3)
+                    // Малюємо всі інші колонки (Сорт, Ціна), починаючи з 4-ї (індекс 3)
                     for(let j = 3; j < rows[i].length; j++) {
-                        html += `<td data-dyn="${rows[i][j].trim()}">${rows[i][j].trim()}</td>`;
+                        let cellData = rows[i][j] ? rows[i][j].trim() : '';
+                        html += `<td data-dyn="${cellData}">${cellData}</td>`;
                     }
                     
                     html += `</tr>`;
