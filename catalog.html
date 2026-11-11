@@ -187,79 +187,57 @@
                     categoriesSet.add(tab.name);
                     let isTimberTab = tab.name.toLowerCase().includes('брус');
 
-                    // 1. Поповнюємо словник перекладів з колонок A, B, C
-                    for(let i = 0; i < rows.length; i++) {
-                        if(rows[i] && rows[i].length >= 3) {
-                            let ukWord = rows[i][0] ? rows[i][0].trim() : '';
-                            let ruWord = rows[i][1] ? rows[i][1].trim() : '';
-                            let enWord = rows[i][2] ? rows[i][2].trim() : '';
-                            if(ukWord && ukWord !== "УКР") {
-                                siteTranslations.uk[ukWord] = ukWord;
-                                siteTranslations.ru[ukWord] = ruWord || ukWord;
-                                siteTranslations.en[ukWord] = enWord || ukWord;
-                            }
-                        }
-                    }
-
-                    // 2. Парсимо товари
                     for(let i = 0; i < rows.length; i++) {
                         let r = rows[i];
-                        if(!r || r.length < 3) continue;
+                        if(!r || r.length < 4) continue;
 
                         let col0 = r[0] ? r[0].trim() : '';
-                        let col1 = r[1] ? r[1].trim() : '';
-                        
-                        // Перевіряємо, чи це брус (якщо в колоноках цифри розміру 10, 20 тощо)
-                        let num0 = parseFloat(col0);
-                        let num1 = parseFloat(col1);
+                        if(!col0 || col0 === 'УКР' || col0.includes('Назва') || col0.includes('Порода') || col0.includes('Товщина')) continue;
 
-                        if (isTimberTab || (!isNaN(num0) && !isNaN(num1) && num0 > 0 && num1 > 0)) {
-                            // Логіка для Бруса
-                            let priceVal = parseFloat(r[2] ? r[2].trim().replace(/\s/g,'').replace(',','.') : 0);
-                            if(isNaN(priceVal) || priceVal <= 0) {
-                                priceVal = parseFloat(r[3] ? r[3].trim().replace(/\s/g,'').replace(',','.') : 0);
-                            }
-                            if(isNaN(priceVal) || priceVal <= 0) continue;
+                        // Зберігаємо переклади назви з колонок A, B, C
+                        let ruWord = r[1] ? r[1].trim() : '';
+                        let enWord = r[2] ? r[2].trim() : '';
+                        siteTranslations.uk[col0] = col0;
+                        siteTranslations.ru[col0] = ruWord || col0;
+                        siteTranslations.en[col0] = enWord || col0;
+
+                        if (isTimberTab || (r.length >= 6 && r[3] && r[4] && r[5])) {
+                            // Структура Бруса: A (Назва), B (РУС), C (АНГЛ), D (Товщина), E (Ширина), F (Ціна)
+                            let thickness = r[3] ? r[3].trim() : '';
+                            let width = r[4] ? r[4].trim() : '';
+                            let priceVal = parseFloat(r[5] ? r[5].trim().replace(/\s/g,'').replace(',','.') : 0);
+
+                            if(!thickness || !width || isNaN(priceVal) || priceVal <= 0) continue;
 
                             catalogData.push({
                                 id: `timber_${tab.name}_${i}`,
                                 category: tab.name,
                                 isTimber: true,
-                                thickness: col0,
-                                width: col1,
+                                baseName: col0,
+                                thickness: thickness,
+                                width: width,
                                 price: priceVal,
                                 unit: 'м.п.',
-                                photo: ''
+                                photo: r[6] ? r[6].trim() : ''
                             });
                         } else {
-                            // Логіка для Дощок та інших матеріалів
-                            let ukName = col0;
-                            let priceIdx = -1;
-                            let priceVal = 0;
+                            // Структура Дошок: A (Назва), B (РУС), C (АНГЛ), D (Сорт), E (Ціна)
+                            let sortVal = r[3] ? r[3].trim() : '';
+                            let priceVal = parseFloat(r[4] ? r[4].trim().replace(/\s/g,'').replace(',','.') : 0);
+                            
+                            if(isNaN(priceVal) || priceVal <= 0) continue;
 
-                            for(let j = 3; j < r.length; j++) {
-                                let val = r[j] ? r[j].trim().replace(/\s/g,'').replace(',','.') : '';
-                                let num = parseFloat(val);
-                                if(!isNaN(num) && num > 5 && priceIdx === -1) {
-                                    priceIdx = j;
-                                    priceVal = num;
-                                }
-                            }
-
-                            if(!ukName || ukName === 'УКР' || ukName === 'Порода' || isNaN(priceVal) || priceVal <= 0) continue;
-
-                            let sortVal = (priceIdx > 3 && r[priceIdx - 1]) ? r[priceIdx - 1].trim() : '';
                             let unitVal = tab.name.toLowerCase().includes('погонаж') ? 'м.п.' : 'м³';
 
                             catalogData.push({
                                 id: `prod_${tab.name}_${i}`,
                                 category: tab.name,
                                 isTimber: false,
-                                baseName: ukName,
+                                baseName: col0,
                                 sort: sortVal,
                                 price: priceVal,
                                 unit: unitVal,
-                                photo: ''
+                                photo: r[5] ? r[5].trim() : ''
                             });
                         }
                     }
@@ -272,6 +250,20 @@
                 console.error(error);
                 document.getElementById('loader').innerText = "Помилка завантаження каталогу.";
             }
+        }
+
+        function getTranslatedName(item, lang) {
+            let name = (siteTranslations[lang] && siteTranslations[lang][item.baseName]) ? siteTranslations[lang][item.baseName] : item.baseName;
+            
+            if(item.isTimber) {
+                return `${name} ${item.thickness}х${item.width}`;
+            }
+
+            if(item.sort && item.sort !== "-" && item.sort !== "") {
+                let sortWord = (siteTranslations[lang] && siteTranslations[lang]["Сорт"]) ? siteTranslations[lang]["Сорт"] : "Сорт";
+                return `${name} (${sortWord} ${item.sort})`;
+            }
+            return name;
         }
 
         function getTranslatedName(item, lang) {
