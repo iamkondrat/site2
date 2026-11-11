@@ -173,6 +173,8 @@ async function loadDynamicPrices() {
                 html += `<th data-dyn="${rows[headerRow][0].trim()}">${rows[headerRow][0].trim()}</th>`; // "Порода"
                 
                 for(let j = 3; j < rows[headerRow].length; j++) {
+                    let headerText = rows[headerRow][j] ? rows[headerRow][j].trim().toLowerCase() : '';
+                    if(headerText.includes('фото') || headerText.includes('photo') || headerText === 'id' || headerText.includes('од') || headerText.includes('unit')) continue;
                     let headerText = rows[headerRow][j] ? rows[headerRow][j].trim() : '';
                     if (headerText) {
                         html += `<th data-dyn="${headerText}">${headerText}</th>`;
@@ -185,6 +187,8 @@ async function loadDynamicPrices() {
                 let dataStartRow = 3; 
                 
                 for(let i = dataStartRow; i < rows.length; i++) {
+                    let headerText = rows[headerRow][j] ? rows[headerRow][j].trim().toLowerCase() : '';
+                    if(headerText.includes('фото') || headerText.includes('photo') || headerText === 'id' || headerText.includes('од') || headerText.includes('unit')) continue;
                     html += `<tr>`;
                     
                     let cellValue = rows[i][0] ? rows[i][0].trim() : '';
