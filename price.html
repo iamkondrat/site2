@@ -128,71 +128,65 @@ const siteTranslations = {
 };
 
 async function loadDynamicPrices() {
-    const container = document.getElementById('dynamic-price-container');
-    try {
-        if(SCRIPT_URL.includes('ВСТАВТЕ_ВАШ_URL')) {
-            container.innerHTML = '<div class="loading" style="color:var(--accent);">Очікування підключення Google Таблиці...</div>';
-            return;
-        }
+            const container = document.getElementById('dynamic-price-container');
+            try {
+                const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
+                const tabs = await response.json(); 
 
-        // Google Apps Script requires following redirects for GET requests
-        const response = await fetch(SCRIPT_URL, {
-            method: 'GET',
-            redirect: 'follow'
-        });
-        const tabs = await response.json(); 
-        
-        let html = '';
-        
-        tabs.forEach(tab => {
-            html += `<div class="category-block">`;
-            html += `<h2 data-dyn="${tab.name}">${tab.name}</h2>`;
-            html += `<div class="table-container"><table>`;
+                if (!Array.isArray(tabs)) {
+                    throw new Error("Невідомий формат даних від Google Sheets");
+                }
+                
+                let html = '';
+                
+                tabs.forEach(tab => {
+                    const rows = tab.data;
+                    if(!rows || rows.length === 0) return;
 
-            const rows = tab.data;
-            if(rows.length > 2) { // Перевіряємо, що є хоча б заголовки
-                // 1. ПОПОВНЮЄМО СЛОВНИК З 1, 2 і 3 КОЛОНКИ (проходимо по всіх рядках)
-                for(let i = 0; i < rows.length; i++) {
-                    if(rows[i].length >= 3) {
-                        let ukWord = rows[i][0] ? rows[i][0].trim() : '';
-                        let ruWord = rows[i][1] ? rows[i][1].trim() : '';
-                        let enWord = rows[i][2] ? rows[i][2].trim() : '';
-                        
-                        // Пропускаємо технічний заголовок мов
-                        if(ukWord && ukWord !== "УКР") { 
-                            siteTranslations.uk[ukWord] = ukWord;
-                            siteTranslations.ru[ukWord] = ruWord || ukWord;
-                            siteTranslations.en[ukWord] = enWord || ukWord;
+                    html += `<div class="category-block">`;
+                    html += `<h2 data-dyn="${tab.name}">${tab.name}</h2>`;
+                    html += `<div class="table-container"><table>`;
+
+                    // Знаходимо рядок із заголовком ("Порода" або "Товщина")
+                    let headerIdx = -1;
+                    for(let i = 0; i < Math.min(rows.length, 4); i++) {
+                        if(rows[i] && rows[i][0] && (rows[i][0].trim() === 'Порода' || rows[i][0].trim() === 'Товщина' || rows[i][0].trim() === 'УКР')) {
+                            headerIdx = i;
+                            if(rows[i][0].trim() !== 'УКР') break;
                         }
                     }
-                }
+                    if(headerIdx === -1) headerIdx = 0;
 
-                // 2. БУДУЄМО ШАПКУ (Беремо з 3-го рядка таблиці, індекс 2)
-                let headerRow = 2; 
-                html += `<thead><tr>`;
-                html += `<th data-dyn="${rows[headerRow][0].trim()}">${rows[headerRow][0].trim()}</th>`; // "Порода"
-                
-                for(let j = 3; j < rows[headerRow].length; j++) {
-                    let headerText = rows[headerRow][j] ? rows[headerRow][j].trim().toLowerCase() : '';
-                    if(headerText.includes('фото') || headerText.includes('photo') || headerText === 'id' || headerText.includes('од') || headerText.includes('unit')) continue;
-                    let headerText = rows[headerRow][j] ? rows[headerRow][j].trim() : '';
-                    if (headerText) {
-                        html += `<th data-dyn="${headerText}">${headerText}</th>`;
+                    // 1. Поповнюємо словник
+                    for(let i = 0; i < rows.length; i++) {
+                        if(rows[i] && rows[i].length >= 3) {
+                            let ukWord = rows[i][0] ? rows[i][0].trim() : '';
+                            let ruWord = rows[i][1] ? rows[i][1].trim() : '';
+                            let enWord = rows[i][2] ? rows[i][2].trim() : '';
+                            if(ukWord && ukWord !== "УКР") {
+                                siteTranslations.uk[ukWord] = ukWord;
+                                siteTranslations.ru[ukWord] = ruWord || ukWord;
+                                siteTranslations.en[ukWord] = enWord || ukWord;
+                            }
+                        }
                     }
-                }
-                html += `</tr></thead><tbody>`;
 
-                // 3. БУДУЄМО ТІЛО ТАБЛИЦІ (Починаємо з 4-го рядка, індекс 3)
-                let skipCount = 0;
-                let dataStartRow = 3; 
-                
-                for(let i = dataStartRow; i < rows.length; i++) {
-                    let headerText = rows[headerRow][j] ? rows[headerRow][j].trim().toLowerCase() : '';
-                    if(headerText.includes('фото') || headerText.includes('photo') || headerText === 'id' || headerText.includes('од') || headerText.includes('unit')) continue;
-                    html += `<tr>`;
-                    
-                    let cellValue = rows[i][0] ? rows[i][0].trim() : '';
-                    if (cellValue !== "") {
+                    // 2. Шапка
+                    html += `<thead><tr>`;
+                    html += `<th data-dyn="${rows[headerIdx][0].trim()}">${rows[headerIdx][0].trim()}</th>`;
+                    for(let j = 3; j < rows[headerIdx].length; j++) {
+                        let headerText = rows[headerIdx][j] ? rows[headerIdx][j].trim() : '';
+                        if(headerText) html += `<th data-dyn="${headerText}">${headerText}</th>`;
+                    }
+                    html += `</tr></thead><tbody>`;
+
+                    // 3. Тіло таблиці
+                    let skipCount = 0;
+                    for(let i = headerIdx + 1; i < rows.length; i++) {
+                        let cellValue = rows[i][0] ? rows[i][0].trim() : '';
+                        if(!cellValue || cellValue === 'УКР') continue;
+
+                        html += `<tr>`;
                         if (skipCount > 0) {
                             skipCount--;
                         } else {
@@ -207,34 +201,26 @@ async function loadDynamicPrices() {
                                 html += `<td data-dyn="${cellValue}"><strong>${cellValue}</strong></td>`;
                             }
                         }
-                    } else {
-                        html += `<td data-dyn="${cellValue}"></td>`;
-                    }
 
-                    // Малюємо всі інші колонки (Сорт, Ціна), починаючи з 4-ї (індекс 3)
-                    for(let j = 3; j < rows[i].length; j++) {
-                        let cellData = rows[i][j] ? rows[i][j].trim() : '';
-                        html += `<td data-dyn="${cellData}">${cellData}</td>`;
+                        for(let j = 3; j < rows[i].length; j++) {
+                            let cellData = rows[i][j] ? rows[i][j].trim() : '';
+                            html += `<td data-dyn="${cellData}">${cellData}</td>`;
+                        }
+                        html += `</tr>`;
                     }
-                    
-                    html += `</tr>`;
-                }
-                html += `</tbody>`;
+                    html += `</tbody></table></div></div>`;
+                });
+                
+                container.innerHTML = html;
+
+                const savedLang = localStorage.getItem('apollo_lang') || 'uk';
+                setLanguage(savedLang);
+
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div class="loading" style="color: #d9534f;">Помилка завантаження прайсу. Перевірте з\'єднання.</div>';
             }
-            html += `</table></div></div>`;
-        });
-        
-        container.innerHTML = html;
-
-        // Запускаємо переклад після побудови
-        const savedLang = localStorage.getItem('apollo_lang') || 'uk';
-        setLanguage(savedLang);
-
-    } catch (e) {
-        container.innerHTML = '<div class="loading" style="color: #d9534f;">Помилка завантаження прайсу. Перевірте з\'єднання.</div>';
-    }
-}
-
+        }
 function setLanguage(lang) {
     // Оновлення активної кнопки мови
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
