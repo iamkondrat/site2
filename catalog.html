@@ -160,17 +160,27 @@
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usiAUUKZNymW_EMstPbLE9h_RAIjt4uiMHJxX3QISRLrvv9No/exec'; 
         
+        // Словник перекладів елементів сайту та одиниць виміру
         const siteTranslations = {
-            uk: { nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", cart: "Кошик", cat_title: "Категорії", cat_all: "Всі товари", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", wait: "Завантаження каталогу...", "Сорт": "Сорт" },
-            ru: { nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", cart: "Корзина", cat_title: "Категории", cat_all: "Все товары", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", wait: "Загрузка каталога...", "Сорт": "Сорт" },
-            en: { nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", cart: "Cart", cat_title: "Categories", cat_all: "All Products", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name/Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", wait: "Loading catalog...", "Сорт": "Grade" }
+            uk: { 
+                nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", cart: "Кошик", cat_title: "Категорії", cat_all: "Всі товари", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", wait: "Завантаження каталогу...", "Сорт": "Сорт",
+                "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²"
+            },
+            ru: { 
+                nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", cart: "Корзина", cat_title: "Категории", cat_all: "Все товары", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", wait: "Загрузка каталога...", "Сорт": "Сорт",
+                "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²"
+            },
+            en: { 
+                nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", cart: "Cart", cat_title: "Categories", cat_all: "All Products", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name/Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", wait: "Loading catalog...", "Сорт": "Grade",
+                "м³": "m³", "м.п.": "l.m.", "шт": "pcs", "м²": "m²"
+            }
         };
 
-        let catalogData = []; 
-        let categoriesSet = new Set();
-        let currentCategory = 'all';
-        let cart = JSON.parse(localStorage.getItem('apollo_cart')) || [];
-        let currentLang = localStorage.getItem('apollo_lang') || 'uk';
+        // Допоміжна функція для отримання перекладеної одиниці виміру
+        function getTranslatedUnit(unit, lang) {
+            if (!unit) return 'шт';
+            return (siteTranslations[lang] && siteTranslations[lang][unit]) ? siteTranslations[lang][unit] : unit;
+        }
 
         async function fetchCatalog() {
             try {
@@ -194,7 +204,7 @@
                         let col0 = r[0] ? r[0].trim() : '';
                         if(!col0 || col0 === 'УКР' || col0.includes('Назва') || col0.includes('Порода') || col0.includes('Товщина')) continue;
 
-                        // Зберігаємо переклади назви з колонок A, B, C
+                        // Зберігаємо переклади з колонок A, B, C
                         let ruWord = r[1] ? r[1].trim() : '';
                         let enWord = r[2] ? r[2].trim() : '';
                         siteTranslations.uk[col0] = col0;
@@ -202,10 +212,12 @@
                         siteTranslations.en[col0] = enWord || col0;
 
                         if (isTimberTab || (r.length >= 6 && r[3] && r[4] && r[5])) {
-                            // Структура Бруса: A (Назва), B (РУС), C (АНГЛ), D (Товщина), E (Ширина), F (Ціна)
+                            // Структура Бруса: A (Назва), B (РУС), C (АНГЛ), D (Товщина), E (Ширина), F (Ціна), G (Одиниця), H (Фото)
                             let thickness = r[3] ? r[3].trim() : '';
                             let width = r[4] ? r[4].trim() : '';
                             let priceVal = parseFloat(r[5] ? r[5].trim().replace(/\s/g,'').replace(',','.') : 0);
+                            let unitVal = r[6] ? r[6].trim() : 'м.п.';
+                            let photoVal = r[7] ? r[7].trim() : '';
 
                             if(!thickness || !width || isNaN(priceVal) || priceVal <= 0) continue;
 
@@ -217,17 +229,17 @@
                                 thickness: thickness,
                                 width: width,
                                 price: priceVal,
-                                unit: 'м.п.',
-                                photo: r[6] ? r[6].trim() : ''
+                                unit: unitVal,
+                                photo: photoVal
                             });
                         } else {
-                            // Структура Дошок: A (Назва), B (РУС), C (АНГЛ), D (Сорт), E (Ціна)
+                            // Структура Дошок: A (Назва), B (РУС), C (АНГЛ), D (Сорт), E (Ціна), F (Одиниця), G (Фото)
                             let sortVal = r[3] ? r[3].trim() : '';
                             let priceVal = parseFloat(r[4] ? r[4].trim().replace(/\s/g,'').replace(',','.') : 0);
+                            let unitVal = r[5] ? r[5].trim() : (tab.name.toLowerCase().includes('погонаж') ? 'м.п.' : 'м³');
+                            let photoVal = r[6] ? r[6].trim() : '';
                             
                             if(isNaN(priceVal) || priceVal <= 0) continue;
-
-                            let unitVal = tab.name.toLowerCase().includes('погонаж') ? 'м.п.' : 'м³';
 
                             catalogData.push({
                                 id: `prod_${tab.name}_${i}`,
@@ -237,7 +249,7 @@
                                 sort: sortVal,
                                 price: priceVal,
                                 unit: unitVal,
-                                photo: r[5] ? r[5].trim() : ''
+                                photo: photoVal
                             });
                         }
                     }
@@ -252,55 +264,6 @@
             }
         }
 
-        function getTranslatedName(item, lang) {
-            let name = (siteTranslations[lang] && siteTranslations[lang][item.baseName]) ? siteTranslations[lang][item.baseName] : item.baseName;
-            
-            if(item.isTimber) {
-                return `${name} ${item.thickness}х${item.width}`;
-            }
-
-            if(item.sort && item.sort !== "-" && item.sort !== "") {
-                let sortWord = (siteTranslations[lang] && siteTranslations[lang]["Сорт"]) ? siteTranslations[lang]["Сорт"] : "Сорт";
-                return `${name} (${sortWord} ${item.sort})`;
-            }
-            return name;
-        }
-
-        function getTranslatedName(item, lang) {
-            if(item.isTimber) {
-                let timberWord = (siteTranslations[lang] && siteTranslations[lang]["Брус"]) ? siteTranslations[lang]["Брус"] : "Брус";
-                return `${timberWord} ${item.thickness}х${item.width}`;
-            }
-
-            let name = (siteTranslations[lang] && siteTranslations[lang][item.baseName]) ? siteTranslations[lang][item.baseName] : item.baseName;
-            if(item.sort && item.sort !== "-" && item.sort !== "") {
-                let sortWord = (siteTranslations[lang] && siteTranslations[lang]["Сорт"]) ? siteTranslations[lang]["Сорт"] : "Сорт";
-                return `${name} (${sortWord} ${item.sort})`;
-            }
-            return name;
-        }
-        function renderSidebar() {
-            const list = document.getElementById('category-list');
-            list.innerHTML = `<li onclick="setCategory('all')" id="cat-all" data-i18n="cat_all">Всі товари</li>`;
-            
-            categoriesSet.forEach(cat => {
-                const li = document.createElement('li');
-                li.setAttribute('data-cat', cat);
-                li.onclick = () => setCategory(cat);
-                li.id = `cat-${cat.replace(/\s+/g, '-')}`;
-                list.appendChild(li);
-            });
-        }
-
-        function setCategory(categoryName) {
-            currentCategory = categoryName;
-            document.querySelectorAll('.category-list li').forEach(li => li.classList.remove('active'));
-            const activeLi = document.getElementById(categoryName === 'all' ? 'cat-all' : `cat-${categoryName.replace(/\s+/g, '-')}`);
-            if(activeLi) activeLi.classList.add('active');
-            
-            renderProducts();
-        }
-
         function renderProducts() {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
@@ -310,13 +273,14 @@
             filtered.forEach(item => {
                 const imgHtml = item.photo ? `<img src="${item.photo}" alt="">` : `<div class="no-photo">ФОТО ОЧІКУЄТЬСЯ</div>`;
                 const displayName = getTranslatedName(item, currentLang);
+                const displayUnit = getTranslatedUnit(item.unit, currentLang);
 
                 grid.innerHTML += `
                     <div class="card" onclick="openProduct('${item.category}', '${item.id}')">
                         <div class="card-img">${imgHtml}</div>
                         <div class="card-content">
                             <div class="card-title">${displayName}</div>
-                            <div class="card-price">${item.price} ₴ / ${item.unit}</div>
+                            <div class="card-price">${item.price} ₴ / ${displayUnit}</div>
                             
                             <div class="card-buy-section" onclick="event.stopPropagation()">
                                 <input type="number" step="0.01" placeholder="0.0" id="qty-${item.id}">
@@ -327,42 +291,6 @@
                 `;
             });
         }
-
-        function openProduct(category, productId) {
-            window.location.href = `product.html?category=${encodeURIComponent(category)}&id=${encodeURIComponent(productId)}`;
-        }
-
-        function setLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('apollo_lang', lang);
-            
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            const btn = document.getElementById('btn-' + lang);
-            if(btn) btn.classList.add('active');
-
-            // Статичні тексти
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(siteTranslations[lang] && siteTranslations[lang][key]) el.innerText = siteTranslations[lang][key];
-            });
-
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if(siteTranslations[lang] && siteTranslations[lang][key]) el.setAttribute('placeholder', siteTranslations[lang][key]);
-            });
-
-            // Динамічні категорії в боковому меню
-            document.querySelectorAll('.sidebar li[data-cat]').forEach(el => {
-                const catName = el.getAttribute('data-cat');
-                el.innerText = (siteTranslations[lang] && siteTranslations[lang][catName]) ? siteTranslations[lang][catName] : catName;
-            });
-
-            renderProducts();
-            updateCartUI();
-        }
-
-        // --- ЛОГІКА КОРЗИНИ ---
-        function toggleCart() { document.getElementById('cart-modal').classList.toggle('open'); }
 
         function addToCart(id) {
             const product = catalogData.find(p => p.id === id);
@@ -379,7 +307,6 @@
             if(existing) {
                 existing.qty += qty;
             } else {
-                // Зберігаємо повні дані (включаючи товщину та ширину для бруса)
                 cart.push({ 
                     id: product.id, 
                     isTimber: product.isTimber,
@@ -401,11 +328,6 @@
             cartBtn.style.transform = 'scale(1.1)';
             setTimeout(() => cartBtn.style.transform = 'scale(1)', 200);
         }
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            localStorage.setItem('apollo_cart', JSON.stringify(cart));
-            updateCartUI();
-        }
 
         function updateCartUI() {
             document.getElementById('cart-counter').innerText = cart.length;
@@ -421,13 +343,14 @@
                 const sum = item.price * item.qty;
                 total += sum;
                 const displayName = getTranslatedName(item, currentLang);
+                const displayUnit = getTranslatedUnit(item.unit, currentLang);
                 
                 container.innerHTML += `
                     <div class="cart-item">
                         <div class="remove-item" onclick="removeFromCart('${item.id}')">×</div>
                         <div class="cart-item-title">${displayName}</div>
                         <div class="cart-item-details">
-                            <span>${item.qty} ${item.unit} × ${item.price} ₴</span>
+                            <span>${item.qty} ${displayUnit} × ${item.price} ₴</span>
                             <span style="color:var(--accent); font-weight:700;">${sum.toFixed(0)} ₴</span>
                         </div>
                     </div>
