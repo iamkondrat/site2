@@ -181,7 +181,7 @@
                     const rows = tab.data;
                     if(rows.length > 2) {
                         
-                        // 1. ПОПОВНЮЄМО СЛОВНИК (ідентично прайсу)
+                        // 1. ПОПОВНЮЄМО СЛОВНИК З ПЕРШИХ КОЛОНОК
                         for(let i = 0; i < rows.length; i++) {
                             if(rows[i].length >= 3) {
                                 let ukWord = rows[i][0] ? rows[i][0].trim() : '';
@@ -195,9 +195,9 @@
                             }
                         }
 
-                        // 2. ДИНАМІЧНИЙ ПОШУК КОЛОНОК (в 3-му рядку)
+                        // 2. АВТОМАТИЧНО ШУКАЄМО ІНДЕКСИ КОЛОНОК ЗА ЇХНІМИ НАЗВАМИ В ШАПЦІ (рядок з індексом 2)
                         let headerRow = rows[2];
-                        let priceIdx = -1, unitIdx = -1, idIdx = -1, photoIdx = -1, sortIdx = 3; 
+                        let priceIdx = -1, unitIdx = -1, idIdx = -1, photoIdx = -1, sortIdx = -1; 
                         
                         for(let j = 0; j < headerRow.length; j++) {
                             let h = headerRow[j] ? headerRow[j].trim().toLowerCase() : '';
@@ -205,50 +205,57 @@
                             if(h.includes('од') || h.includes('вимір') || h.includes('unit')) unitIdx = j;
                             if(h === 'id' || h === 'ід') idIdx = j;
                             if(h.includes('фото') || h.includes('photo')) photoIdx = j;
+                            if(h.includes('сорт') || h.includes('товщина') || h.includes('ширина')) sortIdx = j;
                         }
 
-                        if(priceIdx === -1) return; // Пропускаємо, якщо немає ціни
+                        if(priceIdx === -1) return; // Пропускаємо аркуші без ціни
 
                         categoriesSet.add(tab.name);
 
-                        // 3. ЗБИРАЄМО ТОВАРИ
+                        // 3. ЗБИРАЄМО ТОВАРИ ПРАВИЛЬНО
                         for(let i = 3; i < rows.length; i++) {
                             let ukName = rows[i][0] ? rows[i][0].trim() : '';
                             let priceVal = rows[i][priceIdx] ? parseFloat(rows[i][priceIdx].trim().replace(/\s/g,'').replace(',','.')) : 0;
                             
-                            if(ukName && !isNaN(priceVal) && priceVal > 0) {
-                                let sortVal = rows[i][sortIdx] ? rows[i][sortIdx].trim() : '';
-                                let idVal = idIdx !== -1 && rows[i][idIdx] ? rows[i][idIdx].trim() : `prod_${tab.name}_${i}`;
-                                let unitVal = unitIdx !== -1 && rows[i][unitIdx] ? rows[i][unitIdx].trim() : 'шт';
-                                let photoVal = photoIdx !== -1 && rows[i][photoIdx] ? rows[i][photoIdx].trim() : '';
+                            // Пропускаємо порожні або службові рядки (якщо назви нема або ціна не число)
+                            if(!ukName || isNaN(priceVal) || priceVal <= 0) continue;
 
-                                catalogData.push({
-                                    id: idVal,
-                                    category: tab.name,
-                                    baseName: ukName,
-                                    sort: sortVal,
-                                    price: priceVal,
-                                    unit: unitVal,
-                                    photo: photoVal
-                                });
-                            }
+                            let sortVal = (sortIdx !== -1 && rows[i][sortIdx]) ? rows[i][sortIdx].trim() : '';
+                            let idVal = (idIdx !== -1 && rows[i][idIdx]) ? rows[i][idIdx].trim() : `prod_${tab.name}_${i}`;
+                            let unitVal = (unitIdx !== -1 && rows[i][unitIdx]) ? rows[i][unitIdx].trim() : 'м³';
+                            let photoVal = (photoIdx !== -1 && rows[i][photoIdx]) ? rows[i][photoIdx].trim() : '';
+
+                            // Якщо це брус чи інший виріб, де перша колонка — цифра (товщина), сформуємо гарну назву
+                            let finalName = ukName;
+
+                            catalogData.push({
+                                id: idVal,
+                                category: tab.name,
+                                baseName: finalName,
+                                sort: sortVal,
+                                price: priceVal,
+                                unit: unitVal,
+                                photo: photoVal
+                            });
                         }
                     }
                 });
 
                 document.getElementById('loader').style.display = 'none';
                 renderSidebar();
-                setLang(currentLang); // Встановлює мову, рендерить товари і корзину
+                setLang(currentLang);
             } catch (error) {
-                document.getElementById('loader').innerText = "Помилка завантаження.";
+                console.error(error);
+                document.getElementById('loader').innerText = "Помилка завантаження каталогу.";
             }
         }
-
         function getTranslatedName(item, lang) {
             let name = (siteTranslations[lang] && siteTranslations[lang][item.baseName]) ? siteTranslations[lang][item.baseName] : item.baseName;
+            
+            // Якщо є сорт або додатковий параметр і він не пустий
             if(item.sort && item.sort !== "-") {
-                let sortWord = (siteTranslations[lang] && siteTranslations[lang]["Сорт"]) ? siteTranslations[lang]["Сорт"] : "Сорт";
-                name += ` (${sortWord} ${item.sort})`;
+                // Перевіримо чи це цифра (для бруса) чи сорт
+                name += ` (${item.sort})`;
             }
             return name;
         }
