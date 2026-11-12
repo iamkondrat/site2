@@ -41,19 +41,48 @@
         .cart-btn { background: var(--accent); color: #000; padding: 10px 25px; border-radius: 5px; cursor: pointer; font-weight: 700; transition: 0.3s; text-transform: uppercase; font-size: 0.85rem;}
         .cart-btn:hover { box-shadow: 0 5px 15px rgba(217, 144, 88, 0.3); transform: translateY(-2px); }
 
-        .catalog-container { display: flex; padding: 40px 50px; gap: 40px; max-width: 1600px; margin: 0 auto; min-height: 80vh; }
+        .catalog-container { display: flex; padding: 40px 50px; gap: 40px; max-width: 1600px; margin: 0 auto; align-items: flex-start; }
         
-        .sidebar { width: 250px; flex-shrink: 0; }
+        /* ЗАКРІПЛЕНА БОКОВА ПАНЕЛЬ (STICKY) */
+        .sidebar { 
+            width: 260px; flex-shrink: 0; 
+            position: sticky; top: 100px; 
+            max-height: calc(100vh - 120px); overflow-y: auto; 
+            padding-right: 15px;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
         .sidebar h3 { margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; font-weight: 700; text-transform: uppercase;}
+        
+        /* АКОРДЕОН КАТЕГОРІЙ */
         .category-list { list-style: none; }
-        .category-list li { margin-bottom: 15px; cursor: pointer; transition: 0.2s; color: var(--text-muted); font-weight: 600; }
-        .category-list li:hover, .category-list li.active { color: var(--accent); padding-left: 10px; }
+        .category-list > li { margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: var(--text-muted); font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .category-list > li:hover, .category-list > li.active { color: var(--accent); }
+        
+        .sub-category-list { display: none; list-style: none; margin-top: 8px; margin-left: 10px; border-left: 1px solid var(--border); padding-left: 15px; }
+        .sub-category-list.open { display: block; }
+        .sub-category-list li { margin-bottom: 10px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .sub-category-list li:hover, .sub-category-list li.active { color: var(--text); }
+        .arrow { font-size: 0.6rem; transition: transform 0.3s; }
+        .open .arrow { transform: rotate(180deg); }
+
+        /* ФІЛЬТРИ */
+        .filter-section { margin-top: 35px; border-top: 1px solid var(--border); padding-top: 25px; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; font-weight: 700; }
+        .filter-group input, .filter-group select { 
+            width: 100%; padding: 12px; background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--border); color: white; border-radius: 5px; 
+            outline: none; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;
+        }
+        .filter-group input:focus, .filter-group select:focus { border-color: var(--accent); }
+        .filter-group select option { background: var(--bg-dark); color: white; }
 
         .products-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; align-content: start; }
         
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; cursor: pointer; }
         .card:hover { border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.4); transform: translateY(-5px); }
-        
         .card-img { width: 100%; height: 220px; background-color: #0a0b0c; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .card:hover .card-img img { transform: scale(1.05); }
@@ -94,12 +123,17 @@
         .checkout-form button { width: 100%; padding: 18px; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
         .checkout-form button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(217, 144, 88, 0.2); }
 
+        .mobile-filter-btn { display: none; }
+
         @media (max-width: 900px) {
             .catalog-container { flex-direction: column; padding: 20px; }
-            .sidebar { width: 100%; display: flex; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid var(--border); padding-bottom: 20px;}
-            .sidebar h3 { width: 100%; border: none; margin-bottom: 0;}
-            .category-list { display: flex; flex-wrap: wrap; gap: 10px; }
-            .category-list li { background: var(--card-bg); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); margin: 0; }
+            .mobile-filter-btn { 
+                display: block; width: 100%; background: var(--card-bg); padding: 15px; 
+                text-align: center; border: 1px solid var(--border); border-radius: 5px; 
+                margin-bottom: 20px; cursor: pointer; font-weight: bold; color: var(--accent); text-transform: uppercase;
+            }
+            .sidebar { width: 100%; position: static; height: auto; max-height: none; overflow-y: visible; display: none; padding-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;}
+            .sidebar.active { display: block; }
             .cart-modal { width: 100%; }
             header { padding: 15px 20px; flex-direction: column; gap: 15px; }
         }
@@ -129,12 +163,31 @@
     </header>
 
     <div class="catalog-container">
-        <!-- БОКОВЕ МЕНЮ -->
-        <aside class="sidebar">
+        
+        <div class="mobile-filter-btn" onclick="document.getElementById('sidebar').classList.toggle('active')" data-i18n="filters_btn">
+            Фільтри та Категорії ▼
+        </div>
+
+        <!-- БОКОВЕ МЕНЮ ТА ФІЛЬТРИ -->
+        <aside class="sidebar" id="sidebar">
             <h3 data-i18n="cat_title">Категорії</h3>
             <ul class="category-list" id="category-list">
                 <!-- Генерується через JS -->
             </ul>
+
+            <div class="filter-section">
+                <h3 data-i18n="filters_title">Фільтри</h3>
+                <div class="filter-group">
+                    <label data-i18n="price_max">Ціна до (₴)</label>
+                    <input type="number" id="price-filter" placeholder="Наприклад, 500" oninput="applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label data-i18n="wood_type">Порода дерева</label>
+                    <select id="wood-filter" onchange="applyFilters()">
+                        <option value="all" data-i18n="all_woods">Всі породи</option>
+                    </select>
+                </div>
+            </div>
         </aside>
 
         <!-- СІТКА ТОВАРІВ -->
@@ -162,24 +215,34 @@
         
         // Глобальні змінні стану
         let catalogData = []; 
-        let categoriesSet = new Set();
+        let categoryTree = {}; // Об'єкт для збереження підкатегорій: { 'Погонаж': Set('Вагонка', 'Рейка') }
+        let allWoodsSet = new Set(); // Всі знайдені породи
+        
+        // Стан фільтрів
         let currentCategory = 'all';
+        let currentSubcategory = 'all';
+        let maxPrice = Infinity;
+        let currentWood = 'all';
+
         let cart = JSON.parse(localStorage.getItem('apollo_cart')) || [];
         let currentLang = localStorage.getItem('apollo_lang') || 'uk';
 
-        // Словник перекладів елементів сайту та одиниць виміру
+        // Словник перекладів
         const siteTranslations = {
             uk: { 
                 nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", cart: "Кошик", cat_title: "Категорії", cat_all: "Всі товари", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", wait: "Завантаження каталогу...", "Сорт": "Сорт",
-                "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус"
+                "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус",
+                filters_btn: "Фільтри та Категорії ▼", filters_title: "Фільтри", price_max: "Ціна до (₴)", wood_type: "Порода дерева", all_woods: "Всі породи"
             },
             ru: { 
                 nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", cart: "Корзина", cat_title: "Категории", cat_all: "Все товары", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", wait: "Загрузка каталога...", "Сорт": "Сорт",
-                "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус"
+                "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус",
+                filters_btn: "Фильтры и Категории ▼", filters_title: "Фильтры", price_max: "Цена до (₴)", wood_type: "Порода дерева", all_woods: "Все породы"
             },
             en: { 
                 nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", cart: "Cart", cat_title: "Categories", cat_all: "All Products", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name/Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", wait: "Loading catalog...", "Сорт": "Grade",
-                "м³": "m³", "м.п.": "l.m.", "шт": "pcs", "м²": "m²", "Брус": "Timber"
+                "м³": "m³", "м.п.": "l.m.", "шт": "pcs", "м²": "m²", "Брус": "Timber",
+                filters_btn: "Filters & Categories ▼", filters_title: "Filters", price_max: "Max Price (₴)", wood_type: "Wood Type", all_woods: "All Wood Types"
             }
         };
 
@@ -188,23 +251,54 @@
             return (siteTranslations[lang] && siteTranslations[lang][unit]) ? siteTranslations[lang][unit] : unit;
         }
 
+        function getTranslatedWord(word, lang) {
+            return (siteTranslations[lang] && siteTranslations[lang][word]) ? siteTranslations[lang][word] : word;
+        }
+
+        function getTranslatedName(item, lang) {
+            let name = getTranslatedWord(item.baseName, lang);
+            if(item.isTimber) return `${name} ${item.thickness}х${item.width}`;
+
+            if(item.sort && item.sort !== "-" && item.sort !== "") {
+                if(item.sortLabel && item.sortLabel !== "" && item.sortLabel !== "-") {
+                    let label = getTranslatedWord(item.sortLabel, lang);
+                    return `${name} (${label} ${item.sort})`;
+                } else {
+                    return `${name} (${item.sort})`;
+                }
+            }
+            return name;
+        }
+
         async function fetchCatalog() {
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
                 const tabs = await response.json();
                 
                 catalogData = [];
-                categoriesSet.clear();
+                categoryTree = {};
+                allWoodsSet.clear();
 
                 tabs.forEach(tab => {
                     const rows = tab.data;
                     if(!rows || rows.length === 0) return;
 
-                    categoriesSet.add(tab.name);
-                    let isTimberTab = tab.name.toLowerCase().includes('брус');
+                    let catName = tab.name;
+                    if(!categoryTree[catName]) categoryTree[catName] = new Set();
+                    let isTimberTab = catName.toLowerCase().includes('брус');
 
-                    // Зчитуємо підпис із комірки D3 (рядок 3, колонка D => індекси [2][3])
-                    let d3Label = (rows[2] && rows[2][3]) ? rows[2][3].trim() : '';
+                    let headerRow = rows[2];
+                    let d3Label = (headerRow && headerRow[3]) ? headerRow[3].trim() : '';
+
+                    // Шукаємо індекси колонок "Підкатегорія" і "Порода" у шапці (рядок 3)
+                    let subcatIdx = -1, woodIdx = -1;
+                    if (headerRow) {
+                        for(let j = 3; j < headerRow.length; j++) {
+                            let h = headerRow[j] ? headerRow[j].trim().toLowerCase() : '';
+                            if(h === 'підкатегорія' || h === 'подкатегория') subcatIdx = j;
+                            if(h === 'порода' || h === 'порода дерева') woodIdx = j;
+                        }
+                    }
 
                     for(let i = 0; i < rows.length; i++) {
                         let r = rows[i];
@@ -213,15 +307,20 @@
                         let col0 = r[0] ? r[0].trim() : '';
                         if(!col0 || col0 === 'УКР' || col0.includes('Назва') || col0.includes('Порода') || col0.includes('Товщина')) continue;
 
-                        // Зберігаємо переклади з колонок A, B, C
                         let ruWord = r[1] ? r[1].trim() : '';
                         let enWord = r[2] ? r[2].trim() : '';
                         siteTranslations.uk[col0] = col0;
                         siteTranslations.ru[col0] = ruWord || col0;
                         siteTranslations.en[col0] = enWord || col0;
 
+                        // Зчитуємо підкатегорію і породу, якщо знайшли такі колонки
+                        let subcatVal = (subcatIdx !== -1 && r[subcatIdx]) ? r[subcatIdx].trim() : '';
+                        let woodVal = (woodIdx !== -1 && r[woodIdx]) ? r[woodIdx].trim() : '';
+
+                        if(subcatVal) categoryTree[catName].add(subcatVal);
+                        if(woodVal) allWoodsSet.add(woodVal);
+
                         if (isTimberTab) {
-                            // Структура Бруса: A (Назва), B (РУС), C (АНГЛ), D (Товщина), E (Ширина), F (Ціна), G (Одиниця), H (Фото)
                             let thickness = r[3] ? r[3].trim() : '';
                             let width = r[4] ? r[4].trim() : '';
                             let priceVal = parseFloat(r[5] ? r[5].trim().replace(/\s/g,'').replace(',','.') : 0);
@@ -231,35 +330,22 @@
                             if(!thickness || !width || isNaN(priceVal) || priceVal <= 0) continue;
 
                             catalogData.push({
-                                id: `timber_${tab.name}_${i}`,
-                                category: tab.name,
-                                isTimber: true,
-                                baseName: col0,
-                                thickness: thickness,
-                                width: width,
-                                price: priceVal,
-                                unit: unitVal,
-                                photo: photoVal
+                                id: `timber_${catName}_${i}`, category: catName, subcategory: subcatVal, wood: woodVal,
+                                isTimber: true, baseName: col0, thickness: thickness, width: width,
+                                price: priceVal, unit: unitVal, photo: photoVal
                             });
                         } else {
-                            // Структура Дошок та Погонажу: A (Назва), B (РУС), C (АНГЛ), D (Сорт/Розмір), E (Ціна), F (Одиниця), G (Фото)
                             let sortVal = r[3] ? r[3].trim() : '';
                             let priceVal = parseFloat(r[4] ? r[4].trim().replace(/\s/g,'').replace(',','.') : 0);
-                            let unitVal = r[5] ? r[5].trim() : (tab.name.toLowerCase().includes('погонаж') ? 'м.п.' : 'м³');
+                            let unitVal = r[5] ? r[5].trim() : (catName.toLowerCase().includes('погонаж') ? 'м.п.' : 'м³');
                             let photoVal = r[6] ? r[6].trim() : '';
                             
                             if(isNaN(priceVal) || priceVal <= 0) continue;
 
                             catalogData.push({
-                                id: `prod_${tab.name}_${i}`,
-                                category: tab.name,
-                                isTimber: false,
-                                baseName: col0,
-                                sort: sortVal,
-                                sortLabel: d3Label, // Передаємо назву з D3
-                                price: priceVal,
-                                unit: unitVal,
-                                photo: photoVal
+                                id: `prod_${catName}_${i}`, category: catName, subcategory: subcatVal, wood: woodVal,
+                                isTimber: false, baseName: col0, sort: sortVal, sortLabel: d3Label,
+                                price: priceVal, unit: unitVal, photo: photoVal
                             });
                         }
                     }
@@ -267,6 +353,7 @@
 
                 document.getElementById('loader').style.display = 'none';
                 renderSidebar();
+                renderWoodFilter();
                 setLang(currentLang);
             } catch (error) {
                 console.error(error);
@@ -274,45 +361,79 @@
             }
         }
 
-        function getTranslatedName(item, lang) {
-            let name = (siteTranslations[lang] && siteTranslations[lang][item.baseName]) ? siteTranslations[lang][item.baseName] : item.baseName;
-            
-            if(item.isTimber) {
-                return `${name} ${item.thickness}х${item.width}`;
-            }
-
-            if(item.sort && item.sort !== "-" && item.sort !== "") {
-                // Якщо в D3 є підпис (наприклад, "Сорт") — виводимо з ним
-                if(item.sortLabel && item.sortLabel !== "" && item.sortLabel !== "-") {
-                    let label = (siteTranslations[lang] && siteTranslations[lang][item.sortLabel]) ? siteTranslations[lang][item.sortLabel] : item.sortLabel;
-                    return `${name} (${label} ${item.sort})`;
-                } else {
-                    // Якщо D3 порожня — виводимо тільки значення (наприклад: Вагонка сосна (85 мм))
-                    return `${name} (${item.sort})`;
-                }
-            }
-            return name;
-        }
-
         function renderSidebar() {
             const list = document.getElementById('category-list');
-            list.innerHTML = `<li onclick="setCategory('all')" id="cat-all" data-i18n="cat_all">${siteTranslations[currentLang].cat_all || 'Всі товари'}</li>`;
+            let html = `<li onclick="setCategory('all', 'all', event)" id="cat-all" class="active" data-i18n="cat_all">${getTranslatedWord('cat_all', currentLang)}</li>`;
             
-            categoriesSet.forEach(cat => {
-                const li = document.createElement('li');
-                li.setAttribute('data-cat', cat);
-                li.onclick = () => setCategory(cat);
-                li.id = `cat-${cat.replace(/\s+/g, '-')}`;
-                li.innerText = (siteTranslations[currentLang] && siteTranslations[currentLang][cat]) ? siteTranslations[currentLang][cat] : cat;
-                list.appendChild(li);
+            Object.keys(categoryTree).forEach(cat => {
+                let transCat = getTranslatedWord(cat, currentLang);
+                let hasSub = categoryTree[cat].size > 0;
+                
+                html += `<li onclick="toggleCategory('${cat}', event)" id="cat-main-${formatId(cat)}">
+                            ${transCat} ${hasSub ? '<span class="arrow">▼</span>' : ''}
+                         </li>`;
+                
+                if(hasSub) {
+                    html += `<ul class="sub-category-list" id="sub-${formatId(cat)}">`;
+                    categoryTree[cat].forEach(sub => {
+                        let transSub = getTranslatedWord(sub, currentLang);
+                        html += `<li onclick="setCategory('${cat}', '${sub}', event)" id="cat-sub-${formatId(sub)}">${transSub}</li>`;
+                    });
+                    html += `</ul>`;
+                }
             });
+            list.innerHTML = html;
         }
 
-        function setCategory(categoryName) {
-            currentCategory = categoryName;
-            document.querySelectorAll('.category-list li').forEach(li => li.classList.remove('active'));
-            const activeLi = document.getElementById(categoryName === 'all' ? 'cat-all' : `cat-${categoryName.replace(/\s+/g, '-')}`);
-            if(activeLi) activeLi.classList.add('active');
+        function renderWoodFilter() {
+            const select = document.getElementById('wood-filter');
+            let html = `<option value="all" data-i18n="all_woods">${getTranslatedWord('all_woods', currentLang)}</option>`;
+            allWoodsSet.forEach(w => {
+                html += `<option value="${w}">${getTranslatedWord(w, currentLang)}</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        function formatId(str) {
+            return str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zа-я0-9-]/gi, '');
+        }
+
+        // Відкриває/закриває головну категорію і вибирає її
+        function toggleCategory(cat, event) {
+            if(event) event.stopPropagation();
+            let subList = document.getElementById(`sub-${formatId(cat)}`);
+            if(subList) subList.classList.toggle('open');
+            setCategory(cat, 'all', null);
+        }
+
+        // Застосовує вибір категорії чи підкатегорії
+        function setCategory(cat, subcat, event) {
+            if(event) event.stopPropagation();
+            currentCategory = cat;
+            currentSubcategory = subcat;
+
+            // Оновлюємо активні класи
+            document.querySelectorAll('.category-list li, .sub-category-list li').forEach(el => el.classList.remove('active'));
+            
+            if(cat === 'all') {
+                document.getElementById('cat-all').classList.add('active');
+            } else if (subcat === 'all') {
+                document.getElementById(`cat-main-${formatId(cat)}`).classList.add('active');
+            } else {
+                document.getElementById(`cat-main-${formatId(cat)}`).classList.add('active');
+                document.getElementById(`cat-sub-${formatId(subcat)}`).classList.add('active');
+            }
+            
+            applyFilters();
+        }
+
+        function applyFilters() {
+            // Зчитуємо ціну
+            let inputPrice = document.getElementById('price-filter').value;
+            maxPrice = (inputPrice && !isNaN(inputPrice) && inputPrice > 0) ? parseFloat(inputPrice) : Infinity;
+            
+            // Зчитуємо породу
+            currentWood = document.getElementById('wood-filter').value;
             
             renderProducts();
         }
@@ -321,7 +442,18 @@
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
 
-            const filtered = currentCategory === 'all' ? catalogData : catalogData.filter(p => p.category === currentCategory);
+            const filtered = catalogData.filter(p => {
+                let catMatch = (currentCategory === 'all') || (p.category === currentCategory);
+                let subMatch = (currentSubcategory === 'all') || (p.subcategory === currentSubcategory);
+                let priceMatch = (p.price <= maxPrice);
+                let woodMatch = (currentWood === 'all') || (p.wood === currentWood);
+                return catMatch && subMatch && priceMatch && woodMatch;
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--text-muted); padding: 50px;">За вашими фільтрами нічого не знайдено.</div>`;
+                return;
+            }
 
             filtered.forEach(item => {
                 const imgHtml = item.photo ? `<img src="${item.photo}" alt="">` : `<div class="no-photo">ФОТО ОЧІКУЄТЬСЯ</div>`;
@@ -368,11 +500,17 @@
                 if(siteTranslations[lang] && siteTranslations[lang][key]) el.setAttribute('placeholder', siteTranslations[lang][key]);
             });
 
-            // Оновлення категорій у меню
-            document.querySelectorAll('.sidebar li[data-cat]').forEach(el => {
-                const catName = el.getAttribute('data-cat');
-                el.innerText = (siteTranslations[lang] && siteTranslations[lang][catName]) ? siteTranslations[lang][catName] : catName;
-            });
+            // Оновлюємо UI бокової панелі
+            renderSidebar();
+            renderWoodFilter();
+            
+            // Відновлюємо активні класи після перерендеру меню
+            if(currentCategory !== 'all') {
+                let subList = document.getElementById(`sub-${formatId(currentCategory)}`);
+                if(subList) subList.classList.add('open');
+            }
+            setCategory(currentCategory, currentSubcategory, null);
+            document.getElementById('wood-filter').value = currentWood;
 
             renderProducts();
             updateCartUI();
@@ -398,15 +536,8 @@
                 existing.qty += qty;
             } else {
                 cart.push({ 
-                    id: product.id, 
-                    isTimber: product.isTimber,
-                    thickness: product.thickness,
-                    width: product.width,
-                    baseName: product.baseName, 
-                    sort: product.sort, 
-                    price: product.price, 
-                    unit: product.unit, 
-                    qty 
+                    id: product.id, isTimber: product.isTimber, thickness: product.thickness, width: product.width,
+                    baseName: product.baseName, sort: product.sort, sortLabel: product.sortLabel, price: product.price, unit: product.unit, qty 
                 });
             }
             
