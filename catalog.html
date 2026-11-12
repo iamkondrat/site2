@@ -654,7 +654,9 @@
 
             // 3. Малюємо акуратні згруповані картки без кнопок
             Object.values(groupedProducts).forEach(group => {
-                const imgHtml = group.photo ? `<img src="${group.photo}" alt="">` : `<div class="no-photo">ФОТО ОЧІКУЄТЬСЯ</div>`;
+                // Розбиваємо через кому і беремо лише перше посилання для обкладинки в каталозі
+                const firstPhoto = group.photo ? group.photo.split(',')[0].trim() : '';
+                const imgHtml = firstPhoto ? `<img src="${firstPhoto}" alt="">` : `<div class="no-photo">ФОТО ОЧІКУЄТЬСЯ</div>`;
                 const displayUnit = getTranslatedUnit(group.unit, currentLang);
                 
                 let displayName = '';
