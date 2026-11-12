@@ -633,49 +633,65 @@
                 return;
             }
 
-            // 2. Групуємо товари та знаходимо мін/макс ціни
+            // 2. Групуємо товари
             let groupedProducts = {};
             
             filtered.forEach(item => {
-                let groupKey = item.category + '_' + item.baseName; // Групуємо в межах категорії
+                let groupKey = item.category + '_' + item.baseName;
                 
                 if(!groupedProducts[groupKey]) {
-                    // Створюємо нову групу, запам'ятовуючи мін. і макс. ціну
+                    // Нова група, зберігаємо перший товар для виведення повної назви, якщо він виявиться єдиним
                     groupedProducts[groupKey] = {
-                        ...item, 
+                        baseName: item.baseName,
+                        category: item.category,
+                        photo: item.photo,
+                        unit: item.unit,
                         minPrice: item.price,
-                        maxVariantPrice: item.price, // Додали відстеження макс. ціни
-                        variantsCount: 1
+                        maxVariantPrice: item.price,
+                        variantsCount: 1,
+                        firstItem: item // Зберігаємо оригінальний об'єкт товару
                     };
                 } else {
-                    // Додаємо до існуючої групи
                     groupedProducts[groupKey].variantsCount++;
-                    
-                    if(item.price < groupedProducts[groupKey].minPrice) {
-                        groupedProducts[groupKey].minPrice = item.price; 
-                    }
-                    if(item.price > groupedProducts[groupKey].maxVariantPrice) {
-                        groupedProducts[groupKey].maxVariantPrice = item.price; 
-                    }
+                    if(item.price < groupedProducts[groupKey].minPrice) groupedProducts[groupKey].minPrice = item.price; 
+                    if(item.price > groupedProducts[groupKey].maxVariantPrice) groupedProducts[groupKey].maxVariantPrice = item.price; 
                 }
             });
 
             // 3. Малюємо згруповані картки
             Object.values(groupedProducts).forEach(group => {
                 const imgHtml = group.photo ? `<img src="${group.photo}" alt="">` : `<div class="no-photo">ФОТО ОЧІКУЄТЬСЯ</div>`;
-                
-                const displayName = getTranslatedWord(group.baseName, currentLang);
                 const displayUnit = getTranslatedUnit(group.unit, currentLang);
                 
-                // Формуємо виведення ціни (мін - макс)
+                let displayName = '';
                 let priceHtml = '';
-                if (group.minPrice === group.maxVariantPrice) {
+                let actionHtml = '';
+
+                if (group.variantsCount === 1) {
+                    // ЯКЩО ТОВАР ОДИН: Виводимо повну назву з розмірами (наприклад "Брус 50х50" або "Лежак (25х90 мм)")
+                    displayName = getTranslatedName(group.firstItem, currentLang);
                     priceHtml = `${group.minPrice} ₴ / ${displayUnit}`;
+                    
+                    // Повертаємо блок покупки, бо розмір вибирати не треба
+                    actionHtml = `
+                        <div class="card-buy-section" onclick="event.stopPropagation()">
+                            <input type="number" step="0.01" placeholder="0.0" id="qty-${group.firstItem.id}">
+                            <button onclick="addToCart('${group.firstItem.id}')" data-i18n="btn_add">${siteTranslations[currentLang].btn_add || 'В кошик'}</button>
+                        </div>
+                    `;
                 } else {
-                    priceHtml = `${group.minPrice} - ${group.maxVariantPrice} ₴ / ${displayUnit}`;
+                    // ЯКЩО БАГАТО РОЗМІРІВ: Виводимо базову назву та діапазон цін
+                    displayName = getTranslatedWord(group.baseName, currentLang);
+                    
+                    if (group.minPrice === group.maxVariantPrice) {
+                        priceHtml = `${group.minPrice} ₴ / ${displayUnit}`;
+                    } else {
+                        priceHtml = `${group.minPrice} - ${group.maxVariantPrice} ₴ / ${displayUnit}`;
+                    }
+                    
+                    // Кнопки вибору немає взагалі — залишаємо порожнє місце, клік по картці зробить перехід
+                    actionHtml = ``;
                 }
-                
-                let btnText = currentLang === 'en' ? 'Select Option' : (currentLang === 'ru' ? 'Выбрать вариант' : 'Вибрати варіант');
 
                 grid.innerHTML += `
                     <div class="card" onclick="openProduct('${group.category}', '${group.baseName}')">
@@ -683,13 +699,7 @@
                         <div class="card-content">
                             <div class="card-title">${displayName}</div>
                             <div class="card-price">${priceHtml}</div>
-                            
-                            <div class="card-buy-section" style="margin-top: auto;">
-                                <button style="width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem;" 
-                                        onclick="openProduct('${group.category}', '${group.baseName}')">
-                                    ${btnText}
-                                </button>
-                            </div>
+                            ${actionHtml}
                         </div>
                     </div>
                 `;
