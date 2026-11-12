@@ -72,6 +72,181 @@
             header { padding: 20px; flex-direction: column; gap: 15px; }
             .price-section { padding-top: 200px; }
         }
+        /* БЛОК КОНТАКТІВ ТА ФУТЕР */
+        .contacts-footer {
+            background: radial-gradient(circle at 20% 50%, rgba(217, 144, 88, 0.05) 0%, transparent 50%), #0e1012;
+            border-top: 1px solid var(--border);
+            padding: 80px 50px 30px;
+            margin-top: 80px;
+        }
+        .contacts-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 60px;
+        }
+        .contacts-info { flex: 1; }
+        .contacts-info h2 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        .contacts-subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 480px;
+            margin-bottom: 35px;
+        }
+        .contact-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            font-size: 1rem;
+        }
+        .contact-line svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent);
+            fill: none;
+            flex-shrink: 0;
+        }
+        .contact-label {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .contact-line a {
+            color: var(--text);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .contact-line a:hover { color: var(--accent); }
+
+        /* ІКОНКИ МЕССЕНДЖЕРІВ ТА СОЦМЕРЕЖ */
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        .social-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .social-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+        .social-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(217, 144, 88, 0.25);
+        }
+
+        /* КАРТКА ФОРМИ "ЗАДАТИ ПИТАННЯ" */
+        .contact-form-card {
+            width: 460px;
+            flex-shrink: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+        .contact-form-card h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .contact-form-card p {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        .contact-form-card input {
+            width: 100%;
+            padding: 15px 18px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        .contact-form-card input:focus { border-color: var(--accent); }
+        .contact-form-card button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #e09b63 0%, #c67c44 100%);
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .contact-form-card button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(217, 144, 88, 0.3);
+        }
+
+        /* НИЖНІЙ РЯДОК АВТОРСТВА */
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 60px auto 0;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .dev-credit a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed var(--accent);
+            padding-bottom: 2px;
+            transition: 0.3s;
+        }
+        .dev-credit a:hover { color: var(--accent); }
+
+        @media (max-width: 960px) {
+            .contacts-footer { padding: 50px 20px 25px; }
+            .contacts-wrapper { flex-direction: column; align-items: stretch; gap: 40px; }
+            .contacts-info h2 { font-size: 2rem; }
+            .contact-form-card { width: 100%; padding: 30px 20px; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
     </style>
 </head>
 <body>
@@ -196,21 +371,21 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usi
                 "Дошка необрізна": "Дошка необрізна", "Дошка обрізна": "Дошка обрізна", "Брус": "Брус", "Погонаж": "Погонажні вироби",
                 "Порода (Укр)": "Порода", "Порода": "Порода", "Сорт": "Сорт", "Ціна": "Ціна", 
                 "Товщина": "Товщина", "Ширина": "Ширина", "Ціна (грн/м3)": "Ціна (грн/м³)",
-                "Товщина (мм)": "Товщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Ціна (грн/м.п.)"
+                "Товщина (мм)": "Товщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Ціна (грн/м.п.)", contact_title: "Зв'язатися з нами", contact_sub: "Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.", addr_label: "Адреса:", addr_val: "Київ, Дніпровська набережна 17е", phones_label: "Телефони:", email_label: "Пошта:", ask_title: "Задати питання", ask_sub: "Вкажіть контакти — перетелефонуємо вам за 15 хвилин", btn_send: "Надіслати", rights: "Усі права захищено.", dev_text: "Розробка сайту та автоматизація бізнесу —"
             },
             ru: {
                 nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", loading: "Обновление прайса...",
                 "Дошка необрізна": "Доска необрезная", "Дошка обрізна": "Доска обрезная", "Брус": "Брус", "Погонаж": "Погонажные изделия",
                 "Порода (Укр)": "Порода", "Порода": "Порода", "Сорт": "Сорт", "Ціна": "Цена", 
                 "Товщина": "Толщина", "Ширина": "Ширина", "Ціна (грн/м3)": "Цена (грн/м³)",
-                "Товщина (мм)": "Толщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Цена (грн/м.п.)"
+                "Товщина (мм)": "Толщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Цена (грн/м.п.)", contact_title: "Связаться с нами", contact_sub: "Наш склад и производство расположены в удобном месте на левом берегу Киева.", addr_label: "Адрес:", addr_val: "Киев, Днепровская набережная 17е", phones_label: "Телефоны:", email_label: "Почта:", ask_title: "Задать вопрос", ask_sub: "Укажите контакты — перезвоним вам через 15 минут", btn_send: "Отправить", rights: "Все права защищены.", dev_text: "Разработка сайта и автоматизация бизнеса —"
             },
             en: {
                 nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", loading: "Loading prices...",
                 "Дошка необрізна": "Unedged Board", "Дошка обрізна": "Edged Board", "Брус": "Timber", "Погонаж": "Molding Products",
                 "Порода (Укр)": "Wood Type", "Порода": "Wood Type", "Сорт": "Grade", "Ціна": "Price", 
                 "Товщина": "Thickness", "Ширина": "Width", "Ціна (грн/м3)": "Price (UAH/m³)",
-                "Товщина (мм)": "Thickness (mm)", "Ширина (мм)": "Width (mm)", "Ціна (грн/м.п.)": "Price (UAH/l.m.)"
+                "Товщина (мм)": "Thickness (mm)", "Ширина (мм)": "Width (mm)", "Ціна (грн/м.п.)": "Price (UAH/l.m.)", contact_title: "Contact Us", contact_sub: "Our warehouse and production are conveniently located on the left bank of Kyiv.", addr_label: "Address:", addr_val: "Kyiv, Dniprovska Naberezhna 17e", phones_label: "Phones:", email_label: "Email:", ask_title: "Ask a Question", ask_sub: "Leave your contacts — we will call you back in 15 minutes", btn_send: "Send", rights: "All rights reserved.", dev_text: "Web development & business automation —"
             }
         };
 
@@ -366,6 +541,46 @@ function setLanguage(lang) {
 
 // Запуск завантаження даних
 loadDynamicPrices();
+        async function sendCallbackForm() {
+            const nameInput = document.getElementById('footer-client-name');
+            const phoneInput = document.getElementById('footer-client-phone');
+            const name = nameInput.value.trim();
+            const phone = phoneInput.value.trim();
+
+            if (!name || !phone) {
+                alert(currentLang === 'en' ? "Please fill in your contacts" : (currentLang === 'ru' ? "Заполните контакты" : "Будь ласка, заповніть контакти"));
+                return;
+            }
+
+            const BOT_TOKEN = '8828109529:AAHxYZQkGVLftBxBiEIIEVVXVM8_a0BsX9w';
+            const CHAT_ID = '710362478';
+
+            let text = `📞 <b>ЗАПИТ НА ДЗВІНОК / ПИТАННЯ (САЙТ)</b>\n\n`;
+            text += `👤 <b>Клієнт:</b> ${name}\n`;
+            text += `📱 <b>Телефон:</b> ${phone}\n`;
+            text += `🌐 <b>Сторінка:</b> ${document.title}`;
+
+            const btn = document.getElementById('footer-submit-btn');
+            const originalText = btn.innerText;
+
+            try {
+                btn.innerText = "...";
+                btn.disabled = true;
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' })
+                });
+                alert(currentLang === 'en' ? "Sent! We will call you shortly." : (currentLang === 'ru' ? "Отправлено! Мы перезвоним вам." : "Надіслано! Ми зателефонуємо вам найближчим часом."));
+                nameInput.value = '';
+                phoneInput.value = '';
+            } catch (e) {
+                alert("Помилка відправки.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>
