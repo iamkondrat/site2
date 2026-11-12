@@ -43,9 +43,9 @@
 
         .catalog-container { display: flex; padding: 40px 50px; gap: 40px; max-width: 1600px; margin: 0 auto; align-items: flex-start; }
         
-        /* ЗАКРІПЛЕНА БОКОВА ПАНЕЛЬ (STICKY) */
+        /* ЗАКРІПЛЕНА БОКОВА ПАНЕЛЬ */
         .sidebar { 
-            width: 260px; flex-shrink: 0; 
+            width: 280px; flex-shrink: 0; 
             position: sticky; top: 100px; 
             max-height: calc(100vh - 120px); overflow-y: auto; 
             padding-right: 15px;
@@ -69,16 +69,57 @@
 
         /* ФІЛЬТРИ */
         .filter-section { margin-top: 35px; border-top: 1px solid var(--border); padding-top: 25px; }
-        .filter-group { margin-bottom: 20px; }
-        .filter-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; font-weight: 700; }
-        .filter-group input, .filter-group select { 
-            width: 100%; padding: 12px; background: rgba(255,255,255,0.03); 
-            border: 1px solid var(--border); color: white; border-radius: 5px; 
-            outline: none; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;
+        .filter-group { margin-bottom: 25px; }
+        .filter-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; font-weight: 700; }
+        
+        /* СТИЛІЗОВАНИЙ ВИПАДАЮЧИЙ СПИСОК */
+        .custom-select-wrapper { position: relative; display: block; }
+        .custom-select-wrapper::after {
+            content: '▼'; position: absolute; right: 15px; top: 50%; 
+            transform: translateY(-50%); color: var(--accent); 
+            pointer-events: none; font-size: 0.7rem;
         }
-        .filter-group input:focus, .filter-group select:focus { border-color: var(--accent); }
-        .filter-group select option { background: var(--bg-dark); color: white; }
+        .custom-select-wrapper select {
+            appearance: none; -webkit-appearance: none; -moz-appearance: none;
+            width: 100%; padding: 12px 35px 12px 15px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            color: white; border-radius: 5px; outline: none;
+            font-family: 'Montserrat', sans-serif; font-size: 0.9rem; cursor: pointer;
+            transition: 0.3s;
+        }
+        .custom-select-wrapper select:focus { border-color: var(--accent); }
+        .custom-select-wrapper select option { background: var(--bg-dark); color: white; padding: 10px; }
 
+        /* ПОДВІЙНИЙ ПОВЗУНОК ЦІНИ */
+        .price-inputs { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 15px; }
+        .price-inputs input { 
+            width: 45%; padding: 10px; background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--border); color: white; border-radius: 5px; 
+            text-align: center; outline: none; font-family: 'Montserrat', sans-serif; 
+            font-size: 0.9rem; font-weight: 600; transition: 0.3s;
+        }
+        .price-inputs input:focus { border-color: var(--accent); }
+        .price-inputs span { color: var(--text-muted); font-weight: bold; }
+
+        .range-slider-wrap { position: relative; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 10px; }
+        .range-fill { position: absolute; height: 100%; background: var(--accent); border-radius: 5px; z-index: 1; top: 0; }
+        
+        .range-slider-wrap input[type="range"] { 
+            position: absolute; width: 100%; height: 6px; top: 0; left: 0;
+            appearance: none; background: none; pointer-events: none; z-index: 2; margin: 0; outline: none;
+        }
+        .range-slider-wrap input[type="range"]::-webkit-slider-thumb { 
+            appearance: none; pointer-events: all; width: 18px; height: 18px; 
+            background: var(--accent); border-radius: 50%; cursor: pointer; 
+            box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: 0.2s;
+        }
+        .range-slider-wrap input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        .range-slider-wrap input[type="range"]::-moz-range-thumb { 
+            pointer-events: all; width: 18px; height: 18px; background: var(--accent); 
+            border: none; border-radius: 50%; cursor: pointer;
+        }
+
+        /* СІТКА ТОВАРІВ */
         .products-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; align-content: start; }
         
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; cursor: pointer; }
@@ -177,15 +218,28 @@
 
             <div class="filter-section">
                 <h3 data-i18n="filters_title">Фільтри</h3>
+                
                 <div class="filter-group">
-                    <label data-i18n="price_max">Ціна до (₴)</label>
-                    <input type="number" id="price-filter" placeholder="Наприклад, 500" oninput="applyFilters()">
+                    <label data-i18n="price_range">Ціна (₴)</label>
+                    <div class="price-inputs">
+                        <input type="number" id="price-min-input" oninput="updatePriceFromInput()" placeholder="Від">
+                        <span>-</span>
+                        <input type="number" id="price-max-input" oninput="updatePriceFromInput()" placeholder="До">
+                    </div>
+                    <div class="range-slider-wrap">
+                        <div class="range-fill" id="range-fill"></div>
+                        <input type="range" id="price-min-slider" oninput="updatePriceFromSlider(event)">
+                        <input type="range" id="price-max-slider" oninput="updatePriceFromSlider(event)">
+                    </div>
                 </div>
-                <div class="filter-group">
+
+                <div class="filter-group" id="wood-filter-group" style="display: none;">
                     <label data-i18n="wood_type">Порода дерева</label>
-                    <select id="wood-filter" onchange="applyFilters()">
-                        <option value="all" data-i18n="all_woods">Всі породи</option>
-                    </select>
+                    <div class="custom-select-wrapper">
+                        <select id="wood-filter" onchange="applyFilters()">
+                            <option value="all" data-i18n="all_woods">Всі породи</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -215,34 +269,38 @@
         
         // Глобальні змінні стану
         let catalogData = []; 
-        let categoryTree = {}; // Об'єкт для збереження підкатегорій: { 'Погонаж': Set('Вагонка', 'Рейка') }
-        let allWoodsSet = new Set(); // Всі знайдені породи
+        let categoryTree = {};
         
         // Стан фільтрів
         let currentCategory = 'all';
         let currentSubcategory = 'all';
-        let maxPrice = Infinity;
         let currentWood = 'all';
+
+        // Змінні повзунка ціни
+        let absMinPrice = 0;
+        let absMaxPrice = 100000;
+        let currentMinPrice = 0;
+        let currentMaxPrice = 100000;
 
         let cart = JSON.parse(localStorage.getItem('apollo_cart')) || [];
         let currentLang = localStorage.getItem('apollo_lang') || 'uk';
 
-        // Словник перекладів
+        // Базовий словник перекладів сайту
         const siteTranslations = {
             uk: { 
                 nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", cart: "Кошик", cat_title: "Категорії", cat_all: "Всі товари", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", wait: "Завантаження каталогу...", "Сорт": "Сорт",
                 "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус",
-                filters_btn: "Фільтри та Категорії ▼", filters_title: "Фільтри", price_max: "Ціна до (₴)", wood_type: "Порода дерева", all_woods: "Всі породи"
+                filters_btn: "Фільтри та Категорії ▼", filters_title: "Фільтри", price_range: "Ціна (₴)", wood_type: "Порода дерева", all_woods: "Всі породи"
             },
             ru: { 
                 nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", cart: "Корзина", cat_title: "Категории", cat_all: "Все товары", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", wait: "Загрузка каталога...", "Сорт": "Сорт",
                 "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус",
-                filters_btn: "Фильтры и Категории ▼", filters_title: "Фильтры", price_max: "Цена до (₴)", wood_type: "Порода дерева", all_woods: "Все породы"
+                filters_btn: "Фильтры и Категории ▼", filters_title: "Фильтры", price_range: "Цена (₴)", wood_type: "Порода дерева", all_woods: "Все породы"
             },
             en: { 
                 nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", cart: "Cart", cat_title: "Categories", cat_all: "All Products", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name/Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", wait: "Loading catalog...", "Сорт": "Grade",
                 "м³": "m³", "м.п.": "l.m.", "шт": "pcs", "м²": "m²", "Брус": "Timber",
-                filters_btn: "Filters & Categories ▼", filters_title: "Filters", price_max: "Max Price (₴)", wood_type: "Wood Type", all_woods: "All Wood Types"
+                filters_btn: "Filters & Categories ▼", filters_title: "Filters", price_range: "Price (₴)", wood_type: "Wood Type", all_woods: "All Wood Types"
             }
         };
 
@@ -277,7 +335,24 @@
                 
                 catalogData = [];
                 categoryTree = {};
-                allWoodsSet.clear();
+
+                // Поповнюємо словник з усіх рядків
+                tabs.forEach(tab => {
+                    if(!tab.data) return;
+                    for(let i = 0; i < tab.data.length; i++) {
+                        let r = tab.data[i];
+                        if(r && r.length >= 3) {
+                            let ukWord = r[0] ? r[0].trim() : '';
+                            let ruWord = r[1] ? r[1].trim() : '';
+                            let enWord = r[2] ? r[2].trim() : '';
+                            if(ukWord && ukWord !== "УКР") {
+                                siteTranslations.uk[ukWord] = ukWord;
+                                siteTranslations.ru[ukWord] = ruWord || ukWord;
+                                siteTranslations.en[ukWord] = enWord || ukWord;
+                            }
+                        }
+                    }
+                });
 
                 tabs.forEach(tab => {
                     const rows = tab.data;
@@ -290,7 +365,6 @@
                     let headerRow = rows[2];
                     let d3Label = (headerRow && headerRow[3]) ? headerRow[3].trim() : '';
 
-                    // Шукаємо індекси колонок "Підкатегорія" і "Порода" у шапці (рядок 3)
                     let subcatIdx = -1, woodIdx = -1;
                     if (headerRow) {
                         for(let j = 3; j < headerRow.length; j++) {
@@ -300,25 +374,20 @@
                         }
                     }
 
-                    for(let i = 0; i < rows.length; i++) {
+                    for(let i = 3; i < rows.length; i++) {
                         let r = rows[i];
                         if(!r || r.length < 4) continue;
 
                         let col0 = r[0] ? r[0].trim() : '';
-                        if(!col0 || col0 === 'УКР' || col0.includes('Назва') || col0.includes('Порода') || col0.includes('Товщина')) continue;
+                        if(!col0 || col0.includes('Назва') || col0.includes('Порода') || col0.includes('Товщина') || col0.includes('Вид')) continue;
 
-                        let ruWord = r[1] ? r[1].trim() : '';
-                        let enWord = r[2] ? r[2].trim() : '';
-                        siteTranslations.uk[col0] = col0;
-                        siteTranslations.ru[col0] = ruWord || col0;
-                        siteTranslations.en[col0] = enWord || col0;
-
-                        // Зчитуємо підкатегорію і породу, якщо знайшли такі колонки
                         let subcatVal = (subcatIdx !== -1 && r[subcatIdx]) ? r[subcatIdx].trim() : '';
                         let woodVal = (woodIdx !== -1 && r[woodIdx]) ? r[woodIdx].trim() : '';
+                        
+                        if (subcatVal.toLowerCase() === 'підкатегорія' || subcatVal.toLowerCase() === 'подкатегория') subcatVal = '';
+                        if (woodVal.toLowerCase() === 'порода' || woodVal.toLowerCase() === 'порода дерева') woodVal = '';
 
                         if(subcatVal) categoryTree[catName].add(subcatVal);
-                        if(woodVal) allWoodsSet.add(woodVal);
 
                         if (isTimberTab) {
                             let thickness = r[3] ? r[3].trim() : '';
@@ -352,6 +421,7 @@
                 });
 
                 document.getElementById('loader').style.display = 'none';
+                initPriceSlider(); // Ініціалізуємо цінові повзунки на основі реальних товарів
                 renderSidebar();
                 renderWoodFilter();
                 setLang(currentLang);
@@ -359,6 +429,90 @@
                 console.error(error);
                 document.getElementById('loader').innerText = "Помилка завантаження каталогу.";
             }
+        }
+
+        // Ініціалізація діапазону цін
+        function initPriceSlider() {
+            if(catalogData.length > 0) {
+                absMinPrice = Math.floor(Math.min(...catalogData.map(i => i.price)));
+                absMaxPrice = Math.ceil(Math.max(...catalogData.map(i => i.price)));
+                if(absMinPrice === absMaxPrice) absMaxPrice += 100;
+                
+                currentMinPrice = absMinPrice;
+                currentMaxPrice = absMaxPrice;
+
+                const sMin = document.getElementById('price-min-slider');
+                const sMax = document.getElementById('price-max-slider');
+                const iMin = document.getElementById('price-min-input');
+                const iMax = document.getElementById('price-max-input');
+
+                [sMin, sMax].forEach(el => { el.min = absMinPrice; el.max = absMaxPrice; });
+                
+                sMin.value = absMinPrice; sMax.value = absMaxPrice;
+                iMin.value = absMinPrice; iMax.value = absMaxPrice;
+                
+                updateRangeFill();
+            }
+        }
+
+        // Оновлення від рухів повзунків
+        function updatePriceFromSlider(e) {
+            let sMin = document.getElementById('price-min-slider');
+            let sMax = document.getElementById('price-max-slider');
+            let valMin = parseFloat(sMin.value);
+            let valMax = parseFloat(sMax.value);
+            
+            let gap = (absMaxPrice - absMinPrice) * 0.05; // 5% мінімальний розрив
+            if (gap < 1) gap = 1;
+            
+            if (valMax - valMin < gap) {
+                if (e.target.id === 'price-min-slider') {
+                    sMin.value = valMax - gap;
+                    valMin = valMax - gap;
+                } else {
+                    sMax.value = valMin + gap;
+                    valMax = valMin + gap;
+                }
+            }
+            
+            currentMinPrice = valMin;
+            currentMaxPrice = valMax;
+            document.getElementById('price-min-input').value = valMin;
+            document.getElementById('price-max-input').value = valMax;
+            
+            updateRangeFill();
+            applyFilters();
+        }
+
+        // Оновлення від вводу в поля
+        function updatePriceFromInput() {
+            let iMin = document.getElementById('price-min-input');
+            let iMax = document.getElementById('price-max-input');
+            
+            let valMin = parseFloat(iMin.value) || absMinPrice;
+            let valMax = parseFloat(iMax.value) || absMaxPrice;
+            
+            if (valMin < absMinPrice) valMin = absMinPrice;
+            if (valMax > absMaxPrice) valMax = absMaxPrice;
+            if (valMin > valMax) { let temp = valMin; valMin = valMax; valMax = temp; }
+            
+            currentMinPrice = valMin;
+            currentMaxPrice = valMax;
+            document.getElementById('price-min-slider').value = valMin;
+            document.getElementById('price-max-slider').value = valMax;
+            
+            updateRangeFill();
+            applyFilters();
+        }
+
+        // Заливка лінії акцентним кольором
+        function updateRangeFill() {
+            let fill = document.getElementById('range-fill');
+            let range = absMaxPrice - absMinPrice;
+            let p1 = ((currentMinPrice - absMinPrice) / range) * 100;
+            let p2 = ((currentMaxPrice - absMinPrice) / range) * 100;
+            fill.style.left = p1 + "%";
+            fill.style.width = (p2 - p1) + "%";
         }
 
         function renderSidebar() {
@@ -386,19 +540,44 @@
         }
 
         function renderWoodFilter() {
+            const group = document.getElementById('wood-filter-group');
             const select = document.getElementById('wood-filter');
-            let html = `<option value="all" data-i18n="all_woods">${getTranslatedWord('all_woods', currentLang)}</option>`;
-            allWoodsSet.forEach(w => {
-                html += `<option value="${w}">${getTranslatedWord(w, currentLang)}</option>`;
+            
+            let availableWoods = new Set();
+            
+            catalogData.forEach(p => {
+                let catMatch = (currentCategory === 'all') || (p.category === currentCategory);
+                let subMatch = (currentSubcategory === 'all') || (p.subcategory === currentSubcategory);
+                if(catMatch && subMatch && p.wood) {
+                    availableWoods.add(p.wood);
+                }
             });
-            select.innerHTML = html;
+
+            if(availableWoods.size === 0) {
+                group.style.display = 'none';
+                currentWood = 'all'; 
+                select.innerHTML = `<option value="all">${getTranslatedWord('all_woods', currentLang)}</option>`;
+            } else {
+                group.style.display = 'block';
+                let html = `<option value="all" data-i18n="all_woods">${getTranslatedWord('all_woods', currentLang)}</option>`;
+                availableWoods.forEach(w => {
+                    html += `<option value="${w}">${getTranslatedWord(w, currentLang)}</option>`;
+                });
+                select.innerHTML = html;
+                
+                if(availableWoods.has(currentWood)) {
+                    select.value = currentWood;
+                } else {
+                    currentWood = 'all';
+                    select.value = 'all';
+                }
+            }
         }
 
         function formatId(str) {
             return str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zа-я0-9-]/gi, '');
         }
 
-        // Відкриває/закриває головну категорію і вибирає її
         function toggleCategory(cat, event) {
             if(event) event.stopPropagation();
             let subList = document.getElementById(`sub-${formatId(cat)}`);
@@ -406,13 +585,11 @@
             setCategory(cat, 'all', null);
         }
 
-        // Застосовує вибір категорії чи підкатегорії
         function setCategory(cat, subcat, event) {
             if(event) event.stopPropagation();
             currentCategory = cat;
             currentSubcategory = subcat;
 
-            // Оновлюємо активні класи
             document.querySelectorAll('.category-list li, .sub-category-list li').forEach(el => el.classList.remove('active'));
             
             if(cat === 'all') {
@@ -424,17 +601,17 @@
                 document.getElementById(`cat-sub-${formatId(subcat)}`).classList.add('active');
             }
             
+            renderWoodFilter();
             applyFilters();
         }
 
         function applyFilters() {
-            // Зчитуємо ціну
-            let inputPrice = document.getElementById('price-filter').value;
-            maxPrice = (inputPrice && !isNaN(inputPrice) && inputPrice > 0) ? parseFloat(inputPrice) : Infinity;
-            
-            // Зчитуємо породу
-            currentWood = document.getElementById('wood-filter').value;
-            
+            const woodSelect = document.getElementById('wood-filter');
+            if(document.getElementById('wood-filter-group').style.display !== 'none') {
+                currentWood = woodSelect.value;
+            } else {
+                currentWood = 'all';
+            }
             renderProducts();
         }
 
@@ -445,13 +622,13 @@
             const filtered = catalogData.filter(p => {
                 let catMatch = (currentCategory === 'all') || (p.category === currentCategory);
                 let subMatch = (currentSubcategory === 'all') || (p.subcategory === currentSubcategory);
-                let priceMatch = (p.price <= maxPrice);
+                let priceMatch = (p.price >= currentMinPrice && p.price <= currentMaxPrice);
                 let woodMatch = (currentWood === 'all') || (p.wood === currentWood);
                 return catMatch && subMatch && priceMatch && woodMatch;
             });
 
             if(filtered.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--text-muted); padding: 50px;">За вашими фільтрами нічого не знайдено.</div>`;
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--text-muted); padding: 50px; font-weight: 600;">За вашими фільтрами товарів не знайдено.</div>`;
                 return;
             }
 
@@ -489,7 +666,6 @@
             const btn = document.getElementById('btn-' + lang);
             if(btn) btn.classList.add('active');
 
-            // Переклад статичних текстів
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(siteTranslations[lang] && siteTranslations[lang][key]) el.innerText = siteTranslations[lang][key];
@@ -500,17 +676,14 @@
                 if(siteTranslations[lang] && siteTranslations[lang][key]) el.setAttribute('placeholder', siteTranslations[lang][key]);
             });
 
-            // Оновлюємо UI бокової панелі
             renderSidebar();
             renderWoodFilter();
             
-            // Відновлюємо активні класи після перерендеру меню
             if(currentCategory !== 'all') {
                 let subList = document.getElementById(`sub-${formatId(currentCategory)}`);
                 if(subList) subList.classList.add('open');
             }
             setCategory(currentCategory, currentSubcategory, null);
-            document.getElementById('wood-filter').value = currentWood;
 
             renderProducts();
             updateCartUI();
