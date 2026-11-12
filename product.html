@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Товар | Apollo LTD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #121416;
+            --card-bg: #1a1d20;
+            --accent: #d99058;
+            --text: #ffffff;
+            --text-muted: #888888;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: var(--text); overflow-x: hidden; }
+
+        /* HEADER (Ідентичний каталогу) */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 50px; background: rgba(18, 20, 22, 0.95);
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .logo h2 { letter-spacing: 2px; font-weight: 800; cursor: pointer; }
+        .logo span { color: var(--accent); }
+        .logo img { height: 45px; display: block; width: auto; }
+        .nav-links a { color: var(--text); text-decoration: none; margin-right: 25px; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .header-controls { display: flex; gap: 30px; align-items: center; }
+        .lang-switcher { display: flex; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .lang-btn { background: transparent; border: none; color: #888; padding: 8px 12px; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .lang-btn.active, .lang-btn:hover { background: var(--accent); color: #000; }
+        .cart-btn { background: var(--accent); color: #000; padding: 10px 25px; border-radius: 5px; cursor: pointer; font-weight: 700; transition: 0.3s; text-transform: uppercase; font-size: 0.85rem;}
+        .cart-btn:hover { box-shadow: 0 5px 15px rgba(217, 144, 88, 0.3); transform: translateY(-2px); }
+
+        /* PRODUCT LAYOUT */
+        .product-container { display: flex; gap: 50px; max-width: 1200px; margin: 50px auto; padding: 0 30px; min-height: 60vh; }
+        
+        .product-image { flex: 1; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 400px;}
+        .product-image img { width: 100%; height: 100%; object-fit: cover; }
+        .product-image .no-photo { font-weight: 700; color: #444; letter-spacing: 2px; }
+        
+        .product-info { flex: 1; display: flex; flex-direction: column; }
+        .product-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; line-height: 1.2; }
+        .product-price { font-size: 2rem; color: var(--accent); font-weight: 800; margin-bottom: 30px; }
+        
+        /* OPTIONS BUTTONS */
+        .option-group { margin-bottom: 25px; }
+        .option-group label { display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; font-weight: 700; }
+        .options-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .opt-btn { 
+            background: transparent; border: 1px solid var(--border); color: var(--text); 
+            padding: 10px 15px; border-radius: 5px; cursor: pointer; 
+            font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.95rem; transition: 0.3s; 
+        }
+        .opt-btn:hover { border-color: var(--accent); }
+        .opt-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        .opt-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--border) !important; background: transparent !important; color: var(--text) !important; }
+
+        /* BUY SECTION */
+        .buy-action { display: flex; gap: 15px; margin-top: 20px; }
+        .buy-action input { width: 100px; padding: 15px; background: #0a0b0c; border: 1px solid var(--border); color: #fff; border-radius: 5px; text-align: center; font-size: 1.2rem; font-weight: 700; outline: none; }
+        .buy-action input:focus { border-color: var(--accent); }
+        .buy-action button { flex: 1; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .buy-action button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(217, 144, 88, 0.3); }
+
+        .loader { width: 100%; text-align: center; padding: 100px; font-size: 1.2rem; color: #777; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;}
+        .back-btn { display: inline-flex; align-items: center; gap: 10px; color: var(--text-muted); text-decoration: none; font-weight: 600; margin-bottom: 20px; transition: 0.2s; text-transform: uppercase; font-size: 0.85rem;}
+        .back-btn:hover { color: var(--accent); }
+
+        /* КОРЗИНА (Ідентична каталогу) */
+        .cart-modal { position: fixed; top: 0; right: -100%; width: 450px; height: 100vh; background: rgba(18, 20, 22, 0.98); backdrop-filter: blur(20px); border-left: 1px solid var(--border); z-index: 200; padding: 40px; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+        .cart-modal.open { right: 0; }
+        .close-cart { cursor: pointer; color: var(--text-muted); font-size: 2rem; text-align: right; margin-bottom: 20px; transition: 0.3s; }
+        .close-cart:hover { color: var(--accent); transform: scale(1.1); }
+        .cart-items { flex: 1; overflow-y: auto; margin-bottom: 20px; padding-right: 10px; }
+        .cart-item { border-bottom: 1px solid var(--border); padding: 20px 0; position: relative; }
+        .cart-item-title { font-weight: 700; margin-bottom: 10px; font-size: 1.05rem; padding-right: 25px;}
+        .cart-item-details { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.95rem; }
+        .remove-item { position: absolute; top: 20px; right: 0; color: #ff4444; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
+        .cart-total-wrap { font-size: 1.5rem; font-weight: 800; text-align: right; margin-bottom: 30px; color: var(--accent); }
+        .checkout-form input { width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: white; border-radius: 5px; font-family: 'Montserrat'; font-size: 1rem; outline: none;}
+        .checkout-form input:focus { border-color: var(--accent); }
+        .checkout-form button { width: 100%; padding: 18px; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .checkout-form button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(217, 144, 88, 0.2); }
+
+        @media (max-width: 900px) {
+            .product-container { flex-direction: column; padding: 20px; gap: 30px;}
+            .product-image { min-height: 250px; }
+            .cart-modal { width: 100%; }
+            header { padding: 15px 20px; flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <img src="logo.png" alt="Apollo LTD">
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Головна</a>
+            <a href="catalog.html" data-i18n="nav_catalog">Каталог</a>
+            <a href="index.html#sec-04" data-i18n="nav_contacts">Контакти</a>
+        </nav>
+        <div class="header-controls">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLang('uk')" id="btn-uk">UA</button>
+                <button class="lang-btn" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <div class="cart-btn" onclick="toggleCart()">
+                <span data-i18n="cart">Кошик</span> (<span id="cart-counter">0</span>)
+            </div>
+        </div>
+    </header>
+
+    <div style="max-width: 1200px; margin: 30px auto 0; padding: 0 30px;">
+        <a href="catalog.html" class="back-btn">← <span data-i18n="back_to_cat">Назад до каталогу</span></a>
+    </div>
+
+    <div id="loader" class="loader" data-i18n="wait">Завантаження товару...</div>
+
+    <div class="product-container" id="product-content" style="display: none;">
+        <div class="product-image" id="prod-img">
+            <!-- Зображення -->
+        </div>
+        
+        <div class="product-info">
+            <h1 class="product-title" id="prod-title">Назва товару</h1>
+            
+            <!-- Динамічні опції -->
+            <div id="dynamic-options"></div>
+
+            <div class="product-price" id="prod-price">0 ₴</div>
+            
+            <div class="buy-action">
+                <input type="number" step="0.01" id="prod-qty" value="1" min="0.1">
+                <button onclick="addToCartCurrent()" data-i18n="btn_add">В кошик</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- КОРЗИНА -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="close-cart" onclick="toggleCart()">×</div>
+        <h2 style="margin-bottom: 25px; font-weight: 800;" data-i18n="cart_title">Ваше замовлення</h2>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-total-wrap"><span data-i18n="total">Разом:</span> <span id="cart-total-sum">0</span> ₴</div>
+        
+        <div class="checkout-form">
+            <input type="text" id="client-name" data-i18n-placeholder="name_ph" placeholder="Ваше ім'я або компанія" required>
+            <input type="tel" id="client-phone" data-i18n-placeholder="phone_ph" placeholder="Ваш телефон" required>
+            <button onclick="sendOrder()" data-i18n="checkout_btn">Оформити замовлення</button>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usiAUUKZNymW_EMstPbLE9h_RAIjt4uiMHJxX3QISRLrvv9No/exec'; 
+        
+        let variantsData = []; 
+        let currentVariant = null; // Конкретний обраний товар для кошика
+
+        // Стан вибору
+        let selectedThickness = null;
+        let selectedWidth = null;
+        let selectedSort = null;
+
+        let cart = JSON.parse(localStorage.getItem('apollo_cart')) || [];
+        let currentLang = localStorage.getItem('apollo_lang') || 'uk';
+
+        const siteTranslations = {
+            uk: { 
+                nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", cart: "Кошик", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", wait: "Завантаження товару...", "Сорт": "Сорт", back_to_cat: "Назад до каталогу", select_thickness: "Оберіть товщину (мм)", select_width: "Оберіть ширину (мм)", select_variant: "Оберіть варіант",
+                "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус"
+            },
+            ru: { 
+                nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", cart: "Корзина", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", wait: "Загрузка товара...", "Сорт": "Сорт", back_to_cat: "Назад в каталог", select_thickness: "Выберите толщину (мм)", select_width: "Выберите ширину (мм)", select_variant: "Выберите вариант",
+                "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус"
+            },
+            en: { 
+                nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", cart: "Cart", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name/Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", wait: "Loading product...", "Сорт": "Grade", back_to_cat: "Back to catalog", select_thickness: "Select thickness (mm)", select_width: "Select width (mm)", select_variant: "Select option",
+                "м³": "m³", "м.п.": "l.m.", "шт": "pcs", "м²": "m²", "Брус": "Timber"
+            }
+        };
+
+        function getTranslatedUnit(unit, lang) {
+            if (!unit) return 'шт';
+            return (siteTranslations[lang] && siteTranslations[lang][unit]) ? siteTranslations[lang][unit] : unit;
+        }
+
+        function getTranslatedWord(word, lang) {
+            return (siteTranslations[lang] && siteTranslations[lang][word]) ? siteTranslations[lang][word] : word;
+        }
+
+        // Отримання параметрів з URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlCat = urlParams.get('category');
+        const urlName = urlParams.get('name');
+
+        async function fetchProduct() {
+            if(!urlCat || !urlName) {
+                document.getElementById('loader').innerText = "Товар не знайдено.";
+                return;
+            }
+
+            try {
+                const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
+                const tabs = await response.json();
+                
+                // Збираємо словник
+                tabs.forEach(tab => {
+                    if(!tab.data) return;
+                    for(let i = 0; i < tab.data.length; i++) {
+                        let r = tab.data[i];
+                        if(r && r.length >= 3) {
+                            let ukWord = r[0] ? r[0].trim() : '';
+                            if(ukWord && ukWord !== "УКР") {
+                                siteTranslations.uk[ukWord] = ukWord;
+                                siteTranslations.ru[ukWord] = (r[1] ? r[1].trim() : '') || ukWord;
+                                siteTranslations.en[ukWord] = (r[2] ? r[2].trim() : '') || ukWord;
+                            }
+                        }
+                    }
+                });
+
+                // Шукаємо варіанти цього конкретного товару
+                const tab = tabs.find(t => t.name === urlCat);
+                if(!tab) throw new Error();
+
+                const rows = tab.data;
+                let headerRow = rows[2];
+                let d3Label = (headerRow && headerRow[3]) ? headerRow[3].trim() : '';
+                let isTimberTab = urlCat.toLowerCase().includes('брус');
+
+                for(let i = 3; i < rows.length; i++) {
+                    let r = rows[i];
+                    if(!r || r.length < 4) continue;
+
+                    let col0 = r[0] ? r[0].trim() : '';
+                    // Якщо це той самий товар
+                    if(col0 === urlName) {
+                        if (isTimberTab) {
+                            let t = r[3] ? r[3].trim() : '';
+                            let w = r[4] ? r[4].trim() : '';
+                            let p = parseFloat(r[5] ? r[5].trim().replace(/\s/g,'').replace(',','.') : 0);
+                            let u = r[6] ? r[6].trim() : 'м.п.';
+                            let ph = r[7] ? r[7].trim() : '';
+                            if(t && w && p > 0) {
+                                variantsData.push({ id: `timber_${urlCat}_${i}`, isTimber: true, baseName: col0, category: urlCat, thickness: t, width: w, price: p, unit: u, photo: ph });
+                            }
+                        } else {
+                            let s = r[3] ? r[3].trim() : '';
+                            let p = parseFloat(r[4] ? r[4].trim().replace(/\s/g,'').replace(',','.') : 0);
+                            let u = r[5] ? r[5].trim() : (urlCat.toLowerCase().includes('погонаж') ? 'м.п.' : 'м³');
+                            let ph = r[6] ? r[6].trim() : '';
+                            if(p > 0) {
+                                variantsData.push({ id: `prod_${urlCat}_${i}`, isTimber: false, baseName: col0, category: urlCat, sort: s, sortLabel: d3Label, price: p, unit: u, photo: ph });
+                            }
+                        }
+                    }
+                }
+
+                if(variantsData.length === 0) throw new Error();
+
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('product-content').style.display = 'flex';
+                
+                initProductUI();
+                setLang(currentLang);
+                updateCartUI();
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loader').innerText = "Товар не знайдено або виникла помилка.";
+            }
+        }
+
+        function initProductUI() {
+            const first = variantsData[0];
+            
+            // Встановлюємо фото
+            const imgBox = document.getElementById('prod-img');
+            let photo = variantsData.find(v => v.photo !== '')?.photo || '';
+            if(photo) imgBox.innerHTML = `<img src="${photo}" alt="">`;
+            else imgBox.innerHTML = `<div class="no-photo">ФОТО ОЧІКУЄТЬСЯ</div>`;
+
+            renderOptions();
+        }
+
+        function renderOptions() {
+            const container = document.getElementById('dynamic-options');
+            const isTimber = variantsData[0].isTimber;
+            let html = '';
+
+            if (isTimber) {
+                // БРУС: Вибір Товщини та Ширини
+                let allT = [...new Set(variantsData.map(v => parseFloat(v.thickness)))].sort((a,b) => a-b);
+                
+                // Якщо товщина ще не обрана - беремо першу доступну
+                if(!selectedThickness) selectedThickness = allT[0];
+
+                html += `<div class="option-group">
+                            <label data-i18n="select_thickness">${siteTranslations[currentLang].select_thickness}</label>
+                            <div class="options-list">`;
+                allT.forEach(t => {
+                    let active = (t == selectedThickness) ? 'active' : '';
+                    html += `<button class="opt-btn ${active}" onclick="selectThickness(${t})">${t}</button>`;
+                });
+                html += `</div></div>`;
+
+                // Ширини, доступні для обраної товщини
+                let availableW = variantsData.filter(v => parseFloat(v.thickness) == selectedThickness).map(v => parseFloat(v.width)).sort((a,b) => a-b);
+                
+                // Якщо ширина не обрана, або обраної ширини немає в цій товщині - беремо першу доступну
+                if(!selectedWidth || !availableW.includes(parseFloat(selectedWidth))) selectedWidth = availableW[0];
+
+                html += `<div class="option-group">
+                            <label data-i18n="select_width">${siteTranslations[currentLang].select_width}</label>
+                            <div class="options-list">`;
+                availableW.forEach(w => {
+                    let active = (w == selectedWidth) ? 'active' : '';
+                    html += `<button class="opt-btn ${active}" onclick="selectWidth(${w})">${w}</button>`;
+                });
+                html += `</div></div>`;
+
+                currentVariant = variantsData.find(v => parseFloat(v.thickness) == selectedThickness && parseFloat(v.width) == selectedWidth);
+                
+            } else {
+                // ДОШКА/ПОГОНАЖ: Вибір Сорту/Розміру
+                if (variantsData.length > 1) {
+                    let lbl = variantsData[0].sortLabel ? getTranslatedWord(variantsData[0].sortLabel, currentLang) : siteTranslations[currentLang].select_variant;
+                    
+                    if(!selectedSort) selectedSort = variantsData[0].sort;
+
+                    html += `<div class="option-group">
+                                <label>${lbl}</label>
+                                <div class="options-list">`;
+                    variantsData.forEach(v => {
+                        let active = (v.sort === selectedSort) ? 'active' : '';
+                        html += `<button class="opt-btn ${active}" onclick="selectSort('${v.sort}')">${v.sort}</button>`;
+                    });
+                    html += `</div></div>`;
+                    
+                    currentVariant = variantsData.find(v => v.sort === selectedSort);
+                } else {
+                    // Якщо товар має тільки 1 варіант, опції не малюємо
+                    currentVariant = variantsData[0];
+                }
+            }
+
+            container.innerHTML = html;
+            updatePriceAndTitle();
+        }
+
+        function selectThickness(t) { selectedThickness = t; renderOptions(); }
+        function selectWidth(w) { selectedWidth = w; renderOptions(); }
+        function selectSort(s) { selectedSort = s; renderOptions(); }
+
+        function updatePriceAndTitle() {
+            if(!currentVariant) return;
+
+            let name = getTranslatedWord(currentVariant.baseName, currentLang);
+            if(currentVariant.isTimber) {
+                name = `${name} ${currentVariant.thickness}х${currentVariant.width}`;
+            } else if(currentVariant.sort && currentVariant.sort !== "-") {
+                if (currentVariant.sortLabel) {
+                    let lbl = getTranslatedWord(currentVariant.sortLabel, currentLang);
+                    name = `${name} (${lbl} ${currentVariant.sort})`;
+                } else {
+                    name = `${name} (${currentVariant.sort})`;
+                }
+            }
+
+            document.getElementById('prod-title').innerText = name;
+            
+            let unit = getTranslatedUnit(currentVariant.unit, currentLang);
+            document.getElementById('prod-price').innerText = `${currentVariant.price} ₴ / ${unit}`;
+        }
+
+        // КОРЗИНА
+        function toggleCart() { document.getElementById('cart-modal').classList.toggle('open'); }
+
+        function addToCartCurrent() {
+            if(!currentVariant) return;
+            
+            const inputField = document.getElementById(`prod-qty`);
+            const qty = parseFloat(inputField.value.replace(',', '.'));
+
+            if(isNaN(qty) || qty <= 0) {
+                inputField.style.borderColor = '#ff4444';
+                setTimeout(() => inputField.style.borderColor = 'var(--border)', 1000);
+                return;
+            }
+
+            const existing = cart.find(item => item.id === currentVariant.id);
+            if(existing) {
+                existing.qty += qty;
+            } else {
+                cart.push({ 
+                    id: currentVariant.id, isTimber: currentVariant.isTimber, thickness: currentVariant.thickness, width: currentVariant.width,
+                    baseName: currentVariant.baseName, sort: currentVariant.sort, sortLabel: currentVariant.sortLabel, price: currentVariant.price, unit: currentVariant.unit, qty 
+                });
+            }
+            
+            localStorage.setItem('apollo_cart', JSON.stringify(cart));
+            inputField.value = '1';
+            
+            updateCartUI();
+            toggleCart();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            localStorage.setItem('apollo_cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-counter').innerText = cart.length;
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            
+            let total = 0;
+            if(cart.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px 0;">${siteTranslations[currentLang].empty_cart}</p>`;
+            }
+
+            cart.forEach(item => {
+                const sum = item.price * item.qty;
+                total += sum;
+                
+                let name = getTranslatedWord(item.baseName, currentLang);
+                if(item.isTimber) name = `${name} ${item.thickness}х${item.width}`;
+                else if(item.sort && item.sort !== "-") {
+                    if (item.sortLabel) {
+                        let lbl = getTranslatedWord(item.sortLabel, currentLang);
+                        name = `${name} (${lbl} ${item.sort})`;
+                    } else name = `${name} (${item.sort})`;
+                }
+                
+                const displayUnit = getTranslatedUnit(item.unit, currentLang);
+                
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <div class="remove-item" onclick="removeFromCart('${item.id}')">×</div>
+                        <div class="cart-item-title">${name}</div>
+                        <div class="cart-item-details">
+                            <span>${item.qty} ${displayUnit} × ${item.price} ₴</span>
+                            <span style="color:var(--accent); font-weight:700;">${sum.toFixed(0)} ₴</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cart-total-sum').innerText = total.toFixed(0);
+        }
+
+        async function sendOrder() {
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
+
+            if(!name || !phone) return alert(currentLang === 'uk' ? "Заповніть контакти" : "Fill the contacts");
+            if(cart.length === 0) return;
+
+            const BOT_TOKEN = '8828109529:AAHxYZQkGVLftBxBiEIIEVVXVM8_a0BsX9w'; 
+            const CHAT_ID = '710362478';
+
+            let text = `🔥 <b>НОВЕ ЗАМОВЛЕННЯ (САЙТ)</b>\n\n`;
+            text += `👤 <b>Клієнт:</b> ${name}\n`;
+            text += `📞 <b>Телефон:</b> ${phone}\n\n`;
+            text += `📦 <b>Позиції:</b>\n`;
+            
+            let totalSum = 0;
+            cart.forEach((item, i) => {
+                const sum = item.price * item.qty;
+                totalSum += sum;
+                let ukName = getTranslatedWord(item.baseName, 'uk');
+                if(item.isTimber) ukName = `${ukName} ${item.thickness}х${item.width}`;
+                else if(item.sort && item.sort !== "-") {
+                    if(item.sortLabel) ukName = `${ukName} (${getTranslatedWord(item.sortLabel, 'uk')} ${item.sort})`;
+                    else ukName = `${ukName} (${item.sort})`;
+                }
+                text += `${i+1}. ${ukName} — ${item.qty} ${item.unit} (x ${item.price} ₴)\n`;
+            });
+            text += `\n💰 <b>РАЗОМ: ${totalSum.toFixed(0)} ₴</b>`;
+            
+            try {
+                const btn = document.querySelector('.checkout-form button');
+                btn.innerText = "Відправка...";
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' })
+                });
+                alert(currentLang === 'uk' ? "Замовлення успішно відправлено!" : "Order sent successfully!");
+                cart = [];
+                localStorage.setItem('apollo_cart', JSON.stringify([]));
+                updateCartUI();
+                toggleCart();
+                document.getElementById('client-name').value = '';
+                document.getElementById('client-phone').value = '';
+                btn.innerText = siteTranslations[currentLang].checkout_btn;
+            } catch (error) {
+                alert("Помилка відправки.");
+            }
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('apollo_lang', lang);
+            
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const btn = document.getElementById('btn-' + lang);
+            if(btn) btn.classList.add('active');
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(siteTranslations[lang] && siteTranslations[lang][key]) el.innerText = siteTranslations[lang][key];
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if(siteTranslations[lang] && siteTranslations[lang][key]) el.setAttribute('placeholder', siteTranslations[lang][key]);
+            });
+
+            if(variantsData.length > 0) {
+                renderOptions();
+            }
+            updateCartUI();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProduct();
+        });
+    </script>
+</body>
+</html>
