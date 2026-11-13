@@ -48,14 +48,14 @@
         .product-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; line-height: 1.2; }
         .product-price { font-size: 2rem; color: var(--accent); font-weight: 800; margin-bottom: 25px; }
 
-        /* СТИЛІ ДЛЯ ОПИСУ ПРОДУКТУ */
+        /* ОПИС ПРОДУКТУ ПІД КНОПКОЮ */
         .product-description {
             font-size: 0.98rem;
             color: #b0b3b8;
             line-height: 1.6;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
             word-break: break-word;
             overflow-wrap: break-word;
         }
@@ -74,8 +74,11 @@
         .opt-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: var(--border) !important; background: transparent !important; color: var(--text) !important; }
 
         /* BUY SECTION */
-        .buy-action { display: flex; gap: 15px; margin-top: 10px; }
-        .buy-action input { width: 100px; padding: 15px; background: #0a0b0c; border: 1px solid var(--border); color: #fff; border-radius: 5px; text-align: center; font-size: 1.2rem; font-weight: 700; outline: none; }
+        .quantity-group { margin-bottom: 15px; }
+        .quantity-group label { display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; font-weight: 700; }
+        
+        .buy-action { display: flex; gap: 15px; margin-bottom: 10px; }
+        .buy-action input { width: 120px; padding: 15px; background: #0a0b0c; border: 1px solid var(--border); color: #fff; border-radius: 5px; text-align: center; font-size: 1.2rem; font-weight: 700; outline: none; }
         .buy-action input:focus { border-color: var(--accent); }
         .buy-action button { flex: 1; background: var(--accent); color: #000; border: none; border-radius: 5px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .buy-action button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(217, 144, 88, 0.3); }
@@ -242,18 +245,22 @@
         <div class="product-info">
             <h1 class="product-title" id="prod-title">Назва товару</h1>
             
-            <!-- Динамічний опис продукту -->
-            <div class="product-description" id="prod-desc" style="display: none;"></div>
-            
             <!-- Динамічні опції -->
             <div id="dynamic-options"></div>
 
             <div class="product-price" id="prod-price">0 ₴</div>
             
-            <div class="buy-action">
-                <input type="number" step="0.5" id="prod-qty" value="1" min="0.5">
-                <button onclick="addToCartCurrent()" data-i18n="btn_add">В кошик</button>
+            <!-- Блок кількості з написом -->
+            <div class="quantity-group">
+                <label data-i18n="qty_label">Кількість:</label>
+                <div class="buy-action">
+                    <input type="number" step="0.5" id="prod-qty" value="1" min="0.5">
+                    <button onclick="addToCartCurrent()" data-i18n="btn_add">В кошик</button>
+                </div>
             </div>
+
+            <!-- Динамічний опис продукту (розташований ПІД кнопкою) -->
+            <div class="product-description" id="prod-desc" style="display: none;"></div>
         </div>
     </div>
 
@@ -359,15 +366,15 @@
 
         const siteTranslations = {
             uk: { 
-                nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", cart: "Кошик", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", wait: "Завантаження товару...", "Сорт": "Сорт", back_to_cat: "Назад до каталогу", select_thickness: "Оберіть товщину (мм)", select_width: "Оберіть ширину (мм)", select_variant: "Оберіть варіант",
+                nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", cart: "Кошик", btn_add: "В кошик", cart_title: "Ваше замовлення", total: "Разом:", name_ph: "Ваше ім'я або компанія", phone_ph: "Ваш телефон", checkout_btn: "Оформити замовлення", empty_cart: "Кошик порожній", wait: "Завантаження товару...", "Сорт": "Сорт", back_to_cat: "Назад до каталогу", select_thickness: "Оберіть товщину (мм)", select_width: "Оберіть ширину (мм)", select_variant: "Оберіть варіант", qty_label: "Кількість:",
                 "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус", contact_title: "Зв'язатися з нами", contact_sub: "Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.", addr_label: "Адреса:", addr_val: "Київ, Дніпровська набережна 17е", phones_label: "Телефони:", email_label: "Пошта:", ask_title: "Задати питання", ask_sub: "Вкажіть контакти — перетелефонуємо вам за 15 хвилин", btn_send: "Надіслати", rights: "Усі права захищено.", dev_text: "Розробка сайту та автоматизація бізнесу —"
             },
             ru: { 
-                nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", cart: "Корзина", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", wait: "Загрузка товара...", "Сорт": "Сорт", back_to_cat: "Назад в каталог", select_thickness: "Выберите толщину (мм)", select_width: "Выберите ширину (мм)", select_variant: "Выберите вариант",
+                nav_home: "Главная", nav_catalog: "Каталог", nav_contacts: "Контакты", cart: "Корзина", btn_add: "В корзину", cart_title: "Ваш заказ", total: "Итого:", name_ph: "Ваше имя или компания", phone_ph: "Ваш телефон", checkout_btn: "Оформить заказ", empty_cart: "Корзина пуста", wait: "Загрузка товара...", "Сорт": "Сорт", back_to_cat: "Назад в каталог", select_thickness: "Выберите толщину (мм)", select_width: "Выберите ширину (мм)", select_variant: "Выберите вариант", qty_label: "Количество:",
                 "м³": "м³", "м.п.": "м.п.", "шт": "шт", "м²": "м²", "Брус": "Брус", contact_title: "Связаться с нами", contact_sub: "Наш склад и производство расположены в удобном месте на левом берегу Киева.", addr_label: "Адрес:", addr_val: "Киев, Днепровская набережная 17е", phones_label: "Телефоны:", email_label: "Почта:", ask_title: "Задать вопрос", ask_sub: "Укажите контакты — перезвоним вам через 15 минут", btn_send: "Отправить", rights: "Все права защищены.", dev_text: "Разработка сайта и автоматизация бизнеса —"
             },
             en: { 
-                nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", cart: "Cart", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name/Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", wait: "Loading product...", "Сорт": "Grade", back_to_cat: "Back to catalog", select_thickness: "Select thickness (mm)", select_width: "Select width (mm)", select_variant: "Select option",
+                nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", cart: "Cart", btn_add: "Add to cart", cart_title: "Your Order", total: "Total:", name_ph: "Your Name/Company", phone_ph: "Your Phone", checkout_btn: "Place Order", empty_cart: "Cart is empty", wait: "Loading product...", "Сорт": "Grade", back_to_cat: "Back to catalog", select_thickness: "Select thickness (mm)", select_width: "Select width (mm)", select_variant: "Select option", qty_label: "Quantity:",
                 "м³": "m³", "м.п.": "l.m.", "шт": "pcs", "м²": "m²", "Брус": "Timber", contact_title: "Contact Us", contact_sub: "Our warehouse and production are conveniently located on the left bank of Kyiv.", addr_label: "Address:", addr_val: "Kyiv, Dniprovska Naberezhna 17e", phones_label: "Phones:", email_label: "Email:", ask_title: "Ask a Question", ask_sub: "Leave your contacts — we will call you back in 15 minutes", btn_send: "Send", rights: "All rights reserved.", dev_text: "Web development & business automation —"
             }
         };
@@ -424,7 +431,7 @@
 
                     let col0 = r[0] ? r[0].trim() : '';
                     if(col0 === urlName) {
-                        // Зчитуємо описи з колонок J (індекс 9), K (індекс 10), L (індекс 11), якщо вони існують у рядку
+                        // Описи з колонок J (індекс 9), K (індекс 10), L (індекс 11)
                         let descUk = r[9] ? r[9].trim() : '';
                         let descRu = r[10] ? r[10].trim() : '';
                         let descEn = r[11] ? r[11].trim() : '';
@@ -617,7 +624,7 @@
 
             document.getElementById('prod-title').innerText = name;
             
-            // Динамічне виведення опису залежно від обраної мови
+            // Оновлюємо опис під кнопкою
             const descBlock = document.getElementById('prod-desc');
             let descText = "";
             if (currentVariant.desc) {
@@ -822,7 +829,8 @@
                     body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' })
                 });
                 alert(currentLang === 'en' ? "Sent! We will call you shortly." : (currentLang === 'ru' ? "Отправлено! Мы перезвоним вам." : "Надіслано! Ми зателефонуємо вам найближчим часом."));
-                nameInput.value, phoneInput.value = '';
+                nameInput.value = '';
+                phoneInput.value = '';
             } catch (e) {
                 alert("Помилка відправки.");
             } finally {
