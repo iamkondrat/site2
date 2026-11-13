@@ -40,7 +40,7 @@
         /* PRODUCT LAYOUT */
         .product-container { display: flex; gap: 50px; max-width: 1200px; margin: 50px auto; padding: 0 30px; min-height: 60vh; }
         
-        .product-image { flex: 1; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 400px;}
+        .product-image { flex: 1; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 400px; position: relative; }
         .product-image img { width: 100%; height: 100%; object-fit: cover; }
         .product-image .no-photo { font-weight: 700; color: #444; letter-spacing: 2px; }
         
@@ -105,13 +105,13 @@
 
         @media (max-width: 900px) {
             .product-container { flex-direction: column; padding: 20px; gap: 30px;}
-            .product-image { min-height: 250px; }
+            .product-image { min-height: 320px; width: 100%; }
             .cart-modal { width: 100%; }
             header { padding: 15px 20px; flex-direction: column; gap: 15px; }
         }
 
         /* ГАЛЕРЕЯ ТА СЛАЙДЕР */
-        .slider-wrapper { position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; background: #0a0b0c; }
+        .slider-wrapper { position: relative; width: 100%; height: 100%; min-height: 400px; border-radius: 10px; overflow: hidden; background: #0a0b0c; }
         .slider-img { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             object-fit: cover; opacity: 0; transition: opacity 0.4s ease-in-out; 
@@ -147,6 +147,7 @@
         .dot.active { width: 24px; border-radius: 10px; background: var(--accent); }
 
         @media (max-width: 900px) {
+            .slider-wrapper { min-height: 320px; }
             .slider-arrow { opacity: 0.7; visibility: visible; width: 40px; height: 40px; }
             .slider-prev { left: 10px; }
             .slider-next { right: 10px; }
@@ -431,7 +432,6 @@
 
                     let col0 = r[0] ? r[0].trim() : '';
                     if(col0 === urlName) {
-                        // Описи з колонок J (індекс 9), K (індекс 10), L (індекс 11)
                         let descUk = r[9] ? r[9].trim() : '';
                         let descRu = r[10] ? r[10].trim() : '';
                         let descEn = r[11] ? r[11].trim() : '';
@@ -624,7 +624,6 @@
 
             document.getElementById('prod-title').innerText = name;
             
-            // Оновлюємо опис під кнопкою
             const descBlock = document.getElementById('prod-desc');
             let descText = "";
             if (currentVariant.desc) {
