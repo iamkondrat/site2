@@ -46,9 +46,9 @@
         .hero-info { position: relative; display: flex; flex-direction: column; justify-content: center; z-index: 10; width: auto; }
         .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; }
         
-        /* Динамічний шрифт для заголовків (щоб ніколи не переносився) */
-        .title-top { font-size: clamp(1.8rem, 6vw, 3.9rem); font-weight: 900; line-height: 1.05; color: var(--text); white-space: nowrap; }
-        .title-bottom { font-size: clamp(2.1rem, 9vw, 5.2rem); font-weight: 900; line-height: 1; color: var(--accent); white-space: nowrap; }
+        /* Десктоп: в один рядок */
+        .title-top { font-size: clamp(2rem, 5vw, 3.9rem); font-weight: 900; line-height: 1.1; color: var(--text); white-space: nowrap; }
+        .title-bottom { font-size: clamp(2.5rem, 6.5vw, 5.2rem); font-weight: 900; line-height: 1; color: var(--accent); white-space: nowrap; }
         
         .hero p { font-size: 1.15rem; color: #aaa; margin-bottom: 45px; line-height: 1.7; max-width: 750px; }
         
@@ -142,6 +142,9 @@
             header { padding: 20px; flex-direction: column; gap: 15px; }
             .hero-info { max-width: 100%; z-index: 10; padding-top: 50px; }
             
+            .title-top { font-size: clamp(2rem, 5.5vw, 3.5rem); }
+            .title-bottom { font-size: clamp(2.5rem, 7vw, 4.5rem); }
+
             .drying-process { display: flex; flex-direction: column; gap: 40px; }
             .process-visual { width: 100%; height: 400px; }
             
@@ -164,7 +167,11 @@
             
             .phones { display: none; }
             
-            .hero { padding: 180px 5% 60px; min-height: auto; align-items: flex-start; }
+            /* ВИПРАВЛЕННЯ ЗАГОЛОВКІВ: Текст В ОДИН РЯДОК завжди (масштабується щоб влізти) */
+            .hero { padding: 160px 5% 60px; min-height: auto; align-items: flex-start; }
+            .title-top { font-size: clamp(0.9rem, 5.5vw, 2.2rem); white-space: nowrap; line-height: 1.1; }
+            .title-bottom { font-size: clamp(1.2rem, 8.5vw, 2.8rem); white-space: nowrap; line-height: 1; margin-top: 5px; }
+            
             .hero p { font-size: 0.95rem; margin-bottom: 30px; line-height: 1.5; }
             
             .hero-btns { flex-direction: column; width: 100%; gap: 15px; }
@@ -179,7 +186,6 @@
             
             .process-info h3 { font-size: 2rem; }
             
-            /* БЛОК СТАТИСТИКИ (Камери, Роки, Якість) - В ОДИН РЯД */
             .stats { flex-direction: row; justify-content: space-between; gap: 10px; align-items: center; width: 100%; text-align: center; }
             .stat-box h5 { font-size: 2rem; margin-bottom: 5px; }
             .stat-box p { font-size: 0.75rem; letter-spacing: 0.5px; }
@@ -324,7 +330,7 @@
 
                 <div class="social-links">
                     <a href="viber://chat?number=%2B380685386923" class="social-btn" title="Viber" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M11.4 0C5.5.2 1.2 4.3 1 10.2c-.1 3.2 1.1 6.1 3.3 8.1v4.4c0 .7.8 1.1 1.4.7l3.7-2.5c.7.1 1.4.2 2.1.2 6.1 0 11-4.7 11-10.6C22.5 4.6 17.5-.1 11.4 0zm5.8 15.1c-.3.8-1.5 1.5-2.1 1.6-.6.1-1.3.1-2.1-.1-.5-.2-1.1-.4-1.9-.7-3.4-1.5-5.6-4.9-5.8-5.1-.2-.2-1.4-1.8-1.4-3.5 0-1.7.9-2.5 1.2-2.8.3-.3.7-.4.9-.4h.7c.2 0 .5-.1.8.6.3.7 1 2.4 1.1 2.6.1.2.1.4 0 .6-.1.2-.2.4-.4.6-.2.2-.4.4-.5.6-.2.2-.4.4-.2.7.2.3.9 1.5 2 2.4 1.4 1.2 2.5 1.6 2.9 1.8.3.2.5.1.7-.1.2-.2.8-.9 1-1.3.2-.3.4-.3.7-.2.3.1 1.9.9 2.2 1.1.3.2.6.2.6.4.1.2.1.9-.2 1.7z"/></svg>
+                        <svg viewBox="0 0 24 24"><path d="M11.4 0C5.5.2 1.2 4.3 1 10.2c-.1 3.2 1.1 6.1 3.3 8.1v4.4c0 .7.8 1.1 1.4.7l3.7-2.5c.7.1 1.4.2 2.1.2 6.1 0 11-4.7 11-10.6C22.5 4.6 17.5-.1 11.4 0zm5.8 15.1c-.3.8-1.5 1.5-2.1 1.6-.6.1-1.3.1-2.1-.1-.5-.2-1.1-.4-1.9-.7-3.4-1.5-5.6-4.9-5.8-5.1-.2-.2-1.4-1.8-1.4-3.5 0-1.7.9-2.5 1.2-2.8.3-.3.7-.4.9-.4h.7c.2 0 .5-.1.8.6.3.7 1 2.4 1.1 2.6.1.2.1.4 0 .6-.1.2-.2.4-.4.6-.2.2-.4.4-.2.7.2.3.9 1.5 2 2.4 1.4 1.2 2.5 1.6 2.9 1.8.3.2.5.1.7-.1.2-.2.8-.9 1-1.3.2-.3.4-.3.7-.2.3.1 1.9.9 2.2 1.1.3.2.6.2.6.4.1.2.1.9-.2 1.7z"/></svg>
                     </a>
                     <a href="https://t.me/+380685386923" class="social-btn" title="Telegram" target="_blank">
                         <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
@@ -429,7 +435,7 @@
             function updateBoardPositions() {
                 const visualBox = document.querySelector('.hero-visual');
                 if (window.innerWidth <= 768) {
-                    b1.position.set(1.5, -1.0, -3.5); 
+                    b1.position.set(1.5, -1.5, -3.5); // Трохи опустили, щоб не перекривало багаторядковий текст
                     b1.rotation.set(-1.0, -0.6, 0.8);
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                     if(visualBox) visualBox.style.opacity = '0.4'; 
@@ -465,7 +471,7 @@
             // ФІКС ЛАГІВ ПРИ СКРОЛІНГІ НА ТЕЛЕФОНІ
             let lastWidth = window.innerWidth;
             window.addEventListener('resize', () => {
-                if (window.innerWidth === lastWidth) return; // Ігноруємо зміну висоти (ховання панелі в Safari/Chrome)
+                if (window.innerWidth === lastWidth) return; 
                 lastWidth = window.innerWidth;
                 
                 camera.aspect = window.innerWidth / window.innerHeight;
@@ -579,7 +585,6 @@
                 dry_desc: "Надаємо повний комплекс послуг з камерної сушки будь-яких обсягів пиломатеріалів. Здійснюємо укладання, завантаження, дбайливе розвантаження на вантажні авто. Сушимо усі породи до еталонних показників.",
                 stat_cam: "Камери", stat_years: "Років", stat_quality: "Якість", dry_humidity: "Максимальна вологість",
                 
-                // Нові ключі футера
                 contact_title: "Зв'язатися з нами", contact_sub: "Наш склад та виробництво розташовані у зручному місці на лівому березі Києва.",
                 addr_label: "Адреса:", addr_val: "Київ, Дніпровська набережна 17е", phones_label: "Телефони:", email_label: "Пошта:",
                 ask_title: "Задати питання", ask_sub: "Вкажіть контакти — перетелефонуємо вам за 15 хвилин",
@@ -597,7 +602,6 @@
                 dry_desc: "Предоставляем полный комплекс услуг по камерной сушке любых объемов пиломатериалов. Осуществляем укладку, погрузку, бережную разгрузку на грузовые авто. Сушим все породы до эталонных показателей.",
                 stat_cam: "Камеры", stat_years: "Лет", stat_quality: "Качество", dry_humidity: "Максимальная влажность",
                 
-                // Нові ключі футера
                 contact_title: "Связаться с нами", contact_sub: "Наш склад и производство расположены в удобном месте на левом берегу Киева.",
                 addr_label: "Адрес:", addr_val: "Киев, Днепровская набережная 17е", phones_label: "Телефоны:", email_label: "Почта:",
                 ask_title: "Задать вопрос", ask_sub: "Укажите контакты — перезвоним вам через 15 минут",
@@ -615,7 +619,6 @@
                 dry_desc: "We provide a full range of chamber drying services for any volume of lumber. We handle stacking, loading, and careful unloading onto trucks. We dry all wood species to benchmark standards.",
                 stat_cam: "Chambers", stat_years: "Years", stat_quality: "Quality", dry_humidity: "Maximum moisture",
                 
-                // Нові ключі футера
                 contact_title: "Contact Us", contact_sub: "Our warehouse and production are conveniently located on the left bank of Kyiv.",
                 addr_label: "Address:", addr_val: "Kyiv, Dniprovska Embankment 17e", phones_label: "Phones:", email_label: "Email:",
                 ask_title: "Ask a Question", ask_sub: "Leave your contacts — we will call you back in 15 minutes",
