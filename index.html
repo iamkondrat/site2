@@ -142,7 +142,6 @@
             header { padding: 20px; flex-direction: column; gap: 15px; }
             .hero-info { max-width: 100%; z-index: 10; padding-top: 50px; }
             
-            /* Виправлення секції Сушки - тепер точно одне під одним */
             .drying-process { display: flex; flex-direction: column; gap: 40px; }
             .process-visual { width: 100%; height: 400px; }
             
@@ -163,7 +162,6 @@
             
             .header-controls { flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 15px; width: 100%; }
             
-            /* ХОВАЄМО ТЕЛЕФОНИ НА МОБІЛЬНОМУ */
             .phones { display: none; }
             
             .hero { padding: 180px 5% 60px; min-height: auto; align-items: flex-start; }
@@ -180,7 +178,12 @@
             .cat-card { height: 300px; padding: 25px; }
             
             .process-info h3 { font-size: 2rem; }
-            .stats { flex-direction: column; gap: 20px; align-items: flex-start; }
+            
+            /* БЛОК СТАТИСТИКИ (Камери, Роки, Якість) - В ОДИН РЯД */
+            .stats { flex-direction: row; justify-content: space-between; gap: 10px; align-items: center; width: 100%; text-align: center; }
+            .stat-box h5 { font-size: 2rem; margin-bottom: 5px; }
+            .stat-box p { font-size: 0.75rem; letter-spacing: 0.5px; }
+            
             .visual-overlay { left: 20px; bottom: 20px; padding: 20px; }
             .visual-overlay h4 { font-size: 1.8rem; }
 
@@ -426,19 +429,16 @@
             function updateBoardPositions() {
                 const visualBox = document.querySelector('.hero-visual');
                 if (window.innerWidth <= 768) {
-                    // ТЕЛЕФОНИ: Зміщуємо праворуч, щоб не закривати текст, і робимо напівпрозорим фоном
                     b1.position.set(1.5, -1.0, -3.5); 
                     b1.rotation.set(-1.0, -0.6, 0.8);
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                     if(visualBox) visualBox.style.opacity = '0.4'; 
                 } else if (window.innerWidth <= 1024) {
-                    // ПЛАНШЕТИ
                     b1.position.set(2.0, -1.0, -3.0); 
                     b1.rotation.set(-1.0, -0.8, 1.0);
                     boardGroup.scale.set(0.8, 0.8, 0.8);
                     if(visualBox) visualBox.style.opacity = '0.8';
                 } else {
-                    // ДЕСКТОПИ
                     b1.position.set(3.5, 0, 0); 
                     b1.rotation.set(-1.0, -0.8, 1.0); 
                     boardGroup.scale.set(1.2, 1.2, 1.2); 
@@ -462,7 +462,12 @@
             }
             animate();
 
+            // ФІКС ЛАГІВ ПРИ СКРОЛІНГІ НА ТЕЛЕФОНІ
+            let lastWidth = window.innerWidth;
             window.addEventListener('resize', () => {
+                if (window.innerWidth === lastWidth) return; // Ігноруємо зміну висоти (ховання панелі в Safari/Chrome)
+                lastWidth = window.innerWidth;
+                
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -504,7 +509,12 @@
             }
             animateBg();
 
+            // ФІКС ЛАГІВ ФОНУ
+            let lastWidthBg = window.innerWidth;
             window.addEventListener('resize', () => {
+                if (window.innerWidth === lastWidthBg) return;
+                lastWidthBg = window.innerWidth;
+                
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
