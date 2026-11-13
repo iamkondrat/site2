@@ -24,7 +24,20 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: var(--text); overflow-x: hidden; }
 
-        header { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 25px 50px; background: rgba(15, 17, 18, 0.85); backdrop-filter: blur(15px); z-index: 100; border-bottom: 1px solid var(--border); }
+        /* АДАПТИВНА ШАПКА ЯК НА ГОЛОВНІЙ */
+        header { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 25px 50px; 
+            background: rgba(15, 17, 18, 0.85); 
+            backdrop-filter: blur(15px); 
+            z-index: 100; 
+            border-bottom: 1px solid var(--border); 
+        }
         .logo img { height: 45px; display: block; width: auto; }
         .nav-links a { color: var(--text); text-decoration: none; margin: 0 20px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
         .nav-links a:hover { color: var(--accent); }
@@ -79,12 +92,25 @@
 
         .loading { text-align: center; padding: 100px; color: #777; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ */
+        /* Мобільна адаптація шапки в стилі головної сторінки */
         @media (max-width: 1024px) {
-            header { padding: 15px 20px; flex-direction: row; gap: 10px; }
-            .price-section { padding-top: 140px; padding-left: 4%; padding-right: 4%; }
-            .nav-links a { margin: 0 10px; font-size: 0.75rem; }
-            .logo img { height: 35px; }
+            header { 
+                padding: 15px 20px; 
+                flex-direction: column; 
+                gap: 12px; 
+            }
+            .price-section { padding-top: 180px; padding-left: 4%; padding-right: 4%; }
+            .nav-links {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+            }
+            .nav-links a { margin: 0; font-size: 0.75rem; letter-spacing: 0.5px; }
+            .logo img { height: 38px; }
+            .header-controls {
+                width: 100%;
+                justify-content: center;
+            }
         }
 
         @media (max-width: 768px) {
@@ -400,14 +426,14 @@
                 "Дошка необрізна": "Доска необрезная", "Дошка обрізна": "Доска обрезная", "Брус": "Брус", "Погонаж": "Погонажные изделия",
                 "Порода (Укр)": "Порода", "Порода": "Порода", "Сорт": "Сорт", "Ціна": "Цена", 
                 "Товщина": "Толщина", "Ширина": "Ширина", "Ціна (грн/м3)": "Цена (грн/м³)",
-                "Товщина (мм)": "Толщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Цена (грн/м.п.)", contact_title: "Связаться с нами", contact_sub: "Наш склад и производство расположены в удобном месте на левом берегу Киева.", addr_label: "Адрес:", addr_val: "Киев, Днепровская набережная 17е", phones_label: "Телефоны:", email_label: "Почта:", ask_title: "Задать вопрос", ask_sub: "Укажите контакты — перезвоним вам через 15 минут", btn_send: "Отправить", rights: "Все права защищены.", dev_text: "Разработка сайту та автоматизація бізнесу —"
+                "Товщина (мм)": "Толщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Цена (грн/м.п.)", contact_title: "Связаться с нами", contact_sub: "Наш склад и производство расположены в удобном месте на левом берегу Киева.", addr_label: "Адрес:", addr_val: "Киев, Днепровская набережная 17е", phones_label: "Телефоны:", email_label: "Почта:", ask_title: "Задать вопрос", ask_sub: "Укажите контакты — перезвоним вам через 15 минут", btn_send: "Отправить", rights: "Все права защищены.", dev_text: "Розробка сайту та автоматизація бізнесу —"
             },
             en: {
                 nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", loading: "Loading prices...",
                 "Дошка необрізна": "Unedged Board", "Дошка обрізна": "Edged Board", "Брус": "Timber", "Погонаж": "Molding Products",
                 "Порода (Укр)": "Wood Type", "Порода": "Wood Type", "Сорт": "Grade", "Ціна": "Price", 
                 "Товщина": "Thickness", "Ширина": "Width", "Ціна (грн/м3)": "Price (UAH/m³)",
-                "Товщина (мм)": "Thickness (mm)", "Ширина (mm)": "Width (mm)", "Ціна (грн/м.п.)": "Price (UAH/l.m.)", contact_title: "Contact Us", contact_sub: "Our warehouse and production are conveniently located on the left bank of Kyiv.", addr_label: "Address:", addr_val: "Kyiv, Dniprovska Naberezhna 17e", phones_label: "Phones:", email_label: "Email:", ask_title: "Ask a Question", ask_sub: "Leave your contacts — we will call you back in 15 minutes", btn_send: "Send", rights: "All rights reserved.", dev_text: "Web development & business automation —"
+                "Товщина (мм)": "Thickness (mm)", "Ширина (мм)": "Width (mm)", "Ціна (грн/м.п.)": "Price (UAH/l.m.)", contact_title: "Contact Us", contact_sub: "Our warehouse and production are conveniently located on the left bank of Kyiv.", addr_label: "Address:", addr_val: "Kyiv, Dniprovska Naberezhna 17e", phones_label: "Phones:", email_label: "Email:", ask_title: "Ask a Question", ask_sub: "Leave your contacts — we will call you back in 15 minutes", btn_send: "Send", rights: "All rights reserved.", dev_text: "Web development & business automation —"
             }
         };
 
@@ -525,7 +551,7 @@
 
             } catch (e) {
                 console.error(e);
-                container.innerHTML = '<div class="loading" style="color: #d9534f;">Помилка завантаження прайсу. Перевірте з\'єднання.</div>';
+                container.innerHTML = '<div class="loading" style="color: #d9534f;">Помилка завантаження прайсу. Перевірте з'єднання.</div>';
             }
         }
 
