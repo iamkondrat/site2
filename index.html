@@ -410,15 +410,15 @@
             scene.add(dirLight);
 
             const texLoader = new THREE.TextureLoader();
-            const faceTex = texLoader.load('wood_face.jpg');
+            const faceTex = texLoader.load('wood_face.webp');
             const matFace = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.8 });
             
-            const barkTexLong = texLoader.load('bark.jpg');
+            const barkTexLong = texLoader.load('bark.webp');
             barkTexLong.wrapS = THREE.RepeatWrapping; 
             barkTexLong.wrapT = THREE.RepeatWrapping;
             barkTexLong.repeat.set(6, 1); 
             const matBarkLong = new THREE.MeshStandardMaterial({ map: barkTexLong, color: 0x5c3a21, roughness: 1.0 });
-            const barkTexShort = texLoader.load('bark.jpg');
+            const barkTexShort = texLoader.load('bark.webp');
             const matBarkShort = new THREE.MeshStandardMaterial({ map: barkTexShort, color: 0x5c3a21, roughness: 1.0 });
 
             const materials = [matBarkShort, matBarkShort, matBarkLong, matBarkLong, matFace, matFace];
