@@ -23,7 +23,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: var(--text); overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: var(--text); overflow-x: hidden; width: 100%; position: relative; }
 
         #webgl-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.6; }
 
@@ -42,9 +42,9 @@
         .lang-btn { background: transparent; border: none; color: #888; padding: 8px 12px; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .lang-btn.active, .lang-btn:hover { background: var(--gradient); color: #000; }
 
-        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 100px 8%; border-bottom: 1px solid var(--border); }
-        .hero-info { position: relative; display: flex; flex-direction: column; justify-content: center; z-index: 10; width: auto; }
-        .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; }
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 100px 8%; border-bottom: 1px solid var(--border); overflow: hidden; }
+        .hero-info { position: relative; display: flex; flex-direction: column; justify-content: center; z-index: 10; width: 100%; max-width: 100%; }
+        .hero-title { display: flex; flex-direction: column; margin-bottom: 25px; text-transform: uppercase; width: 100%; }
         
         /* Десктоп: в один рядок */
         .title-top { font-size: clamp(2rem, 5vw, 3.9rem); font-weight: 900; line-height: 1.1; color: var(--text); white-space: nowrap; }
@@ -167,10 +167,11 @@
             
             .phones { display: none; }
             
-            /* ВИПРАВЛЕННЯ ЗАГОЛОВКІВ: Текст В ОДИН РЯДОК завжди (масштабується щоб влізти) */
-            .hero { padding: 160px 5% 60px; min-height: auto; align-items: flex-start; }
-            .title-top { font-size: clamp(0.9rem, 5.5vw, 2.2rem); white-space: nowrap; line-height: 1.1; }
-            .title-bottom { font-size: clamp(1.2rem, 8.5vw, 2.8rem); white-space: nowrap; line-height: 1; margin-top: 5px; }
+            /* ВИПРАВЛЕННЯ ЗАГОЛОВКІВ: Зменшений розмір для довгих російських/англійських слів, щоб текст сидів чітко всередині екрана */
+            .hero { padding: 160px 5% 60px; min-height: auto; align-items: flex-start; width: 100%; }
+            .hero-info { width: 100%; max-width: 100%; overflow: hidden; }
+            .title-top { font-size: clamp(0.75rem, 4.8vw, 1.8rem); white-space: nowrap; line-height: 1.1; max-width: 100%; }
+            .title-bottom { font-size: clamp(0.95rem, 7.2vw, 2.3rem); white-space: nowrap; line-height: 1; margin-top: 5px; max-width: 100%; }
             
             .hero p { font-size: 0.95rem; margin-bottom: 30px; line-height: 1.5; }
             
@@ -435,7 +436,7 @@
             function updateBoardPositions() {
                 const visualBox = document.querySelector('.hero-visual');
                 if (window.innerWidth <= 768) {
-                    b1.position.set(1.5, -1.5, -3.5); // Трохи опустили, щоб не перекривало багаторядковий текст
+                    b1.position.set(1.5, -1.5, -3.5); 
                     b1.rotation.set(-1.0, -0.6, 0.8);
                     boardGroup.scale.set(0.7, 0.7, 0.7);
                     if(visualBox) visualBox.style.opacity = '0.4'; 
@@ -597,7 +598,7 @@
                 hero_desc: "Сухая столярная доска, пиломатериалы свежепиленные, пиломатериал сухой строганый, погонажные изделия и профессиональная сушка любой древесины до 8% влажности.",
                 btn_price: "ОТКРЫТЬ ПРАЙС", btn_drying: "Узнать о сушке",
                 cat_subtitle: "Каталог", cat_title: "Категории товаров",
-                card_1: "Доска сухая столярная", card_2: "Пиломатериалы свежепиленные", card_3: "Пиломатериал сухой строганый", card_4: "Погонажные изделия", card_link: "Перейти ➔",
+                card_1: "Дошка суха столярна", card_2: "Пиломатериалы свежепиленные", card_3: "Пиломатеріал сухий струганий", card_4: "Погонажные изделия", card_link: "Перейти ➔",
                 dry_title: "Профессиональная Сушка древесины",
                 dry_desc: "Предоставляем полный комплекс услуг по камерной сушке любых объемов пиломатериалов. Осуществляем укладку, погрузку, бережную разгрузку на грузовые авто. Сушим все породы до эталонных показателей.",
                 stat_cam: "Камеры", stat_years: "Лет", stat_quality: "Качество", dry_humidity: "Максимальная влажность",
