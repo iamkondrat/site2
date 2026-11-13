@@ -355,16 +355,16 @@
                 <span data-i18n="dev_text">Розробка сайту та автоматизація бізнесу —</span> 
                 <a href="https://t.me/iamkondrat" target="_blank">В'ячеслав Кондратенко</a>
             </span>
+
         </div>
     </footer>
 
 
     <script>
         // URL ВАШОГО WEB APP З GOOGLE APPS SCRIPT
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usiAUUKZNymW_EMstPbLE9h_RAIjt4uiMHJxX3QISRLrvv9No/exec'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usiAUUKZNymW_EMstPbLE9h_RAIjt4uiMHJxX3QISRLrvv9No/exec'; 
 
-// Словник для фіксованих слів (шапка, назви категорій, заголовки колонок)
-// Словник для фіксованих слів та заголовків
+        // Словник для фіксованих слів та заголовків
         const siteTranslations = {
             uk: {
                 nav_home: "Головна", nav_catalog: "Каталог", nav_contacts: "Контакти", loading: "Оновлення прайсу...",
@@ -431,15 +431,19 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usi
                     let colIndices = [];
 
                     if (isTimberTab) {
-                        // Для Бруса пропускаємо колонки A, B, C і беремо починаючи з D (індекс 3: Товщина, Ширина, Ціна)
-                        for(let j = 3; j < headerRow.length; j++) {
+                        // Для Бруса: беремо починаючи з D (індекс 3) до H (індекс 7, не включаючи його)
+                        // Тобто індекси 3, 4, 5, 6 (Д, Е, Ж), а колонку H (індекс 7) та далі не показуємо
+                        let maxCol = Math.min(headerRow.length, 7);
+                        for(let j = 3; j < maxCol; j++) {
                             if(headerRow[j] && headerRow[j].trim() !== '') colIndices.push(j);
                         }
                         if(colIndices.length === 0) colIndices = [3, 4, 5];
                     } else {
-                        // Для Дощок: колонка A (Порода) + колонки з індексу 3 (Сорт, Ціна)
+                        // Для інших категорій (Дошки тощо): колонка A (Порода, індекс 0) + колонки з індексу 3 до G (індекс 6, не включаючи його)
+                        // Тобто індекс 0, а далі 3, 4, 5 (F), а колонку G (індекс 6) та далі не показуємо
                         colIndices.push(0);
-                        for(let j = 3; j < headerRow.length; j++) {
+                        let maxCol = Math.min(headerRow.length, 6);
+                        for(let j = 3; j < maxCol; j++) {
                             if(headerRow[j] && headerRow[j].trim() !== '') colIndices.push(j);
                         }
                     }
@@ -454,7 +458,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usi
 
                     // 5. Малюємо тіло таблиці (<tbody>) з об'єднанням комірок першої колонки
                     let skipCount = 0;
-                    let groupColIdx = colIndices[0]; // Індекс колонки для об'єднання (Товщина для бруса або Порода для дощок)
+                    let groupColIdx = colIndices[0]; // Індекс колонки для об'єднання
 
                     for(let i = headerIdx + 1; i < rows.length; i++) {
                         let r = rows[i];
@@ -464,7 +468,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usi
 
                         html += `<tr>`;
 
-                        // Об'єднання комірок (rowspan) для однакових значень товщини / породи
+                        // Об'єднання комірок (rowspan)
                         if (skipCount > 0) {
                             skipCount--;
                         } else {
@@ -485,7 +489,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usi
                             }
                         }
 
-                        // Усі інші колонки в рядку (Ширина, Ціна)
+                        // Усі інші колонки в рядку
                         for(let k = 1; k < colIndices.length; k++) {
                             let colIdx = colIndices[k];
                             let cellData = r[colIdx] ? r[colIdx].trim() : '';
@@ -508,39 +512,35 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usi
                 container.innerHTML = '<div class="loading" style="color: #d9534f;">Помилка завантаження прайсу. Перевірте з\'єднання.</div>';
             }
         }
-function setLanguage(lang) {
-    // Оновлення активної кнопки мови
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    const btn = document.querySelector(`.lang-btn[onclick*="${lang}"]`);
-    if(btn) btn.classList.add('active');
 
-    // Переклад статичних елементів (шапка)
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if(siteTranslations[lang] && siteTranslations[lang][key]) el.innerText = siteTranslations[lang][key];
-    });
+        function setLanguage(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const btn = document.querySelector(`.lang-btn[onclick*="${lang}"]`);
+            if(btn) btn.classList.add('active');
 
-    // Переклад ДИНАМІЧНИХ даних
-    document.querySelectorAll('[data-dyn]').forEach(el => {
-        const originalText = el.getAttribute('data-dyn'); 
-        // Додана перевірка siteTranslations[lang] для уникнення помилок
-        if(siteTranslations[lang] && siteTranslations[lang][originalText]) {
-            el.innerHTML = el.tagName === 'TD' && el.hasAttribute('rowspan') 
-                ? `<strong>${siteTranslations[lang][originalText]}</strong>` 
-                : siteTranslations[lang][originalText];
-        } else {
-            el.innerHTML = el.tagName === 'TD' && el.hasAttribute('rowspan') 
-                ? `<strong>${originalText}</strong>` 
-                : originalText;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(siteTranslations[lang] && siteTranslations[lang][key]) el.innerText = siteTranslations[lang][key];
+            });
+
+            document.querySelectorAll('[data-dyn]').forEach(el => {
+                const originalText = el.getAttribute('data-dyn'); 
+                if(siteTranslations[lang] && siteTranslations[lang][originalText]) {
+                    el.innerHTML = el.tagName === 'TD' && el.hasAttribute('rowspan') 
+                        ? `<strong>${siteTranslations[lang][originalText]}</strong>` 
+                        : siteTranslations[lang][originalText];
+                } else {
+                    el.innerHTML = el.tagName === 'TD' && el.hasAttribute('rowspan') 
+                        ? `<strong>${originalText}</strong>` 
+                        : originalText;
+                }
+            });
+
+            localStorage.setItem('apollo_lang', lang);
         }
-    });
 
-    // Зберігаємо вибір користувача
-    localStorage.setItem('apollo_lang', lang);
-}
+        loadDynamicPrices();
 
-// Запуск завантаження даних
-loadDynamicPrices();
         async function sendCallbackForm() {
             const nameInput = document.getElementById('footer-client-name');
             const phoneInput = document.getElementById('footer-client-phone');
@@ -548,7 +548,7 @@ loadDynamicPrices();
             const phone = phoneInput.value.trim();
 
             if (!name || !phone) {
-                alert(currentLang === 'en' ? "Please fill in your contacts" : (currentLang === 'ru' ? "Заполните контакты" : "Будь ласка, заповніть контакти"));
+                alert("Будь ласка, заповніть контакти");
                 return;
             }
 
@@ -571,7 +571,7 @@ loadDynamicPrices();
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' })
                 });
-                alert(currentLang === 'en' ? "Sent! We will call you shortly." : (currentLang === 'ru' ? "Отправлено! Мы перезвоним вам." : "Надіслано! Ми зателефонуємо вам найближчим часом."));
+                alert("Надіслано! Ми зателефонуємо вам найближчим часом.");
                 nameInput.value = '';
                 phoneInput.value = '';
             } catch (e) {
