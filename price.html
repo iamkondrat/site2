@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="price_title">Прайс-лист | Аполло</title>
     
+    <!-- Фавікони -->
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
@@ -45,12 +49,19 @@
 
         .price-section { padding: 160px 8% 100px 8%; min-height: 100vh; }
         
-        /* Блок кожної категорії */
-        .category-block { margin-bottom: 80px; }
+        /* Блок кожної категорії з адаптивним заголовком без переносів */
+        .category-block { margin-bottom: 60px; }
         .category-block h2 { 
-            font-size: 2.2rem; font-weight: 800; text-transform: uppercase; 
-            margin-bottom: 25px; color: var(--text); 
-            border-left: 5px solid var(--accent); padding-left: 15px;
+            font-size: clamp(1.2rem, 4vw, 2.2rem); 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            margin-bottom: 20px; 
+            color: var(--text); 
+            border-left: 5px solid var(--accent); 
+            padding-left: 15px;
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .table-container {
@@ -58,20 +69,32 @@
             border-radius: 8px; overflow-x: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
         table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
-        th, td { padding: 20px 25px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+        th, td { padding: 14px 18px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
         th:last-child, td:last-child { border-right: none; }
         
-        th { background: rgba(255, 255, 255, 0.02); color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        td { font-size: 0.95rem; color: #ddd; vertical-align: middle; }
+        th { background: rgba(255, 255, 255, 0.02); color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        td { font-size: 0.88rem; color: #ddd; vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: rgba(255, 255, 255, 0.01); color: #fff; }
 
         .loading { text-align: center; padding: 100px; color: #777; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; }
 
+        /* АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ */
         @media (max-width: 1024px) {
-            header { padding: 20px; flex-direction: column; gap: 15px; }
-            .price-section { padding-top: 200px; }
+            header { padding: 15px 20px; flex-direction: row; gap: 10px; }
+            .price-section { padding-top: 140px; padding-left: 4%; padding-right: 4%; }
+            .nav-links a { margin: 0 10px; font-size: 0.75rem; }
+            .logo img { height: 35px; }
         }
+
+        @media (max-width: 768px) {
+            /* Приховуємо номери телефонів у шапці на телефонах */
+            .phones { display: none; }
+            
+            th, td { padding: 10px 12px; font-size: 0.81rem; }
+            .category-block { margin-bottom: 40px; }
+        }
+
         /* БЛОК КОНТАКТІВ ТА ФУТЕР */
         .contacts-footer {
             background: radial-gradient(circle at 20% 50%, rgba(217, 144, 88, 0.05) 0%, transparent 50%), #0e1012;
@@ -355,7 +378,6 @@
                 <span data-i18n="dev_text">Розробка сайту та автоматизація бізнесу —</span> 
                 <a href="https://t.me/iamkondrat" target="_blank">В'ячеслав Кондратенко</a>
             </span>
-
         </div>
     </footer>
 
@@ -378,14 +400,14 @@
                 "Дошка необрізна": "Доска необрезная", "Дошка обрізна": "Доска обрезная", "Брус": "Брус", "Погонаж": "Погонажные изделия",
                 "Порода (Укр)": "Порода", "Порода": "Порода", "Сорт": "Сорт", "Ціна": "Цена", 
                 "Товщина": "Толщина", "Ширина": "Ширина", "Ціна (грн/м3)": "Цена (грн/м³)",
-                "Товщина (мм)": "Толщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Цена (грн/м.п.)", contact_title: "Связаться с нами", contact_sub: "Наш склад и производство расположены в удобном месте на левом берегу Киева.", addr_label: "Адрес:", addr_val: "Киев, Днепровская набережная 17е", phones_label: "Телефоны:", email_label: "Почта:", ask_title: "Задать вопрос", ask_sub: "Укажите контакты — перезвоним вам через 15 минут", btn_send: "Отправить", rights: "Все права защищены.", dev_text: "Разработка сайта и автоматизация бизнеса —"
+                "Товщина (мм)": "Толщина (мм)", "Ширина (мм)": "Ширина (мм)", "Ціна (грн/м.п.)": "Цена (грн/м.п.)", contact_title: "Связаться с нами", contact_sub: "Наш склад и производство расположены в удобном месте на левом берегу Киева.", addr_label: "Адрес:", addr_val: "Киев, Днепровская набережная 17е", phones_label: "Телефоны:", email_label: "Почта:", ask_title: "Задать вопрос", ask_sub: "Укажите контакты — перезвоним вам через 15 минут", btn_send: "Отправить", rights: "Все права защищены.", dev_text: "Разработка сайту та автоматизація бізнесу —"
             },
             en: {
                 nav_home: "Home", nav_catalog: "Catalog", nav_contacts: "Contacts", loading: "Loading prices...",
                 "Дошка необрізна": "Unedged Board", "Дошка обрізна": "Edged Board", "Брус": "Timber", "Погонаж": "Molding Products",
                 "Порода (Укр)": "Wood Type", "Порода": "Wood Type", "Сорт": "Grade", "Ціна": "Price", 
                 "Товщина": "Thickness", "Ширина": "Width", "Ціна (грн/м3)": "Price (UAH/m³)",
-                "Товщина (мм)": "Thickness (mm)", "Ширина (мм)": "Width (mm)", "Ціна (грн/м.п.)": "Price (UAH/l.m.)", contact_title: "Contact Us", contact_sub: "Our warehouse and production are conveniently located on the left bank of Kyiv.", addr_label: "Address:", addr_val: "Kyiv, Dniprovska Naberezhna 17e", phones_label: "Phones:", email_label: "Email:", ask_title: "Ask a Question", ask_sub: "Leave your contacts — we will call you back in 15 minutes", btn_send: "Send", rights: "All rights reserved.", dev_text: "Web development & business automation —"
+                "Товщина (мм)": "Thickness (mm)", "Ширина (mm)": "Width (mm)", "Ціна (грн/м.п.)": "Price (UAH/l.m.)", contact_title: "Contact Us", contact_sub: "Our warehouse and production are conveniently located on the left bank of Kyiv.", addr_label: "Address:", addr_val: "Kyiv, Dniprovska Naberezhna 17e", phones_label: "Phones:", email_label: "Email:", ask_title: "Ask a Question", ask_sub: "Leave your contacts — we will call you back in 15 minutes", btn_send: "Send", rights: "All rights reserved.", dev_text: "Web development & business automation —"
             }
         };
 
@@ -431,16 +453,12 @@
                     let colIndices = [];
 
                     if (isTimberTab) {
-                        // Для Бруса: беремо починаючи з D (індекс 3) до H (індекс 7, не включаючи його)
-                        // Тобто індекси 3, 4, 5, 6 (Д, Е, Ж), а колонку H (індекс 7) та далі не показуємо
                         let maxCol = Math.min(headerRow.length, 7);
                         for(let j = 3; j < maxCol; j++) {
                             if(headerRow[j] && headerRow[j].trim() !== '') colIndices.push(j);
                         }
                         if(colIndices.length === 0) colIndices = [3, 4, 5];
                     } else {
-                        // Для інших категорій (Дошки тощо): колонка A (Порода, індекс 0) + колонки з індексу 3 до G (індекс 6, не включаючи його)
-                        // Тобто індекс 0, а далі 3, 4, 5 (F), а колонку G (індекс 6) та далі не показуємо
                         colIndices.push(0);
                         let maxCol = Math.min(headerRow.length, 6);
                         for(let j = 3; j < maxCol; j++) {
@@ -458,7 +476,7 @@
 
                     // 5. Малюємо тіло таблиці (<tbody>) з об'єднанням комірок першої колонки
                     let skipCount = 0;
-                    let groupColIdx = colIndices[0]; // Індекс колонки для об'єднання
+                    let groupColIdx = colIndices[0];
 
                     for(let i = headerIdx + 1; i < rows.length; i++) {
                         let r = rows[i];
@@ -468,7 +486,6 @@
 
                         html += `<tr>`;
 
-                        // Об'єднання комірок (rowspan)
                         if (skipCount > 0) {
                             skipCount--;
                         } else {
@@ -489,7 +506,6 @@
                             }
                         }
 
-                        // Усі інші колонки в рядку
                         for(let k = 1; k < colIndices.length; k++) {
                             let colIdx = colIndices[k];
                             let cellData = r[colIdx] ? r[colIdx].trim() : '';
