@@ -515,7 +515,8 @@
 
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usiAUUKZNymW_EMstPbLE9h_RAIjt4uiMHJxX3QISRLrvv9No/exec'; 
+        const CATALOG_JSON_URL = 'data/catalog.json';
+        const FALLBACK_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby74IlLa9OPNPcGb3usiAUUKZNymW_EMstPbLE9h_RAIjt4uiMHJxX3QISRLrvv9No/exec';
         
         // Глобальні змінні стану
         let catalogData = []; 
@@ -580,7 +581,10 @@
 
         async function fetchCatalog() {
             try {
-                const response = await fetch(SCRIPT_URL, { method: 'GET', redirect: 'follow' });
+                let response = await fetch(`${CATALOG_JSON_URL}?v=${Date.now()}`);
+                if (!response.ok) {
+                    response = await fetch(FALLBACK_SCRIPT_URL, { method: 'GET', redirect: 'follow' });
+                }
                 const tabs = await response.json();
                 
                 catalogData = [];
